@@ -1,0 +1,586 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="lambda,闭包," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> c++11中的bind和function // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              c++11中的bind和function
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-08
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/08/cpp/std_function和std_bind/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/08/cpp/std_function和std_bind/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h1 id="c++11中的bind和function">c++11中的bind和function</h1><h2 id="std::function">std::function</h2><p>它是函数、函数对象、函数指针、和成员函数的包装器，可以容纳任何类型的函数对象，函数指针，引用函数，成员函数的指针。<br>以统一的方式处理函数、函数对象、函数指针、和成员函数。</p>
+<p>允许保存和延迟执行函数。</p>
+<ul>
+<li>函数和成员函数作为function</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">G</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">struct</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">H</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; f = G; <span class="comment">//全局函数</span></span><br><span class="line"></span><br><span class="line">A a;</span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; f <span class="number">1</span>= <span class="built_in">std</span>::bind(&amp;A::H, a); <span class="comment">//成员函数</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以用function取代函数指针。因为它可以保存函数延迟执行，所以比较适合作为回调函数，也可以把它看做类似于c#中特殊的委托，只有一个成员的委托。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> A</span><br><span class="line">&#123;</span><br><span class="line">A(<span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt;&amp; f):m_callback(f)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Notify</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">m_callback();<span class="comment">//回调到上层</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; m_callback;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>function还可以作为函数入参，这样可以在函数外部控制函数的内部行为了，让我们的函数变得更加灵活。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Foo</span><span class="params">(<span class="keyword">int</span> x, <span class="built_in">std</span>::function&lt;<span class="keyword">void</span>(<span class="keyword">int</span>)</span>&gt;&amp; f)</span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="keyword">if</span>(x%<span class="number">2</span>==<span class="number">0</span>)</span><br><span class="line">f(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;x&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">H</span><span class="params">(<span class="keyword">int</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;x+<span class="number">2</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TestFoo</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="keyword">auto</span> f = <span class="built_in">std</span>::bind(G, <span class="built_in">std</span>::placeholders::_1); </span><br><span class="line">Foo(<span class="number">4</span>, f);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在Foo函数外面更改f的行为</span></span><br><span class="line">f = <span class="built_in">std</span>::bind(H, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line">Foo(<span class="number">4</span>, f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="std::bind绑定器">std::bind绑定器</h2><ul>
+<li>将函数、成员函数和闭包转成function函数对象</li>
+<li>将多元(n&gt;1)函数转成一元函数或者(n-1)元函数。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">H</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="comment">//绑定全局函数</span></span><br><span class="line"><span class="keyword">auto</span> f11 = <span class="built_in">std</span>::bind(H, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line"><span class="keyword">auto</span>的类型实际上是<span class="built_in">std</span>::function&lt;<span class="keyword">void</span>(<span class="keyword">int</span>)&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//绑定带参数的成员函数</span></span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span> (<span class="keyword">char</span>*, <span class="keyword">int</span>)&gt; f = <span class="built_in">std</span>::bind(&amp;ReadHandler::ConnectPreProcess, <span class="keyword">this</span>, <span class="built_in">std</span>::placeholders::_1, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line"></span><br><span class="line"><span class="comment">//三元函数转换成一元函数</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span>, <span class="keyword">double</span>)</span></span>;</span><br><span class="line"><span class="comment">// 绑定f()函数调用的第二个和第三个参数，</span></span><br><span class="line"><span class="comment">// 返回一个新的函数对象为ff，它只带有一个int类型的参数</span></span><br><span class="line"><span class="keyword">auto</span> ff = bind(f, _1, ‘c’, <span class="number">1.2</span>);    </span><br><span class="line"><span class="keyword">int</span> x = ff(<span class="number">7</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>bind简化和增强bind1st和bind2nd</li>
+</ul>
+<p>其实bind简化和增强了之前标准库中bind1st和bind2nd，它完全可以替代bind1s和bind2st，并且能组合函数。我们知道bind1st和bind2nd将一个二元算子转换成一个一元算子。</p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找元素值大于10的元素的个数</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, std::bind1st<span class="params">(less&lt;int&gt;<span class="params">()</span>, <span class="number">10</span>)</span>)</span>;</span><br><span class="line"><span class="comment">//查找元素之小于10的元素</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, std::bind2nd<span class="params">(less&lt;int&gt;<span class="params">()</span>, <span class="number">10</span>)</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p>本质上是对一个二元函数less<int>的调用，但是它却要分别用bind1st和bind2nd，而且还要想想到底是用bind1st还是bind2nd，用起来感觉不方便。现在用bind，就可以以统一的方式去实现了。</int></p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找元素值大于10的元素的个数</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, bind<span class="params">(less&lt;int&gt;<span class="params">()</span>, <span class="number">10</span>, _1)</span>)</span>;</span><br><span class="line"><span class="comment">//查找元素之小于10的元素</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, bind<span class="params">(less&lt;int&gt;<span class="params">()</span>, _1, <span class="number">10</span>)</span>)</span>;</span><br><span class="line">这样我就不用关心到底是用bind1st还是bind2nd了，只要用bind就都搞定了。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>bind函数组合</li>
+</ul>
+<p>bind的还有一个强大之处就是函数组合。假设我们要找出集合中大于5小于10的元素个数怎么做呢？我们需要一个逻辑与才能做到类似于： </p>
+<p><code>std::bind(std::logical_and&lt;bool&gt;(),_1,_2);</code></p>
+<p>然后，我们需要另一个谓词来回答 _1 是否大于5。</p>
+<p><code>std::bind(std::greater&lt;int&gt;(),_1,5);</code></p>
+<p>然后，我们还需要另一个谓词来回答 _1 是否小于等于10。</p>
+<p><code>std::bind(std::less_equal&lt;int&gt;(),_1,10);</code></p>
+<p>最后，我们需要把它们两个用逻辑与合起来，就象这样：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找集合中大于5小于10的元素个数</span></span><br><span class="line"><span class="keyword">auto</span> f = bind(<span class="built_in">std</span>::logical_and&lt;<span class="keyword">bool</span>&gt;(), bind(<span class="built_in">std</span>::greater&lt;<span class="keyword">int</span>&gt;(),_1,<span class="number">5</span>), bind(<span class="built_in">std</span>::less_equal&lt;<span class="keyword">int</span>&gt;(),_1,<span class="number">10</span>));</span><br><span class="line"><span class="keyword">int</span> count = count_if(coll.begin(), coll.end(), f);</span><br></pre></td></tr></table></figure>
+<p>c++11中推出function是为了泛化函数对象，函数指针，引用函数，成员函数的指针，让我们可以按更统一的方式写出更加泛化的代码；推出bind是为了替换和增强之前标准库的bind1st和bind2st，让我们的用起来更方便！</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/lambda/"> #lambda </a>
+          
+            <a href="/tags/闭包/"> #闭包 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/09/10/cpp/stl_map与boost_unordered_map/">STL map与Boost unordered_map</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/07/cpp/std_find,std_find_if/">std::find,std::find_if</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/09/08/cpp/std_function和std_bind/"
+               data-title="c++11中的bind和function" data-url="http://blog.zlsky.me/2014/09/08/cpp/std_function和std_bind/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#c++11中的bind和function"><span class="nav-number">1.</span> <span class="nav-text">c++11中的bind和function</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#std::function"><span class="nav-number">1.1.</span> <span class="nav-text">std::function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#std::bind绑定器"><span class="nav-number">1.2.</span> <span class="nav-text">std::bind绑定器</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

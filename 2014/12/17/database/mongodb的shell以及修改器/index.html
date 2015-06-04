@@ -1,0 +1,588 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="mongodb," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> mongodb的shell以及修改器 // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              mongodb的shell以及修改器
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-17
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/database/">database</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/17/database/mongodb的shell以及修改器/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/17/database/mongodb的shell以及修改器/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h3 id="ObjectId详解">ObjectId详解</h3><p>ObjectId 使用12 字节的存储空间，是一个由24 个十六进制数字组成的字符串（每个字节可以存储两个十六进制数字）。由于看起来很长，不少人会觉得难以处理。但关键是要知道这个长长的ObjectId 是实际存储数据的两倍长。</p>
+<p>如果快速连续创建多个ObjectId，会发现每次只有最后几位数字有变化。另外，<br>中间的几位数字也会变化（要是在创建的过程中停顿几秒钟）。这是ObjectId 的创<br>建方式导致的。ObjectId 的12 字节按照如下方式生成：</p>
+<p>0 1 2 3 | 4 5 6 | 7 8 | 9 10 11<br>时间戳  | 机器  | PID | 计数器</p>
+<h2 id="shell">shell</h2><h3 id="shell脚本对象的js函数">shell脚本对象的js函数</h3><p>辅助函数             |    等价函数<br>use foo             |    db.getSisterDB(“foo”)<br>show dbs              |    db.getMongo().getDBs()<br>show collections     |    db.getCollectionNames()</p>
+<h3 id="mongorc-js">mongorc.js</h3><p>如果某些脚本会被频繁加载，可以将它们添加到mongorc.js 文件中。这个文件会在启动shell 时自动运行。<br>例如，我们希望启动成功时让shell 显示一句欢迎语。为此，我们在用户主目录下创建一个名为.mongorc.js 的文件，向其中添加如下内容：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mongorc.js</span></span><br><span class="line"><span class="keyword">var</span> compliment = [<span class="string">"attractive"</span>, <span class="string">"intelligent"</span>, <span class="string">"like Batman"</span>];</span><br><span class="line"><span class="keyword">var</span> index = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">3</span>);</span><br><span class="line">print(<span class="string">"Hello, you're looking particularly "</span>+compliment[index]+<span class="string">" today!"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>然后，当启动shell 时，就会看到这样一些内容：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mongo&#10;MongoDB shell version: 2.4.0-preconnecting&#10;to: test&#10;Hello, you&#39;re looking particularly like Batman today!&#10;&#62;</span><br></pre></td></tr></table></figure></p>
+<p>为了实用，可以使用这个脚本创建一些自己需要的全局变量，或者是为太长的名字创建一个简短的别名，也可以重写内置的函数。.mongorc.js 最常见的用途之一是移除那些比较“危险”的shell 辅助函数。可以在这里集中重写这些方法，比如为dropDatabase 或者deleteIndexes 等辅助函数添加no 选项，或者取消它们的定义。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> no = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	print(<span class="string">"Not on my watch."</span>);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 禁止删除数据库</span></span><br><span class="line">db.dropDatabase = DB.prototype.dropDatabase = no;</span><br><span class="line"><span class="comment">// 禁止删除集合</span></span><br><span class="line">DBCollection.prototype.drop = no;</span><br><span class="line"><span class="comment">// 禁止删除索引</span></span><br><span class="line">DBCollection.prototype.dropIndex = no;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>   注意，这种方式并不能保护数据库免受恶意用户的攻击，只能预防自己的手误。<br>   如果在启动shell 时指定—norc 参数，就可以禁止加载.mongorc.js。</p>
+</blockquote>
+<h3 id="prompt">prompt</h3><p>将prompt 变量设为一个字符串或者函数，就可以重写默认的shell 提示。例如，如果正在运行一个需要耗时几分钟的查询，你可能希望完成时在shell 提示中输出当前时间，这样就可以知道最后一个操作的完成时间了。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">return</span> (<span class="keyword">new</span> <span class="built_in">Date</span>())+<span class="string">"&gt; "</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>另一个方便的提示是显示当前使用的数据库：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> db == <span class="string">'undefined'</span>) &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="string">'(nodb)&gt; '</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 检查最后的数据库操作</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">db.runCommand(&#123;getLastError:<span class="number">1</span>&#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (e) &#123;</span><br><span class="line">print(e);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> db+<span class="string">"&gt; "</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="EDITOR">EDITOR</h3><p>shell 的多行支持是非常有限的：不可以编辑之前的行。如果编辑到第15 行时发现第1 行有个错误，那会让人非常懊恼。因此，对于大块的代码或者是对象，你可能更愿意在编辑器中编辑。为了方便地调用编辑器，可以在shell 中设置EDITOR 变量（也可以在环境变量中设置）：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EDITOR=&#34;vim&#34;&#10;var wap = db.books.findOne(&#123;title: &#34;War and Peace&#34;&#125;)&#10;edit wap</span><br></pre></td></tr></table></figure>
+<h2 id="文档更新">文档更新</h2><h3 id="upsert">upsert</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.analytics.update(&#123;<span class="string">"url"</span> : <span class="string">"/blog"</span>&#125;, &#123;<span class="string">"$inc"</span> : &#123;<span class="string">"pageviews"</span> : <span class="number">1</span>&#125;&#125;, <span class="literal">true</span>)</span><br><span class="line"><span class="comment">//第三个参数的意思是说先看集合中是否有满足条件:url=="/blog"这条记录,如果有的话就update pageviews=1</span></span><br><span class="line"><span class="comment">//否则就创建一条这样的记录,这样做的好处是原子性.</span></span><br></pre></td></tr></table></figure>
+<h3 id="修改器">修改器</h3><p>$inc,用于自动增加<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$inc:&#123;<span class="string">"relationships.friends"</span>:<span class="number">1</span>&#125;&#125;);</span><br><span class="line"><span class="comment">//更新users集合,条件是username=="joe",inc修改器,修改relationships.friends的值+1</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   注意relationships.friends是子记录,所以要加引号</p>
+</blockquote>
+<p>$set,用于修改某个字段的值<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$set:&#123;address:<span class="string">"china1"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//设置address字段,为"china1",如果不存在就自动创建这个字段</span></span><br></pre></td></tr></table></figure></p>
+<p>$push,会向已有的数组末尾加入一个元素，要是没有就创建一个新的数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$push:&#123;item:<span class="string">"gold"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//向users集合条件为:username=="joe"的记录增加一个item字段array类型,并且里面push一个元素"gold"</span></span><br></pre></td></tr></table></figure>
+<p>$each,可以通过一次”$push” 操作添加多个值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$push:&#123;item:&#123;$each:[<span class="string">"send"</span>,<span class="string">"me"</span>]&#125;&#125;&#125;)</span><br><span class="line"><span class="comment">//向users集合条件为:username="joe"的记录里面的item增加若干元素"send","me"</span></span><br></pre></td></tr></table></figure></p>
+<p>$slice,可以保证数组不会超出设定好的最大长度<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$push:&#123;item:&#123;$each:[<span class="string">"send"</span>,<span class="string">"me"</span>],$slice:-<span class="number">2</span>&#125;&#125;&#125;)<span class="comment">//$slice的值必须是负整数</span></span><br><span class="line"><span class="comment">//向users集合条件为:username="joe"的记录里面的item增加若干元素"send","me",但是只允许2个,而且是最后插入的2个,这里有点队列的感觉</span></span><br></pre></td></tr></table></figure></p>
+<p>$addToSet,用来解决唯一性,用法跟$push是差不多的</p>
+<p>$pop,如果一个字段里面是数组,而且把这个数组当成队列来看来的就可以使用这个指令<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;&#125;,&#123;$pop:&#123;item:-<span class="number">1</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//数组的开头删除一个元素,如果是正数的话就是在数组的结尾处删除一个元素</span></span><br></pre></td></tr></table></figure></p>
+<p> $pull,与$pop差不多,但是是基于特定条件删除<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;&#125;, &#123;<span class="string">"$pull"</span> : &#123;<span class="string">"item"</span> : <span class="string">"send"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//删除item元素中"send"这个元素</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   注意如果有很多”send”的话会全部被删除</p>
+</blockquote>
+<p>$setOninsert,当执行update()函数,upsert为true时不存在会创建新的记录,这个修改器可以保证第一次创建的时候值,以后都不会再修改这个值.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;title:<span class="string">"send"</span>&#125;, &#123;<span class="string">"$setOnInsert"</span> : &#123;<span class="string">"createdAt"</span> : <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;&#125;, <span class="literal">true</span>)</span><br><span class="line"><span class="comment">//update记录,条件为title=="send",但没有这个记录就会创建一条记录createAt就是当前时间,但是一下次再执行这个函数时就有记录了,这个值是不会发生变化的.</span></span><br></pre></td></tr></table></figure></p>
+<p>“$lt”、”$lte”、”$gt” 和”$gte” 对应&lt;、&lt;=、&gt;和&gt;=。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;<span class="string">"age"</span> : &#123;<span class="string">"$gte"</span> : <span class="number">18</span>, <span class="string">"$lte"</span> : <span class="number">30</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from users where age &gt;=18 and age&lt;=30</span></span><br></pre></td></tr></table></figure></p>
+<p>$ne,不等于 !=<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;<span class="string">"username"</span> : &#123;<span class="string">"$ne"</span> : <span class="string">"joe"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from users where username!='joe'</span></span><br></pre></td></tr></table></figure></p>
+<p>$in,同sql里的where in.$nin同sql里面的where not in<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.raffle.find(&#123;<span class="string">"ticket_no"</span> : &#123;<span class="string">"$in"</span> : [<span class="number">725</span>, <span class="number">542</span>, <span class="number">390</span>]&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from raffle where ticket_no in (725,542,390)</span></span><br></pre></td></tr></table></figure></p>
+<p>$or<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.raffle.find(&#123;<span class="string">"$or"</span> : [&#123;<span class="string">"ticket_no"</span> : <span class="number">725</span>&#125;, &#123;<span class="string">"winner"</span> : <span class="literal">true</span>&#125;]&#125;)</span><br><span class="line"><span class="comment">//select * from raffle where ticket_no=725 or winner=true</span></span><br></pre></td></tr></table></figure></p>
+<p>$all用于搜索字段为数组的多个元素的匹配<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.food.insert(&#123;<span class="string">"_id"</span> : <span class="number">1</span>, <span class="string">"fruit"</span> : [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"peach"</span>]&#125;)</span><br><span class="line">&gt; db.food.insert(&#123;<span class="string">"_id"</span> : <span class="number">2</span>, <span class="string">"fruit"</span> : [<span class="string">"apple"</span>, <span class="string">"kumquat"</span>, <span class="string">"orange"</span>]&#125;)</span><br><span class="line">&gt; db.food.insert(&#123;<span class="string">"_id"</span> : <span class="number">3</span>, <span class="string">"fruit"</span> : [<span class="string">"cherry"</span>, <span class="string">"banana"</span>, <span class="string">"apple"</span>]&#125;)</span><br><span class="line">&gt; db.food.find(&#123;fruit : &#123;$all : [<span class="string">"apple"</span>, <span class="string">"banana"</span>]&#125;&#125;)</span><br><span class="line">&#123;<span class="string">"_id"</span> : <span class="number">1</span>, <span class="string">"fruit"</span> : [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"peach"</span>]&#125;</span><br><span class="line">&#123;<span class="string">"_id"</span> : <span class="number">3</span>, <span class="string">"fruit"</span> : [<span class="string">"cherry"</span>, <span class="string">"banana"</span>, <span class="string">"apple"</span>]&#125;</span><br><span class="line"><span class="comment">//select * from food where fruit has ['apple','banana']. 大致是这个意思,在sql中应该不行.</span></span><br><span class="line"></span><br><span class="line">&gt; db.food.find(&#123;<span class="string">"fruit.2"</span> : <span class="string">"peach"</span>&#125;)</span><br><span class="line"><span class="comment">//这个意思是指找到fruit里面的第3个元素='peach'</span></span><br></pre></td></tr></table></figure></p>
+<p>$size,对数组字段进行count条件搜索<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.food.find(&#123;<span class="string">"fruit"</span> : &#123;<span class="string">"$size"</span> : <span class="number">3</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from food where fruint.count()=3</span></span><br></pre></td></tr></table></figure></p>
+<p>limit()<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.stock.find(&#123;<span class="string">"desc"</span> : <span class="string">"mp3"</span>&#125;).limit(<span class="number">50</span>).sort(&#123;<span class="string">"price"</span> : -<span class="number">1</span>&#125;)</span><br><span class="line"><span class="comment">//select * from stock where desc='mp3' order by price desc limit50</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   注意 -1=desc 1=asc</p>
+</blockquote>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/mongodb/"> #mongodb </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/12/17/database/mongodb游标/">mongodb游标</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/12/14/golang/goimport/">go improt记录</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/12/17/database/mongodb的shell以及修改器/"
+               data-title="mongodb的shell以及修改器" data-url="http://blog.zlsky.me/2014/12/17/database/mongodb的shell以及修改器/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ObjectId详解"><span class="nav-number">1.</span> <span class="nav-text">ObjectId详解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shell"><span class="nav-number"></span> <span class="nav-text">shell</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#shell脚本对象的js函数"><span class="nav-number">1.</span> <span class="nav-text">shell脚本对象的js函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mongorc-js"><span class="nav-number">2.</span> <span class="nav-text">mongorc.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#prompt"><span class="nav-number">3.</span> <span class="nav-text">prompt</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#EDITOR"><span class="nav-number">4.</span> <span class="nav-text">EDITOR</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文档更新"><span class="nav-number"></span> <span class="nav-text">文档更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#upsert"><span class="nav-number">1.</span> <span class="nav-text">upsert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#修改器"><span class="nav-number">2.</span> <span class="nav-text">修改器</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

@@ -1,0 +1,959 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="zhulei,golang,js,php,opengl" />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column 
+   page-home 
+">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+  <div id="posts" class="posts-expand">
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/08/object-c/ios-sdk笔记/">
+                ios sdk笔记
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-08-08
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/ios/">ios</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/08/object-c/ios-sdk笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/08/object-c/ios-sdk笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="AppDelegate">AppDelegate</h2><ul>
+<li><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions NS_AVAILABLE_IOS(3_0);</code>. 当应用程序启动完成时调用此方法</li>
+<li><code>- (void)applicationWillResignActive:(UIApplication *)application</code>. 应用程序中断时调用此方法，例如电话之类的.</li>
+<li><code>- (void)applicationDidEnterBackground:(UIApplication *)application</code>.应用程序转入后台时调用此方法.</li>
+<li><code>- (void)applicationWillEnterForeground:(UIApplication *)application</code>.应用程序转向前台时调用此方法</li>
+<li><code>- (void)applicationDidBecomeActive:(UIApplication *)application</code>.应用程序暂停,或是重新启动,会调用此方法</li>
+<li><code>- (void)applicationWillTerminate:(UIApplication *)application</code>.应用程序终于时,调用此方法,例如保存一下数据什么的.</li>
+</ul>
+<h2 id="UIImageView">UIImageView</h2><ul>
+<li><code>UIImageView userInteractionEnabled</code> : 是否与当前对象交互.</li>
+<li><code>UIImageView multipleTouchEnabled</code> : 是否支持多点触控.</li>
+</ul>
+<h2 id="View面板">View面板</h2><ul>
+<li>View面板 <strong>Drawing.Opaque</strong> : 告诉opengl当前对象的背后没有需要绘制的内容,尽可能的选中它,加速性能,如果Alpha通道为1.0,还是要选中的原因是图片是png,本身会有一些洞.</li>
+<li>View面板 <strong>Drawing.Clear Graphics Context</strong> : 如果选中了这个表示在绘制图片之前,先在这个对象区域内绘制一片黑色的区域,考虑到性能问题,一般不要选中这一项.</li>
+<li>View面板 <strong>Drawing.Clip SubView</strong> : 如果选中了,那么子对象在父对象上面显示不完全的地方就不绘制,理论上来说选中应该是性能会更高一些,但是从数学角度出发,裁剪不显示的区域是比较费时的,而且一般不会出现子对象显示不全的情况,所以一般不要选中这一项.</li>
+<li>View面板 <strong>Drawing.Autoresize Subviews</strong> : 表示当前对象改变大小的话,子对象也会改变大小.</li>
+<li>View面板 <strong>Stretching</strong> : 忽略,暂不深入理解</li>
+</ul>
+<h2 id="text_Field面板">text Field面板</h2><ul>
+<li><strong>Clean Button</strong> : 意思是在什么情况下出现带X的清除按钮.</li>
+<li><strong>Clean when editing begins</strong> : 表示用户触模此字段时是事清除已有的文本</li>
+<li><strong>Adjust to Fit</strong> : 表示显示文本是否应随文本字段尺寸的减小而减小,如果选中,那么整个文本在视图都是可见的.</li>
+<li><strong>Capitalization</strong> : 输入字符串的格式化,例如”word”的意思是说将单词的首字母大写.</li>
+<li><strong>Return Key</strong> : 键盘右下方键那个要完成的名称</li>
+<li><strong>Auto-enable Return Key</strong> : 当选中此选项时,如果text字符串为空,将禁止return.</li>
+<li><strong>Secure</strong> : 如果是密码字段,可以选上此选项</li>
+</ul>
+<h2 id="控件的四种状态-_以下四种状态,可以直接替换图片,便可以修改默认ui样式">控件的四种状态. 以下四种状态,可以直接替换图片,便可以修改默认ui样式</h2><ul>
+<li>普通(Normal)</li>
+<li>突出显示(Highlighted)</li>
+<li>禁用(Disabled)</li>
+<li>选中(Selected)</li>
+</ul>
+<h2 id="TabBarItem">TabBarItem</h2><ul>
+<li><strong>badge</strong> : 意思是按钮上面会有一个红色的东西，一般用于提醒消息数.</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/02/cpp/typedef用法小结/">
+                typedef用法小结
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-08-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/02/cpp/typedef用法小结/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/02/cpp/typedef用法小结/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="typedef用法小结">typedef用法小结</h1><h2 id="第一、四个用途">第一、四个用途</h2><ul>
+<li><strong>用途一</strong>：定义一种类型的别名，而不只是简单的宏替换。可以用作同时声明指针型的多个对象。比如：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">char</span>* pa, pb; <span class="comment">// 这多数不符合我们的意图，它只声明了一个指向字符变量的指针，和一个字符变量；</span></span><br><span class="line">	<span class="comment">//以下则可行：</span></span><br><span class="line">	<span class="keyword">typedef</span> <span class="keyword">char</span>* PCHAR; <span class="comment">// 一般用大写</span></span><br><span class="line">	PCHAR pa, pb; <span class="comment">// 可行，同时声明了两个指向字符变量的指针</span></span><br><span class="line">```	</span><br><span class="line">* **用途二**：用在旧的C的代码中（具体多旧没有查），帮助<span class="keyword">struct</span>。以前的代码中，声明<span class="keyword">struct</span>新对象时，必须要带上<span class="keyword">struct</span>，即形式为： <span class="keyword">struct</span> 结构名 对象名，如：</span><br></pre></td></tr></table></figure>
+<pre><code><span class="keyword">struct</span> tagPOINT1
+{
+    <span class="keyword">int</span> x;
+    <span class="keyword">int</span> y;
+};
+<span class="keyword">struct</span> tagPOINT1 p1;
+<span class="comment">//而在C++中，则可以直接写：结构名 对象名，即：tagPOINT1 p1;</span>
+<span class="comment">//估计某人觉得经常多写一个struct太麻烦了，于是就发明了：</span>
+<span class="keyword">typedef</span> <span class="keyword">struct</span> tagPOINT
+{
+    <span class="keyword">int</span> x;
+    <span class="keyword">int</span> y;
+}POINT;
+POINT p1; <span class="comment">// 这样就比原来的方式少写了一个struct，比较省事，尤其在大量使用的时</span>
+<span class="comment">//或许，在C++中，typedef的这种用途二不是很大，但是理解了它，对掌握以前的旧代码还是有帮助的，毕竟我们在项目中有可能会遇到较早些年代遗留下来的代码。</span>
+</code></pre><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* **用途三**：</span><br><span class="line">-<span class="ruby"> 用typedef来定义与平台无关的类型。</span><br><span class="line"></span>-<span class="ruby"> 比如定义一个叫 <span class="constant">REAL</span> 的浮点类型，在目标平台一上，让它表示最高精度的类型为：</span><br><span class="line"></span>-<span class="ruby"> typedef long double <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 在不支持 long double 的平台二上，改为：</span><br><span class="line"></span>-<span class="ruby"> typedef double <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 在连 double 都不支持的平台三上，改为：</span><br><span class="line"></span>-<span class="ruby"> typedef float <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 也就是说，当跨平台时，只要改下 typedef 本身就行，不用对其他源码做任何修改。</span><br><span class="line"></span>-<span class="ruby"> 标准库就广泛使用了这个技巧，比如size_t。</span><br><span class="line"></span>-<span class="ruby"> 另外，因为typedef是定义了一种类型的新别名，不是简单的字符串替换，所以它比宏来得稳健（虽然用宏有时也可以完成以上的用途）。</span><br><span class="line"></span></span><br><span class="line">* **用途四**：为复杂的声明定义一个新的简单的别名。方法是：在原来的声明里逐步用别名替换一部分复杂声明，如此循环，把带变量名的部分留到最后替换，得到的就是原声明的最简化版。举例：</span><br></pre></td></tr></table></figure>
+<pre><code><span class="comment">//1. 原声明：int *(*a[5])(int, char*);</span>
+<span class="comment">//变量名为a，直接用一个新别名pFun替换a就可以了：</span>
+typedef int *<span class="comment">(*pFun)(int, char*)</span>; 
+<span class="comment">//原声明的最简化版：</span>
+pFun a[<span class="number">5</span>];
+</code></pre><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">	<span class="comment">//2. 原声明：void (*b[10]) (void (*)());</span></span><br><span class="line">	<span class="comment">//变量名为b，先替换右边部分括号里的，pFunParam为别名一：</span></span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*pFunParam)</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">//再替换左边的变量b，pFunx为别名二：</span></span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*pFunx)</span><span class="params">(pFunParam)</span></span>;</span><br><span class="line">	<span class="comment">//原声明的最简化版：</span></span><br><span class="line">	pFunx b[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//3. 原声明：doube(*)() (*e)[9]; </span></span><br><span class="line"><span class="comment">//变量名为e，先替换左边部分，pFuny为别名一：</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">double</span><span class="params">(*pFuny)</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">//再替换右边的变量e，pFunParamy为别名二</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">pFuny</span> <span class="params">(*pFunParamy)</span>[9]</span>;</span><br><span class="line"><span class="comment">//原声明的最简化版：</span></span><br><span class="line">pFunParamy e;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">理解复杂声明可用的“右左法则”：</span><br><span class="line">从变量名看起，先往右，再往左，碰到一个圆括号就调转阅读的方向；括号内分析完就跳出括号，还是按先右后左的顺序，如此循环，直到整个声明分析完。举例：</span><br><span class="line"><span class="typename">int</span> (*<span class="keyword">func</span>)(<span class="typename">int</span> *p);</span><br><span class="line">首先找到变量名<span class="keyword">func</span>，外面有一对圆括号，而且左边是一个*号，这说明<span class="keyword">func</span>是一个指针；然后跳出这个圆括号，先看右边，又遇到圆括号，这说明(*<span class="keyword">func</span>)是一个函数，所以<span class="keyword">func</span>是一个指向这类函数的指针，即函数指针，这类函数具有<span class="typename">int</span>*类型的形参，返回值类型是<span class="typename">int</span>。</span><br><span class="line"><span class="typename">int</span> (*<span class="keyword">func</span>[<span class="number">5</span>])(<span class="typename">int</span> *);</span><br><span class="line"><span class="keyword">func</span>右边是一个[]运算符，说明<span class="keyword">func</span>是具有<span class="number">5</span>个元素的数组；<span class="keyword">func</span>的左边有一个*，说明<span class="keyword">func</span>的元素是指针（注意这里的*不是修饰<span class="keyword">func</span>，而是修饰<span class="keyword">func</span>[<span class="number">5</span>]的，原因是[]运算符优先级比*高，<span class="keyword">func</span>先跟[]结合）。跳出这个括号，看右边，又遇到圆括号，说明<span class="keyword">func</span>数组的元素是函数类型的指针，它指向的函数具有<span class="typename">int</span>*类型的形参，返回值类型为<span class="typename">int</span>。</span><br></pre></td></tr></table></figure>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">也可以记住<span class="number">2</span>个模式：</span><br><span class="line"><span class="keyword">type</span> <span class="comment">(*)(....)`函数指针</span><br><span class="line">`type (*)</span>[]`数组指针</span><br></pre></td></tr></table></figure>
+<h2 id="第二、两大陷阱">第二、两大陷阱</h2><ul>
+<li><strong>陷阱一：</strong> </li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//记住，typedef是定义了一种类型的新别名，不同于宏，它不是简单的字符串替换。比如：</span></span><br><span class="line"><span class="comment">//先定义：</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span>* PSTR;</span><br><span class="line"><span class="comment">//然后：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(<span class="keyword">const</span> PSTR, <span class="keyword">const</span> PSTR)</span></span>;</span><br><span class="line"><span class="keyword">const</span> PSTR实际上相当于<span class="keyword">const</span> <span class="keyword">char</span>*吗？不是的，它实际上相当于<span class="keyword">char</span>* <span class="keyword">const</span>。</span><br><span class="line"><span class="comment">//原因在于const给予了整个指针本身以常量性，也就是形成了常量指针char* const。</span></span><br><span class="line"><span class="comment">//简单来说，记住当const和typedef一起出现时，typedef不会是简单的字符串替换就行。</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>陷阱二：</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span>在语法上是一个存储类的关键字（如<span class="keyword">auto</span>、<span class="keyword">extern</span>、<span class="keyword">mutable</span>、<span class="keyword">static</span>、<span class="keyword">register</span>等一样），虽然它并不真正影响对象的存储特性，如：</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">static</span> <span class="keyword">int</span> INT2; <span class="comment">//不可行</span></span><br><span class="line">编译将失败，会提示“指定了一个以上的存储类”。</span><br></pre></td></tr></table></figure>
+<h2 id="第三、typedef_与_#define的区别">第三、typedef 与 #define的区别</h2><ul>
+<li>案例一：</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//通常讲，typedef要比<span class="label">#define</span>要好，特别是在有指针的场合。请看例子：</span><br><span class="line"><span class="label">typedef</span> char *pStr1<span class="comment">;</span></span><br><span class="line"><span class="label">#define</span> pStr2 char *<span class="comment">;</span></span><br><span class="line"><span class="label">pStr1</span> <span class="literal">s1</span>, <span class="literal">s2</span><span class="comment">;</span></span><br><span class="line"><span class="label">pStr2</span> <span class="literal">s3</span>, <span class="literal">s4</span><span class="comment">;</span></span><br><span class="line">//在上述的变量定义中，<span class="literal">s1</span>、<span class="literal">s2</span>、<span class="literal">s3</span>都被定义为char *，而<span class="literal">s4</span>则定义成了char，不是我们所预期的指针变量，根本原因就在于<span class="label">#define</span>只是简单的字符串替换而typedef则是为一个类型起新名字。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>案例二：</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//下面的代码中编译器会报一个错误，你知道是哪个语句错了吗？</span><br><span class="line"><span class="label">typedef</span> char * pStr<span class="comment">;</span></span><br><span class="line"><span class="label">char</span> <span class="keyword">string[4] </span>= <span class="string">"abc"</span><span class="comment">;</span></span><br><span class="line"><span class="label">const</span> char *<span class="literal">p1</span> = <span class="keyword">string;</span><br><span class="line"></span><span class="label">const</span> pStr <span class="literal">p2</span> = <span class="keyword">string;</span><br><span class="line"></span><span class="label">p1</span>++<span class="comment">;</span></span><br><span class="line"><span class="label">p2</span>++<span class="comment">;</span></span><br><span class="line">//是<span class="literal">p2</span>++出错了。这个问题再一次提醒我们：typedef和<span class="label">#define</span>不同，它不是简单的文本替换。上述代码中const pStr <span class="literal">p2</span>并不等于const char * <span class="literal">p2</span>。const pStr <span class="literal">p2</span>和const long x本质上没有区别，都是对变量进行只读限制，只不过此处变量<span class="literal">p2</span>的数据类型是我们自己定义的而不是系统固有类型而已。因此，const pStr <span class="literal">p2</span>的含义是：限定数据类型为char *的变量<span class="literal">p2</span>为只读，因此<span class="literal">p2</span>++错误。</span><br></pre></td></tr></table></figure>
+<h2 id="第四部分资料：使用_typedef_抑制劣质代码">第四部分资料：使用 typedef 抑制劣质代码</h2><p>typedef 声明，简称 typedef，为现有类型创建一个新的名字。比如人们常常使用 typedef 来编写更美观和可读的代码。所谓美观，意指 typedef 能隐藏笨拙的语法构造以及平台相关的数据类型，从而增强可移植性和以及未来的可维护性。本文下面将竭尽全力来揭示 typedef 强大功能以及如何避免一些常见的陷阱。</p>
+<p>Q：如何创建平台无关的数据类型，隐藏笨拙且难以理解的语法?</p>
+<p>A： 使用 typedefs 为现有类型创建同义字。</p>
+<p><strong>定义易于记忆的类型名</strong></p>
+<p>typedef 使用最多的地方是创建易于记忆的类型名，用它来归档程序员的意图。类型出现在所声明的变量名字中，位于 “”typedef”” 关键字右边。例如：</p>
+<p><code>typedef int size;</code></p>
+<p>此声明定义了一个 int 的同义字，名字为 size。注意 typedef 并不创建新的类型。它仅仅为现有类型添加一个同义字。你可以在任何需要 int 的上下文中使用 size：</p>
+<p><code>void measure(size * psz); size array[4];size len = file.getlength();std::vector &lt;size&gt; vs;</code></p>
+<p>typedef 还可以掩饰符合类型，如指针和数组。例如，你不用象下面这样重复定义有 81 个字符元素的数组：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="value">char</span> <span class="value">line</span><span class="attr_selector">[81]</span>;<span class="value">char</span> <span class="value">text</span><span class="attr_selector">[81]</span>;</span><br><span class="line"><span class="comment">//定义一个 typedef，每当要用到相同类型和大小的数组时，可以这样：</span></span><br><span class="line">typedef <span class="value">char</span> <span class="value">Line</span><span class="attr_selector">[81]</span>; <span class="value">Line</span> <span class="value">text</span>, secondline;<span class="function">getline</span>(<span class="value">text</span>);</span><br></pre></td></tr></table></figure>
+<p>同样，可以象下面这样隐藏指针语法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> * pstr;<span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(pstr, pstr)</span></span>;</span><br><span class="line"><span class="comment">//这里将带我们到达第一个 typedef 陷阱。标准函数 strcmp()有两个‘const char *’类型的参数。因此，它可能会误导人们象下面这样声明 mystrcmp()：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(<span class="keyword">const</span> pstr, <span class="keyword">const</span> pstr)</span></span>; </span><br><span class="line"><span class="comment">//这是错误的，按照顺序，‘const pstr’被解释为‘char * const’（一个指向 char 的常量指针），而不是‘const char *’（指向常量 char 的指针）。这个问题很容易解决：</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">char</span> * cpstr; <span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(cpstr, cpstr)</span></span>; <span class="comment">// 现在是正确的</span></span><br></pre></td></tr></table></figure>
+<p><strong>记住</strong>：不管什么时候，只要为指针声明 typedef，那么都要在最终的 typedef 名称中加一个 const，以使得该指针本身是常量，而不是对象。</p>
+<p><strong>代码简化</strong></p>
+<p>　　上面讨论的 typedef 行为有点像 #define 宏，用其实际类型替代同义字。不同点是 typedef 在编译时被解释，因此让编译器来应付超越预处理器能力的文本替换。例如：</p>
+<p><code>typedef int (*PF) (const char *, const char *);</code></p>
+<p>这个声明引入了 PF 类型作为函数指针的同义字，该函数有两个 const char * 类型的参数以及一个 int 类型的返回值。如果要使用下列形式的函数声明，那么上述这个 typedef 是不可或缺的：</p>
+<p><code>PF Register(PF pf);</code></p>
+<p>Register() 的参数是一个 PF 类型的回调函数，返回某个函数的地址，其署名与先前注册的名字相同。做一次深呼吸。下面我展示一下如果不用 typedef，我们是如何实现这个声明的：</p>
+<p><code>int (*Register (int (*pf)(const char *, const char *))) (const char *, const char *);</code></p>
+<p>很少有程序员理解它是什么意思，更不用说这种费解的代码所带来的出错风险了。显然，这里使用 typedef 不是一种特权，而是一种必需。持怀疑态度的人可能会问：“OK，有人还会写这样的代码吗？”，快速浏览一下揭示 signal()函数的头文件 <csinal>，一个有同样接口的函数。</csinal></p>
+<p><strong>typedef 和存储类关键字（storage class specifier）</strong></p>
+<p>种说法是不是有点令人惊讶，typedef 就像 auto，extern，mutable，static，和 register 一样，是一个存储类关键字。这并是说 typedef 会真正影响对象的存储特性；它只是说在语句构成上，typedef 声明看起来象 static，extern 等类型的变量声明。下面将带到第二个陷阱：</p>
+<p><code>typedef register int FAST_COUNTER; // 错误</code></p>
+<p>编译通不过。问题出在你不能在声明中有多个存储类关键字。因为符号 typedef 已经占据了存储类关键字的位置，在 typedef 声明中不能用 register（或任何其它存储类关键字）。</p>
+<p><strong>促进跨平台开发</strong></p>
+<p>typedef 有另外一个重要的用途，那就是定义机器无关的类型，例如，你可以定义一个叫 REAL 的浮点类型，在目标机器上它可以i获得最高的精度：</p>
+<p><code>typedef long double REAL;</code></p>
+<p>在不支持 long double 的机器上，该 typedef 看起来会是下面这样：</p>
+<p><code>typedef double REAL;</code></p>
+<p>并且，在连 double 都不支持的机器上，该 typedef 看起来会是这样： </p>
+<p><code>typedef float REAL;</code></p>
+<p>你不用对源代码做任何修改，便可以在每一种平台上编译这个使用 REAL 类型的应用程序。唯一要改的是 typedef 本身。在大多数情况下，甚至这个微小的变动完全都可以通过奇妙的条件编译来自动实现。不是吗? 标准库广泛地使用 typedef 来创建这样的平台无关类型：size_t，ptrdiff 和 fpos_t 就是其中的例子。此外，象 std::string 和 std::ofstream 这样的 typedef 还隐藏了长长的，难以理解的模板特化语法，例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">basic_string&lt;<span class="keyword">char</span>, <span class="keyword">char_t</span>raits&lt;<span class="keyword">char</span>&gt;，allocator&lt;<span class="keyword">char</span>&gt;&gt; </span><br><span class="line">basic_ofstream&lt;<span class="keyword">char</span>, <span class="keyword">char_t</span>raits&lt;<span class="keyword">char</span>&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/07/25/object-c/object-c_学习笔记/">
+                object-c 学习笔记
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-07-25
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/ios/">ios</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/07/25/object-c/object-c_学习笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/07/25/object-c/object-c_学习笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ol>
+<li>id 为动态指针,可以指向任何对象,大致与c++中的void指针一样.</li>
+<li><strong>反射</strong></li>
+</ol>
+<blockquote>
+<p><strong>NSObject</strong> 下的方法名列表</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-(BOOL) isMemberOfClass: (Class) clazz</code></td>
+<td>用于判断对象是否是 clazz 类型的实例,但 不包子类的实例。</td>
+</tr>
+<tr>
+<td><code>-(BOOL) isKindOfClass: (Class) clazz</code></td>
+<td>用于判断对象是否是 clazz 类型的实例或 者 clazz 的子类的实例。</td>
+</tr>
+<tr>
+<td><code>-(BOOL) respondsToSelector: (SEL) selector</code></td>
+<td>用于判断类型或者对象是否能够回应某个 方法,这个方法使用选择器表示。</td>
+</tr>
+<tr>
+<td><code>+(BOOL) instancesRespondToSelector: (SEL) selector</code></td>
+<td>用于判断类型所产生的实例是否能够回应某个方法,这个方法使用选择器表示。</td>
+</tr>
+<tr>
+<td><code>-(id) performSelector: (SEL) selector</code></td>
+<td>用于动态调用类型或者对象上的一个方法。这里的SEL等于C++里的函数指针</td>
+</tr>
+<tr>
+<td><code>-(BOOL) conformsToProtocol: (Protocol*) prot</code></td>
+<td>用于判断对象是否遵从某 个 protocol。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="指令集">指令集</h2><ul>
+<li><strong>异常</strong> : <code>@try,@catch,@finally</code>.</li>
+<li><strong>内存自动管理</strong> : <code>@autoreleasepool</code>.</li>
+<li><strong>get,set生成器</strong> : <code>@property,@synthesize</code>.</li>
+<li><strong>类的操作</strong> : <code>@interface,@implementation</code>.</li>
+<li><strong>协议</strong> : <code>@protocol</code></li>
+<li><code>@class</code> 为了减少依赖关系，让编译速度更快，使用此关键字，可以使编译速度加快</li>
+<li><code>@assign</code>：指定setter方法用简单的赋值，这是默认操作。你可以对标量类型（如int）使用这个属性。你可以想象一个float，它不是一个对象，所以它不能retain、copy。</li>
+<li><code>@retain</code>：指定retain应该在后面的对象上调用，前一个值发送一条release消息。你可以想象一个NSString实例，它是一个对象，而且你可能想要retain它。</li>
+<li><code>@copy</code>：指定应该使用对象的副本（深度复制），前一个值发送一条release消息。基本上像retain，但是没有增加引用计数，是分配一块新的内存来放置它。</li>
+<li><code>@readonly</code>：将只生成getter方法而不生成setter方法（getter方法没有get前缀）。</li>
+<li><code>@readwrite</code>：默认属性，将生成不带额外参数的getter和setter方法（setter方法只有一个参数）。</li>
+<li><code>@atomic</code>：对于对象的默认属性，就是setter/getter生成的方法是一个原子操作。如果有多个线程同时调用setter的话，不会出现某一个线程执行setter全部语句之前，另一个线程开始执行setter的情况，相关于方法头尾加了锁一样。</li>
+<li><code>@nonatomic</code>：不保证setter/getter的原子性，多线程情况下数据可能会有问题。</li>
+</ul>
+<h2 id="类别Category">类别Category</h2><ul>
+<li>大致意思就是为了不修改源代码可以扩充类的功能,这样可以更有利的去修改他人的定的架构<blockquote>
+<p><strong>类别的缺点</strong> : 类不可以声明新的成员变量,而且一旦你定义的方 法与原始类中的方法名称相同,那么原始方法将被隐藏起来,因为不是继承结构,你不能在 类中的方法使用 super 激活原始类的同名方法</p>
+</blockquote>
+</li>
+</ul>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#import <span class="string">"FrNum.h"</span></span><br><span class="line">@interface FrNum (FrNumExt)</span><br><span class="line">-(void) talk: (NSString*) <span class="keyword">say</span>;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#import <span class="string">"FrNum+FrNumExt.h"</span></span><br><span class="line">@implementation FrNum (FrNumExt)</span><br><span class="line">-(void)talk:(NSString *)<span class="keyword">say</span></span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@<span class="string">" %s say : %s "</span>,<span class="comment">[<span class="comment">[self name]</span> cString]</span>,<span class="comment">[say cString]</span>);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/07/21/object-c/ios_universal_framework安装/">
+                安装iOS-Universal-Framework
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-07-21
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/ios/">ios</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/07/21/object-c/ios_universal_framework安装/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/07/21/object-c/ios_universal_framework安装/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <blockquote>
+<p>iOS-Universal-Framework是一个静态库模板,可以方便的生成静态库</p>
+</blockquote>
+<h2 id="首先下载:_iOS-Universal-Framework">首先下载: <a href="https://github.com/kstenerud/iOS-Universal-Framework" target="_blank" rel="external">iOS-Universal-Framework</a></h2><ul>
+<li><p>找到Real Framework/install.sh安装</p>
+</li>
+<li><p>重启xcode创建静态库</p>
+</li>
+</ul>
+<h3 id="解决:_target_specifies_product_type_‘com-apple-product-type-framework-static’,_but_there’s_no_such_product_type_for_the_‘iphonesimulator’_platform">解决: <strong>target specifies product type ‘com.apple.product-type.framework.static’, but there’s no such product type for the ‘iphonesimulator’ platform</strong></h3><blockquote>
+<p>如果已经安装iOS Universal Framework到Xcode，编译Real Framework时仍然报以上错误，可以按以下办法解决：</p>
+</blockquote>
+<ul>
+<li>方案1：</li>
+</ul>
+<p>拷贝UFW-iOSStaticFramework.xcspec到下面两个目录，覆盖文件</p>
+<p>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Specifications<br>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Specifications</p>
+<ul>
+<li>方案2：</li>
+</ul>
+<p>打开方案1所列的两个目录，给其中的UFW-iOSStaticFramework.xcspec文件添加当前用户的读写权限。<br>上面两个方案，方案1更简单一些。另外，这个问题的本质，就是两个UFW-iOSStaticFramework.xcspec文件的读写权限问题。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/07/15/object-c/api整理/">
+                api整理
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-07-15
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/ios/">ios</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/07/15/object-c/api整理/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/07/15/object-c/api整理/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="NSString">NSString</h2><table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+(NSString*) stringWithFormat: @””,...</code></td>
+<td>与 NSLog 一样,使用格式化模版格式化字符串。</td>
+</tr>
+<tr>
+<td><code>-(BOOL) isEqualToString: (NSString*) s</code></td>
+<td>比较两个字符串是否相等,与 JAVA 一致的地方是==比较指针,比较对象是否相同要用到 equal 方法。</td>
+</tr>
+<tr>
+<td><code>-(NSComparisonResult) compare: (NSString*) s options: (NSStringCompareOptions) options</code></td>
+<td>这个方法用于详细的比较两个字符串是否相等,譬如:是否忽略大小写等。返回值 NSComparisonResult 为 C 语言的 enum 类型,常用的枚举值为 NSOrderedSame,表示 比较结果相等。第二个参数 NSStringCompareOptions 也是个 enum 类型,常用的枚举值为 NSCaseInsensitiveSearch、NSNumericSearch,分表示忽略大小写、字数是否相等。由于 NSStringCompareOptions 的枚举值都是 2 的指数,所以你可以使用位或运算表示同时具备两 个条件,例如:NSCaseInsensitiveSearch</td>
+<td>NSNumericSearch 表示忽略大小写并且字数相同。</td>
+</tr>
+<tr>
+<td><code>-(BOOL) hasPrefix: (NSString) s</code></td>
+<td>表示字符串是否以参数 s 作为前缀,当然也有 hasSufix 犯法判断后缀。</td>
+</tr>
+<tr>
+<td><code>-(NSRange) rangeOfString: (NSString*) s</code></td>
+<td>判断是否包参数 s,这里返回前面提到过的结构体 NSRange。如果包字符串 s,则 NSRange 的 location 为包的字符串 s 所在的起始位置,length 为长度。如果不包括字符串 s,则 location 为 NSNotFound,length 为 0。</td>
+</tr>
+<tr>
+<td><code>- (NSArray *)componentsSeparatedByString:(NSString *)separator;</code></td>
+<td>将字符串以separator分割,返回数组</td>
+</tr>
+</tbody>
+</table>
+<h3 id="NSMutableString">NSMutableString</h3><blockquote>
+<p>NSString 是长度不可变的字符串,NSMutableString 继承自 NSString,实现了可变字符串。 NSMutableString 一般使用类方法</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+(NSMutableString*) stringWithCapacity: (int) capacity</code></td>
+<td>进行创建,capacity 指定预先分配的字符串长度</td>
+</tr>
+<tr>
+<td><code>-(NSMutableString*) appendString: (NSString*) s</code></td>
+<td>这与 JAVA 的 StringBuffer 的 append 没什么区别。</td>
+</tr>
+<tr>
+<td><code>-(void) deleteCharactersInRange: (NSRange) range</code></td>
+<td>这个方法删除指定范围的字符串,常与 rangeOfString 方法联用。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="NSArray">NSArray</h2><blockquote>
+<p>Cocoa 使用 NSArray 表示数组,但是它不能存储基本数据类型、enum、struct、nil,只能存 储 Objective-C 的对象。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>- (NSString *)componentsJoinedByString:(NSString *)separator;</code></td>
+<td>将数组以separator组合在一起，返回NSString</td>
+</tr>
+</tbody>
+</table>
+<h3 id="NSMutableArray">NSMutableArray</h3><blockquote>
+<p>为可变长数组，相当于Java的list</p>
+</blockquote>
+<h2 id="NSDictionary">NSDictionary</h2><blockquote>
+<p>用于存储key/value的数组，等于java中的map</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+  </div>
+
+  
+  <div class="pagination">
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span>
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

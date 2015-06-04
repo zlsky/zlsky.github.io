@@ -1,0 +1,645 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="基础," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> cocos2d-x笔记 // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              cocos2d-x笔记
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cocos2dx/">cocos2dx</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/02/cocos2dx/自学笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cocos2dx/自学笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <ul>
+<li>项目默认是由AppDelegate.cpp进入游戏</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">   @应用程序启动后将调用这个方法。默认的实现中已经包含了游戏启动后的必要 准备:</span><br><span class="line">   @return true    Initialize success, app continue.</span><br><span class="line">   @return false   Initialize failed, app terminate.</span><br><span class="line">   */</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">applicationDidFinishLaunching</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span><br><span class="line">   当应用程序将要进入后台时,会调用这个方法。</span><br><span class="line">   具体来说,当用户把程序切换 到后台,或手机接到电话或短信后程序被系统切换到后台时,会调用这个方法。</span><br><span class="line">   此时,应该暂停游戏中正在播放的音乐或 音效。</span><br><span class="line">   动作激烈的游戏通常也应该在此时进行暂停操作,以便玩家暂时离开游戏时不会遭受重大损失。</span><br><span class="line">   */</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">applicationDidEnterBackground</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span><br><span class="line">该方法与applicationDidEnterBackground()成对出现,在应用程序回到前台 时被调用。</span><br><span class="line">相对地,我们通常在这里继续播放刚才暂停的音乐,显示游戏暂停菜单等。</span><br><span class="line">   */</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">applicationWillEnterForeground</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CCDirector    游戏引擎控制器</li>
+<li>CCScene        游戏场景</li>
+<li>CCLayer        游戏图层</li>
+<li>CCSprite        精灵类</li>
+</ul>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//回调函数,SELECTOR为函数指针</span><br><span class="line">schedule_selector(SELECTOR) </span><br><span class="line">callfunc_selector(SELECTOR) </span><br><span class="line">callfuncN_selector(SELECTOR) </span><br><span class="line">callfuncND_selector(SELECTOR) </span><br><span class="line">callfunc_selector(SELECTOR) </span><br><span class="line">menu_selector(SELECTOR)event_selector(SELECTOR) compare_selector(SELECTOR)</span><br><span class="line">```<span class="comment">##定义宏</span><span class="keyword">*</span> <span class="keyword">*</span><span class="keyword">*</span>platform/CCPlatformMacros.h<span class="keyword">*</span><span class="keyword">*</span> 定义了大量的宏，以方便我们写<span class="keyword">*</span><span class="keyword">*</span>get<span class="keyword">*</span><span class="keyword">*</span>,<span class="keyword">*</span><span class="keyword">*</span>set<span class="keyword">*</span><span class="keyword">*</span>等代码</span><br></pre></td></tr></table></figure>
+<p>/*</p>
+<h1 id="define_CC_SYNTHESIZE(varType,_varName,_funName)\">define CC_SYNTHESIZE(varType, varName, funName)\</h1><p>protected: varType varName;\<br>public: virtual varType get##funName(void) const { return varName; }\<br>public: virtual void set##funName(varType var){ varName = var; }<br>*/<br>CC_SYNTHESIZE(int, tag, Tag)<br>//output :<br>protected: int tag;<br>public: virtual varType getTag(void) const { return tag; }<br>public: virtual void setTag(int var){ tag = var; }<br>```</p>
+<ul>
+<li>这些宏只要写在类的定义之中即可。每个宏都有3个参数,分别是:varType,属性类型,如果属性类型是对象,需要写成 指针的形式;varName,属性的私有字段名称;funName,属性的访问器名称,也就是紧接在 get 或 set 前缀后的部分。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>宏</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC_PROPERTY</td>
+<td>定义一个属性及其访问器,没有实现。 通常用于简单的值类型</td>
+</tr>
+<tr>
+<td>CC_PROPERTY_READONLY</td>
+<td>定义一个属性,只包含get访问器,没有实现</td>
+</tr>
+<tr>
+<td>CC_PROPERTY_PASS_BY_REF</td>
+<td>定义一个属性,访问器使用引用类型传.递参数,没有实现。通常用于结构体类型</td>
+</tr>
+<tr>
+<td>CC_PROPERTY_READONLY_PASS_BY_REF</td>
+<td>定义一个属性,只包含get访问器, 且使用引用类型传递参数,没有实现</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE</td>
+<td>同CC_PROPERTY,实现了访问器方法</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE_READONLY</td>
+<td>同CC_PROPERTY_READONLY,实现了访问器方法</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE_PASS_BY_REF</td>
+<td>同CC_PROPERTY_PASS_BY_REF, 实现了访问器方法</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE_RETAIN</td>
+<td>同CC_PROPERTY,实现了访问器方法。 用于派生自CCObject的类型,访问器采取Cocos2d-x的内存管理机制自动维护,对象的引用计数</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>cocs2dx内存管理</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>宏</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC_SAFE_DELETE(p)</td>
+<td>使用delete操作符删除一个C++对象p, 如果p为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_DELETE_ARRAY(p)</td>
+<td>使用delete[]操作符删除一个C++数组p, 如果p为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_FREE(p)</td>
+<td>使用free()函数删除p,如果p为NULL, 则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_RELEASE(p)</td>
+<td>使用release()方法释放Cocos2d-x对象p的一次引用,如果p为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_RELEASE_NULL(p)</td>
+<td>使用release()方法释放Cocos2d-x对象p的一次引用,再把p赋值为NULL。如果p已经为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_RETAIN(p)</td>
+<td>使用reatin()方法增加Cocos2d-x对象p的一次引用。如果p为NULL,则不进行操作</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>锚点配置</li>
+<li>节点类型  | 锚点位置 | 使用锚点?<br>—— | —— | ——<br>CCNode | (0, 0) | 是<br>CCScene及其子类 | (0.5, 0.5) | 否<br>CCLayer及其子类 | (0.5, 0.5) | 否<br>CCSprite及其子类 | (0.5, 0.5) | 是</li>
+</ul>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/基础/"> #基础 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/09/02/cpp/类型转换总结/">类型转换总结</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/02/cpp/c++虚函数/">c++虚函数</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/09/02/cocos2dx/自学笔记/"
+               data-title="cocos2d-x笔记" data-url="http://blog.zlsky.me/2014/09/02/cocos2dx/自学笔记/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#define_CC_SYNTHESIZE(varType,_varName,_funName)\"><span class="nav-number">1.</span> <span class="nav-text">define CC_SYNTHESIZE(varType, varName, funName)\</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

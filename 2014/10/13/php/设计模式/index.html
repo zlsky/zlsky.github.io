@@ -1,0 +1,1385 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="设计模式,面向对象," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> 设计模式 // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              设计模式
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-10-13
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/php/">php</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/10/13/php/设计模式/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/13/php/设计模式/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h2 id="单例模式">单例模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
+<span class="comment">/**
+ * 单例模式
+ *
+ */</span>
+<span class="class"><span class="keyword">class</span> <span class="title">DbConn</span>
+</span>{
+       <span class="keyword">private</span> <span class="keyword">static</span> <span class="variable">$_instance</span> = <span class="keyword">null</span>;
+       <span class="keyword">protected</span> <span class="keyword">static</span> <span class="variable">$_counter</span> = <span class="number">0</span>;
+       <span class="keyword">protected</span> <span class="variable">$_db</span>;
+       <span class="comment">//私有化构造函数，不允许外部创建实例</span>
+       <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span>
+       </span>{
+              <span class="keyword">self</span>::<span class="variable">$_counter</span> += <span class="number">1</span>;
+       }
+
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getInstance</span><span class="params">()</span>
+       </span>{
+              <span class="keyword">if</span> (<span class="keyword">self</span>::<span class="variable">$_instance</span> == <span class="keyword">null</span>)
+              {
+                     <span class="keyword">self</span>::<span class="variable">$_instance</span> = <span class="keyword">new</span> DbConn();
+              }
+              <span class="keyword">return</span> <span class="keyword">self</span>::<span class="variable">$_instance</span>;
+       }
+
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">connect</span><span class="params">()</span>
+       </span>{
+              <span class="keyword">echo</span> <span class="string">"connected: "</span>.(<span class="keyword">self</span>::<span class="variable">$_counter</span>).<span class="string">"n"</span>;
+              <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_db;
+       }
+}
+<span class="comment">/*
+ * 不使用单例模式时，删除构造函数的private后再测试，第二次调用构造函数后，_counter变成2
+*/</span>
+<span class="comment">// $conn = new DbConn();</span>
+<span class="comment">// $conn-&gt;connect();</span>
+<span class="comment">// $conn = new DbConn();</span>
+<span class="comment">// $conn-&gt;connect();</span>
+<span class="comment">//使用单例模式后不能直接new对象，必须调用getInstance获取</span>
+<span class="variable">$conn</span> = DbConn::getInstance();
+<span class="variable">$db</span> = <span class="variable">$conn</span>-&gt;connect();
+<span class="comment">//第二次调用是同一个实例，_counter还是1</span>
+<span class="variable">$conn</span> = DbConn::getInstance();
+<span class="variable">$db</span> = <span class="variable">$conn</span>-&gt;connect();
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>特别说明：这里getInstance里有if判断然后再生成对象，在多线程语言里是会有并发问题的。例如java的解决方案有二个，给方法加上synchronized关键词变成同步，或者把_instanc的初始化提前放到类成员变量定义时，但是这2种方式php都不支持。不过因为php不支持多线程所以不需要考虑这个问题了。</li>
+</ul>
+<h2 id="工厂模式">工厂模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
+<span class="comment">/**
+ *
+ * 工厂模式
+ *
+ */</span>
+
+<span class="comment">//抽象产品</span>
+<span class="class"><span class="keyword">interface</span> <span class="title">Person</span> </span>{
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span></span>; 
+}
+<span class="comment">//具体产品实现</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> <span class="keyword">implements</span> <span class="title">Person</span> </span>{
+    <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> <span class="string">"老师n"</span>;
+    }
+}
+<span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Person</span> </span>{
+    <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> <span class="string">"学生n"</span>;
+    }
+}
+
+<span class="comment">//简单工厂</span>
+<span class="class"><span class="keyword">class</span> <span class="title">SimpleFactory</span> </span>{
+       <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">(<span class="variable">$type</span>)</span> </span>{
+              <span class="variable">$person</span> = <span class="keyword">null</span>;
+              <span class="keyword">if</span> (<span class="variable">$type</span> == <span class="string">'teacher'</span>) {
+                     <span class="variable">$person</span> = <span class="keyword">new</span> Teacher();
+              } <span class="keyword">elseif</span> (<span class="variable">$type</span> == <span class="string">'student'</span>) {
+                     <span class="variable">$person</span> = <span class="keyword">new</span> Student();
+              }
+              <span class="keyword">return</span> <span class="variable">$person</span>;
+       }
+}
+
+<span class="comment">//简单工厂调用</span>
+<span class="class"><span class="keyword">class</span> <span class="title">SimpleClient</span> </span>{
+       <span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span> </span>{
+              <span class="comment">// 如果不用工厂模式，则需要提前指定具体类</span>
+              <span class="comment">// $person = new Teacher();</span>
+              <span class="comment">// echo $person-&gt;getName();</span>
+              <span class="comment">// $person = new Student();</span>
+              <span class="comment">// echo $person-&gt;getName();</span>
+
+              <span class="comment">// 用工厂模式，则不需要知道对象由什么类产生，交给工厂去决定</span>
+              <span class="variable">$person</span> = SimpleFactory::getPerson(<span class="string">'teacher'</span>);
+              <span class="keyword">echo</span> <span class="variable">$person</span>-&gt;getName();
+              <span class="variable">$person</span> = SimpleFactory::getPerson(<span class="string">'student'</span>);
+              <span class="keyword">echo</span> <span class="variable">$person</span>-&gt;getName();
+       }
+}
+
+
+<span class="comment">//工厂方法</span>
+<span class="class"><span class="keyword">interface</span> <span class="title">CommFactory</span> </span>{
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span></span>;
+}
+<span class="comment">//具体工厂实现</span>
+<span class="class"><span class="keyword">class</span> <span class="title">StudentFactory</span> <span class="keyword">implements</span> <span class="title">CommFactory</span> </span>{
+    <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span></span>{
+        <span class="keyword">return</span> <span class="keyword">new</span> Student();
+    }
+}
+<span class="class"><span class="keyword">class</span> <span class="title">TeacherFactory</span> <span class="keyword">implements</span> <span class="title">CommFactory</span> </span>{
+    <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
+        <span class="keyword">return</span> <span class="keyword">new</span> Teacher();
+    }
+}
+
+<span class="comment">//工厂方法调用</span>
+<span class="class"><span class="keyword">class</span> <span class="title">CommClient</span> </span>{
+    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span> </span>{
+           <span class="variable">$factory</span> = <span class="keyword">new</span> TeacherFactory();
+           <span class="keyword">echo</span> <span class="variable">$factory</span>-&gt;getPerson()-&gt;getName();
+           <span class="variable">$factory</span> = <span class="keyword">new</span> StudentFactory();
+           <span class="keyword">echo</span> <span class="variable">$factory</span>-&gt;getPerson()-&gt;getName();
+    }
+}
+
+
+
+<span class="comment">//抽象工厂模式另一条产品线</span>
+<span class="class"><span class="keyword">interface</span> <span class="title">Grade</span> </span>{
+       <span class="function"><span class="keyword">function</span> <span class="title">getYear</span><span class="params">()</span></span>;
+}
+<span class="comment">//另一条产品线的具体产品</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Grade1</span> <span class="keyword">implements</span> <span class="title">Grade</span> </span>{
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getYear</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="string">'2003级'</span>;
+       }
+}
+<span class="class"><span class="keyword">class</span> <span class="title">Grade2</span> <span class="keyword">implements</span> <span class="title">Grade</span> </span>{
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getYear</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="string">'2004级'</span>;
+       }
+}
+<span class="comment">//抽象工厂</span>
+<span class="class"><span class="keyword">interface</span> <span class="title">AbstractFactory</span> </span>{
+       <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span></span>;
+       <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span></span>;
+}
+<span class="comment">//具体工厂可以产生每个产品线的产品</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Grade1TeacherFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>{
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="keyword">new</span> Teacher();
+       }
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="keyword">new</span> Grade1();
+       }
+}
+<span class="class"><span class="keyword">class</span> <span class="title">Grade1StudentFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>{
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="keyword">new</span> Student();
+       }
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="keyword">new</span> Grade1();
+       }
+}
+<span class="class"><span class="keyword">class</span> <span class="title">Grade2TeacherFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>{
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="keyword">new</span> Teacher();
+       }
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="keyword">new</span> Grade2();
+       }
+}
+<span class="comment">//抽象工厂调用</span>
+<span class="class"><span class="keyword">class</span> <span class="title">FactoryClient</span> </span>{
+       <span class="function"><span class="keyword">function</span> <span class="title">printInfo</span><span class="params">(<span class="variable">$factory</span>)</span> </span>{
+              <span class="keyword">echo</span> <span class="variable">$factory</span>-&gt;getGrade()-&gt;getYear().<span class="variable">$factory</span>-&gt;getPerson()-&gt;getName();
+       }
+       <span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span> </span>{
+              <span class="variable">$client</span> = <span class="keyword">new</span> FactoryClient();
+              <span class="variable">$factory</span> = <span class="keyword">new</span> Grade1TeacherFactory();
+              <span class="variable">$client</span>-&gt;printInfo(<span class="variable">$factory</span>);
+              <span class="variable">$factory</span> = <span class="keyword">new</span> Grade1StudentFactory();
+              <span class="variable">$client</span>-&gt;printInfo(<span class="variable">$factory</span>);
+              <span class="variable">$factory</span> = <span class="keyword">new</span> Grade2TeacherFactory();
+              <span class="variable">$client</span>-&gt;printInfo(<span class="variable">$factory</span>);
+       }
+}
+
+
+<span class="comment">//简单工厂</span>
+<span class="comment">//SimpleClient::main();</span>
+<span class="comment">//工厂方法</span>
+<span class="comment">//CommClient::main();</span>
+<span class="comment">//抽象工厂</span>
+FactoryClient::main();
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>三种工厂的区别是，抽象工厂由多条产品线，而工厂方法只有一条产品线，是抽象工厂的简化。而工厂方法和简单工厂相对，大家初看起来好像工厂方法增加了许多代码但是实现的功能和简单工厂一样。但本质是，简单工厂并未严格遵循设计模式的开闭原则，当需要增加新产品时也需要修改工厂代码。但是工厂方法则严格遵守开闭原则，模式只负责抽象工厂接口，具体工厂交给客户去扩展。在分工时，核心工程师负责抽象工厂和抽象产品的定义，业务工程师负责具体工厂和具体产品的实现。只要抽象层设计的好，框架就是非常稳定的。</li>
+</ul>
+<h2 id="创建者模式">创建者模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
+<span class="comment">/**
+ *
+ * 创建者模式
+ *
+ */</span>
+
+<span class="comment">//购物车</span>
+<span class="class"><span class="keyword">class</span> <span class="title">ShoppingCart</span> </span>{
+       <span class="comment">//选中的商品</span>
+    <span class="keyword">private</span> <span class="variable">$_goods</span> = <span class="keyword">array</span>();
+    <span class="comment">//使用的优惠券</span>
+    <span class="keyword">private</span> <span class="variable">$_tickets</span> = <span class="keyword">array</span>();
+
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addGoods</span><span class="params">(<span class="variable">$goods</span>)</span> </span>{
+              <span class="variable">$this</span>-&gt;_goods[] = <span class="variable">$goods</span>;
+       }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addTicket</span><span class="params">(<span class="variable">$ticket</span>)</span> </span>{
+           <span class="variable">$this</span>-&gt;_tickets[] = <span class="variable">$ticket</span>;
+    }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">printInfo</span><span class="params">()</span> </span>{
+           printf(<span class="string">"goods:%s, tickets:%sn"</span>, implode(<span class="string">','</span>, <span class="variable">$this</span>-&gt;_goods), implode(<span class="string">','</span>, <span class="variable">$this</span>-&gt;_tickets));
+    }
+}
+
+<span class="comment">//假如我们要还原购物车的东西，比如用户关闭浏览器后再打开时会根据cookie还原</span>
+<span class="variable">$data</span> = <span class="keyword">array</span>(
+       <span class="string">'goods'</span> =&gt; <span class="keyword">array</span>(<span class="string">'衣服'</span>, <span class="string">'鞋子'</span>),
+       <span class="string">'tickets'</span> =&gt; <span class="keyword">array</span>(<span class="string">'减10'</span>),
+);
+
+<span class="comment">//如果不使用创建者模式，则需要业务类里一步步还原购物车</span>
+<span class="comment">// $cart = new ShoppingCart();</span>
+<span class="comment">// foreach ($data['goods'] as $goods) {</span>
+<span class="comment">//   $cart-&gt;addGoods($goods);</span>
+<span class="comment">// }</span>
+<span class="comment">// foreach ($data['tickets'] as $ticket) {</span>
+<span class="comment">//   $cart-&gt;addTicket($ticket);</span>
+<span class="comment">// }</span>
+<span class="comment">// $cart-&gt;printInfo();</span>
+<span class="comment">// exit;</span>
+
+
+<span class="comment">//我们提供创建者类来封装购物车的数据组装</span>
+<span class="class"><span class="keyword">class</span> <span class="title">CardBuilder</span> </span>{
+       <span class="keyword">private</span> <span class="variable">$_card</span>;
+       <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$card</span>)</span> </span>{
+              <span class="variable">$this</span>-&gt;_card = <span class="variable">$card</span>;
+       }
+       <span class="function"><span class="keyword">function</span> <span class="title">build</span><span class="params">(<span class="variable">$data</span>)</span> </span>{
+              <span class="keyword">foreach</span> (<span class="variable">$data</span>[<span class="string">'goods'</span>] <span class="keyword">as</span> <span class="variable">$goods</span>) {
+                     <span class="variable">$this</span>-&gt;_card-&gt;addGoods(<span class="variable">$goods</span>);
+              }
+              <span class="keyword">foreach</span> (<span class="variable">$data</span>[<span class="string">'tickets'</span>] <span class="keyword">as</span> <span class="variable">$ticket</span>) {
+                     <span class="variable">$this</span>-&gt;_card-&gt;addTicket(<span class="variable">$ticket</span>);
+              }
+       }
+       <span class="function"><span class="keyword">function</span> <span class="title">getCrad</span><span class="params">()</span> </span>{
+              <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_card;
+       }
+}
+
+<span class="variable">$cart</span> = <span class="keyword">new</span> ShoppingCart();
+<span class="variable">$builder</span> = <span class="keyword">new</span> CardBuilder(<span class="variable">$cart</span>);
+<span class="variable">$builder</span>-&gt;build(<span class="variable">$data</span>);
+<span class="keyword">echo</span> <span class="string">"after builder:n"</span>;
+<span class="variable">$cart</span>-&gt;printInfo();
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>可以看出，使用创建者模式对内部数据复杂的对象封装数据组装过程后，对外接口就会非常简单和规范，增加修改新数据项也不会对外部造成任何影响。</li>
+</ul>
+<h2 id="原型模式">原型模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
+<span class="comment">/**
+ *
+ * 原型模式
+ */</span>
+
+<span class="comment">//声明一个克隆自身的接口</span>
+<span class="class"><span class="keyword">interface</span> <span class="title">Prototype</span> </span>{
+    <span class="function"><span class="keyword">function</span> <span class="title">copy</span><span class="params">()</span></span>; 
+}   
+
+<span class="comment">//产品要实现克隆自身的操作</span>
+<span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Prototype</span> </span>{
+       <span class="comment">//简单起见，这里没有使用get set</span>
+    <span class="keyword">public</span> <span class="variable">$school</span>;
+    <span class="keyword">public</span> <span class="variable">$major</span>;
+       <span class="keyword">public</span> <span class="variable">$name</span>;
+
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$school</span>, <span class="variable">$major</span>, <span class="variable">$name</span>)</span> </span>{
+              <span class="variable">$this</span>-&gt;school = <span class="variable">$school</span>;
+              <span class="variable">$this</span>-&gt;major = <span class="variable">$major</span>;
+              <span class="variable">$this</span>-&gt;name = <span class="variable">$name</span>;
+       }
+
+       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">printInfo</span><span class="params">()</span> </span>{
+              printf(<span class="string">"%s,%s,%sn"</span>, <span class="variable">$this</span>-&gt;school, <span class="variable">$this</span>-&gt;major, <span class="variable">$this</span>-&gt;name);
+       }
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">copy</span><span class="params">()</span> </span>{
+           <span class="keyword">return</span> <span class="keyword">clone</span> <span class="variable">$this</span>;
+    }
+}
+
+<span class="variable">$stu1</span> = <span class="keyword">new</span> Student(<span class="string">'清华大学'</span>, <span class="string">'计算机'</span>, <span class="string">'张三'</span>);
+<span class="variable">$stu1</span>-&gt;printInfo();
+
+<span class="variable">$stu2</span> = <span class="variable">$stu1</span>-&gt;copy();
+<span class="variable">$stu2</span>-&gt;name = <span class="string">'李四'</span>;
+<span class="variable">$stu2</span>-&gt;printInfo();
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>这里可以看到，如果类的成员变量非常多，如果由外部创建多个新对象再一个个赋值，则效率不高代码冗余也容易出错，通过原型拷贝复制自身再进行微小修改就是另一个新对象了。</li>
+</ul>
+<h2 id="适配器模式">适配器模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>  
+<span class="comment">/**  
+ *  
+ * 适配器模式  
+ *  
+ */</span>
+
+<span class="comment">//老的代码   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>{  
+    <span class="keyword">private</span> <span class="variable">$name</span>;  
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$name</span>)</span> </span>{  
+        <span class="variable">$this</span>-&gt;name = <span class="variable">$name</span>;  
+    }  
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{  
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;name;  
+    }  
+}  
+
+<span class="comment">//新代码，开放平台标准接口  </span>
+<span class="class"><span class="keyword">interface</span> <span class="title">UserInterface</span> </span>{  
+    <span class="function"><span class="keyword">function</span> <span class="title">getUserName</span><span class="params">()</span></span>;  
+}  
+<span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span> <span class="keyword">implements</span> <span class="title">UserInterface</span> </span>{  
+    <span class="keyword">protected</span> <span class="variable">$user</span>;  
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$user</span>)</span> </span>{  
+        <span class="variable">$this</span>-&gt;user = <span class="variable">$user</span>;  
+    }  
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getUserName</span><span class="params">()</span> </span>{  
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;user-&gt;getName();  
+    }  
+}  
+
+<span class="variable">$olduser</span> = <span class="keyword">new</span> User(<span class="string">'张三'</span>);  
+<span class="keyword">echo</span> <span class="variable">$olduser</span>-&gt;getName().<span class="string">"n"</span>;  
+<span class="variable">$newuser</span> = <span class="keyword">new</span> UserInfo(<span class="variable">$olduser</span>);  
+<span class="keyword">echo</span> <span class="variable">$newuser</span>-&gt;getUserName().<span class="string">"n"</span>;  
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>注意点：这里的新接口使用了组合方式，UserInfo内部有一个成员变量保存老接口User对象，模块之间是松耦合的，这种结构其实就是组合模式。不要使用继承，虽然UserInfo继承User也能达到同样的目的，但是耦合度高，相互产生影响。</li>
+</ul>
+<h2 id="桥接模式">桥接模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
+<span class="comment">/**   
+ *   
+ * 桥接模式   
+ *   
+ */</span>
+
+<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>{   
+    <span class="keyword">abstract</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span></span>;   
+}   
+
+<span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="string">'学生'</span>;   
+    }   
+}   
+
+<span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="string">'老师'</span>;   
+    }   
+}   
+
+<span class="class"><span class="keyword">class</span> <span class="title">BridgeObj</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$_person</span>;   
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setPerson</span><span class="params">(<span class="variable">$person</span>)</span> </span>{   
+        <span class="variable">$this</span>-&gt;_person = <span class="variable">$person</span>;   
+    }   
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_person-&gt;getJob();   
+    }   
+}   
+
+<span class="variable">$obj</span> = <span class="keyword">new</span> BridgeObj();   
+<span class="variable">$obj</span>-&gt;setPerson(<span class="keyword">new</span> Student());   
+printf(<span class="string">"本次桥接对象：%sn"</span>, <span class="variable">$obj</span>-&gt;getJob());   
+<span class="variable">$obj</span>-&gt;setPerson(<span class="keyword">new</span> Teacher());   
+printf(<span class="string">"本次桥接对象：%sn"</span>, <span class="variable">$obj</span>-&gt;getJob());   
+
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>将抽象部分与它的实现部分分离，使它们都可以独立变化</li>
+</ul>
+<h2 id="装饰模式">装饰模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
+<span class="comment">/**   
+ *   
+ * 装饰模式   
+ *    
+ */</span>
+
+<span class="comment">//产品   </span>
+<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>{   
+    <span class="keyword">abstract</span> <span class="function"><span class="keyword">function</span> <span class="title">getPermission</span><span class="params">()</span></span>;   
+}   
+<span class="comment">//被装饰者   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPermission</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="string">'公开文档'</span>;   
+    }   
+}   
+<span class="comment">//装饰类   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">PermUser</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$_user</span>;   
+    <span class="keyword">protected</span> <span class="variable">$_special</span> = <span class="string">''</span>;   
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$user</span>)</span> </span>{   
+        <span class="variable">$this</span>-&gt;_user = <span class="variable">$user</span>;   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPermission</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_user-&gt;getPermission() . <span class="variable">$this</span>-&gt;_special;   
+    }   
+}   
+<span class="comment">//装饰类产品   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">JavaUser</span> <span class="keyword">extends</span> <span class="title">PermUser</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$_special</span> = <span class="string">' java程序'</span>;   
+}   
+<span class="class"><span class="keyword">class</span> <span class="title">CPlusUser</span> <span class="keyword">extends</span> <span class="title">PermUser</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$_special</span> = <span class="string">' c++程序'</span>;   
+}   
+
+
+<span class="variable">$user</span> = <span class="keyword">new</span> User();   
+printf(<span class="string">"permission：%sn"</span>, <span class="variable">$user</span>-&gt;getPermission());   
+<span class="variable">$user</span> = <span class="keyword">new</span> JavaUser(<span class="variable">$user</span>);   
+printf(<span class="string">"permission：%sn"</span>, <span class="variable">$user</span>-&gt;getPermission());   
+<span class="variable">$user</span> = <span class="keyword">new</span> CPlusUser(<span class="variable">$user</span>);   
+printf(<span class="string">"permission：%sn"</span>, <span class="variable">$user</span>-&gt;getPermission());   
+
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>大家想想装饰和继承的区别在哪？</li>
+<li>如果是上面的例子，如果用继承，是CPlusUser继承JavaUser还是反过来呢？谁也不知道最终使用者需要哪一种。</li>
+<li>在多层关系的情况下，装饰是和顺序无关并且随时增加装饰，而继承只能是特定的顺序，所以装饰模式会更加的灵活。</li>
+</ul>
+<h2 id="组合模式">组合模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
+<span class="comment">/**   
+ *   
+ * 组合模式   
+ *    
+ */</span>
+
+<span class="comment">//继承模式   </span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">UserBaseInfo</span> </span>{   
+    <span class="keyword">private</span> <span class="variable">$name</span>;   
+
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$name</span>)</span> </span>{   
+        <span class="variable">$this</span>-&gt;name = <span class="variable">$name</span>;   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;name;   
+    }   
+}   
+<span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">UserBaseInfo</span> </span>{   
+    <span class="keyword">private</span> <span class="variable">$login</span> = <span class="keyword">false</span>;   
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setLogin</span><span class="params">(<span class="variable">$islogin</span>)</span> </span>{   
+        <span class="variable">$this</span>-&gt;login = <span class="variable">$islogin</span>;   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isLogin</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;login;   
+    }   
+}   
+
+<span class="variable">$user</span> = <span class="keyword">new</span> User(<span class="string">'张三'</span>);   
+<span class="variable">$user</span>-&gt;setLogin(<span class="keyword">true</span>);   
+<span class="keyword">if</span> (<span class="variable">$user</span>-&gt;isLogin()) {   
+    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"已经登录了n"</span>;   
+} <span class="keyword">else</span> {   
+    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"还没有登录n"</span>;   
+}   
+
+
+<span class="comment">//组合模式   </span>
+
+<span class="class"><span class="keyword">class</span> <span class="title">LoginInfo</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$user</span>;   
+    <span class="keyword">protected</span> <span class="variable">$login</span> = <span class="keyword">false</span>;   
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setLogin</span><span class="params">(<span class="variable">$user</span>, <span class="variable">$isLogin</span>)</span> </span>{   
+        <span class="variable">$this</span>-&gt;user = <span class="variable">$user</span>;   
+        <span class="variable">$this</span>-&gt;login = <span class="variable">$isLogin</span>;   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isLogin</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;login;   
+    }   
+}   
+
+<span class="variable">$user</span> = <span class="keyword">new</span> User(<span class="string">'张三'</span>);   
+<span class="variable">$login</span> = <span class="keyword">new</span> LoginInfo();   
+<span class="variable">$login</span>-&gt;setLogin(<span class="variable">$user</span>, <span class="keyword">true</span>);   
+<span class="keyword">if</span> (<span class="variable">$login</span>-&gt;isLogin()) {   
+    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"已经登录了n"</span>;   
+} <span class="keyword">else</span> {   
+    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"还没有登录n"</span>;   
+}   
+
+<span class="comment">//部分可以更换，用继承则不行   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">Admin</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$level</span>;   
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$level</span>)</span> </span>{   
+        <span class="variable">$this</span>-&gt;level = <span class="variable">$level</span>;   
+    }   
+    <span class="function"><span class="keyword">function</span> <span class="title">getLevel</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;level;   
+    }   
+}   
+<span class="variable">$admin</span> = <span class="keyword">new</span> Admin(<span class="number">1</span>);   
+<span class="variable">$login</span>-&gt;setLogin(<span class="variable">$admin</span>, <span class="keyword">true</span>);   
+<span class="keyword">if</span> (<span class="variable">$login</span>-&gt;isLogin()) {   
+    printf(<span class="string">"级别为 %d 的管理员已经登录了n"</span>, <span class="variable">$admin</span>-&gt;getLevel());   
+} <span class="keyword">else</span> {   
+    printf(<span class="string">"级别为 %d 的管理员还没有登录n"</span>, <span class="variable">$admin</span>-&gt;getLevel());   
+}   
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>上面的例子分别展示了使用继承和组合来处理新功能，在简单的情况下看似区别不大，但在项目后期越来越复杂的时候组合模式的优势就越来越明显了。</li>
+<li>例如上面的登录信息，如果要增加登录次数、最后登录时间、登录ip等信息，登录本身就会变成一个比较复杂的对象。如果以后有新的需求比如好友信息、用户的访问信息等，再要继承的话，用户类就会变得非常庞大，难免各父类之间没有冲突的变量和方法，而外部访问用户类的众多方法也变得很费劲。采用组合模式后，一个类负责一个角色，功能区分非常明显，扩展方便。</li>
+</ul>
+<h2 id="外观模式">外观模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
+<span class="comment">/**   
+ *   
+ * 外观模式，也叫门面模式   
+ *    
+ */</span>
+
+
+<span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testPlus</span><span class="params">()</span> </span>{   
+        printf(<span class="string">"plus: %sn"</span>, (<span class="number">1</span> + <span class="number">2</span> == <span class="number">3</span> ? <span class="string">'true'</span> : <span class="string">'false'</span>));   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testMinus</span><span class="params">()</span> </span>{   
+        printf(<span class="string">"minus: %sn"</span>, (<span class="number">3</span> - <span class="number">2</span> == <span class="number">2</span> ? <span class="string">'true'</span> : <span class="string">'false'</span>));   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testTimes</span><span class="params">()</span> </span>{   
+        printf(<span class="string">"times: %sn"</span>, (<span class="number">2</span> * <span class="number">3</span> == <span class="number">6</span> ? <span class="string">'true'</span> : <span class="string">'false'</span>));   
+    }   
+}   
+
+<span class="class"><span class="keyword">class</span> <span class="title">Tester</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$_operation</span>;   
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{   
+        <span class="variable">$this</span>-&gt;_operation = <span class="keyword">new</span> Operation();   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testAll</span><span class="params">()</span> </span>{   
+        <span class="variable">$this</span>-&gt;_operation-&gt;testPlus();   
+        <span class="variable">$this</span>-&gt;_operation-&gt;testMinus();   
+        <span class="variable">$this</span>-&gt;_operation-&gt;testTimes();   
+    }   
+}   
+
+<span class="comment">//测试用例，测试全部接口   </span>
+<span class="variable">$tester</span> = <span class="keyword">new</span> Tester();   
+<span class="variable">$tester</span>-&gt;testAll();   
+
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>门面模式估计大家在实际代码中都已经使用到了，接口较多时把相似功能的接口封装成一个接口供外部调用，这就是门面模式。</li>
+</ul>
+<h2 id="单纯享元模式">单纯享元模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>  
+
+
+<span class="comment">/** 
+ * 抽象享元角色 
+ */</span>  
+<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Flyweight</span> </span>{  
+
+    <span class="comment">/** 
+     * 示意性方法 
+     * <span class="doctag">@param</span> string $state 外部状态 
+     */</span>  
+    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span></span>;  
+}  
+
+<span class="comment">/** 
+ * 具体享元角色 
+ */</span>  
+<span class="class"><span class="keyword">class</span> <span class="title">ConcreteFlyweight</span> <span class="keyword">extends</span> <span class="title">Flyweight</span> </span>{  
+
+    <span class="keyword">private</span> <span class="variable">$_intrinsicState</span> = <span class="keyword">null</span>;  
+
+    <span class="comment">/** 
+     * 构造方法 
+     * <span class="doctag">@param</span> string $state  内部状态 
+     */</span>  
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="variable">$this</span>-&gt;_intrinsicState = <span class="variable">$state</span>;  
+    }  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="keyword">echo</span> <span class="string">'ConcreteFlyweight operation, Intrinsic State = '</span> . <span class="variable">$this</span>-&gt;_intrinsicState  
+        . <span class="string">' Extrinsic State = '</span> . <span class="variable">$state</span> . <span class="string">'&lt;br /&gt;'</span>;  
+    }  
+
+}  
+
+
+<span class="comment">/** 
+ * 享元工厂角色 
+ */</span>  
+<span class="class"><span class="keyword">class</span> <span class="title">FlyweightFactory</span> </span>{  
+
+    <span class="keyword">private</span> <span class="variable">$_flyweights</span>;  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{  
+        <span class="variable">$this</span>-&gt;_flyweights = <span class="keyword">array</span>();  
+    }  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlyweigth</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>])) {  
+            <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>];  
+        } <span class="keyword">else</span> {  
+            <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>] = <span class="keyword">new</span> ConcreteFlyweight(<span class="variable">$state</span>);  
+        }  
+    }  
+
+}  
+
+<span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>{  
+    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span> <span class="params">()</span></span>{  
+        <span class="variable">$flyweightFactory</span> = <span class="keyword">new</span> FlyweightFactory();  
+        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state A'</span>);  
+        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state A'</span>);  
+
+        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state B'</span>);  
+        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state B'</span>);  
+
+    }  
+}  
+
+
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<h2 id="复合享元模式">复合享元模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>  
+
+<span class="comment">/** 
+ * 复合享元模式 
+ *  
+ */</span>  
+
+<span class="comment">/** 
+ * 抽象享元角色 
+ */</span>  
+<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Flyweight</span> </span>{  
+
+    <span class="comment">/** 
+     * 示意性方法 
+     * <span class="doctag">@param</span> string $state 外部状态 
+     */</span>  
+    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span></span>;  
+}  
+
+<span class="comment">/** 
+ * 具体享元角色 
+ */</span>  
+<span class="class"><span class="keyword">class</span> <span class="title">ConcreteFlyweight</span> <span class="keyword">extends</span> <span class="title">Flyweight</span> </span>{  
+
+    <span class="keyword">private</span> <span class="variable">$_intrinsicState</span> = <span class="keyword">null</span>;  
+
+    <span class="comment">/** 
+     * 构造方法 
+     * <span class="doctag">@param</span> string $state  内部状态 
+     */</span>  
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="variable">$this</span>-&gt;_intrinsicState = <span class="variable">$state</span>;  
+    }  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="keyword">echo</span> <span class="string">'ConcreteFlyweight operation, Intrinsic State = '</span> . <span class="variable">$this</span>-&gt;_intrinsicState  
+        . <span class="string">' Extrinsic State = '</span> . <span class="variable">$state</span> . <span class="string">'&lt;br /&gt;'</span>;  
+    }  
+
+}  
+
+<span class="comment">/** 
+ * 不共享的具体享元，客户端直接调用 
+ */</span>  
+<span class="class"><span class="keyword">class</span> <span class="title">UnsharedConcreteFlyweight</span> <span class="keyword">extends</span> <span class="title">Flyweight</span> </span>{  
+
+    <span class="keyword">private</span> <span class="variable">$_flyweights</span>;  
+
+    <span class="comment">/** 
+     * 构造方法 
+     * <span class="doctag">@param</span> string $state  内部状态 
+     */</span>  
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{  
+        <span class="variable">$this</span>-&gt;_flyweights = <span class="keyword">array</span>();  
+    }  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="keyword">foreach</span> (<span class="variable">$this</span>-&gt;_flyweights <span class="keyword">as</span> <span class="variable">$flyweight</span>) {  
+            <span class="variable">$flyweight</span>-&gt;operation(<span class="variable">$state</span>);  
+        }  
+    }  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">(<span class="variable">$state</span>, Flyweight <span class="variable">$flyweight</span>)</span> </span>{  
+        <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>] = <span class="variable">$flyweight</span>;  
+    }  
+
+}  
+
+<span class="comment">/** 
+* 享元工厂角色 
+*/</span>  
+<span class="class"><span class="keyword">class</span> <span class="title">FlyweightFactory</span> </span>{  
+
+    <span class="keyword">private</span> <span class="variable">$_flyweights</span>;  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{  
+        <span class="variable">$this</span>-&gt;_flyweights = <span class="keyword">array</span>();  
+    }  
+
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlyweigth</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
+        <span class="keyword">if</span> (is_array(<span class="variable">$state</span>)) { <span class="comment">//  复合模式  </span>
+            <span class="variable">$uFlyweight</span> = <span class="keyword">new</span> UnsharedConcreteFlyweight();  
+
+            <span class="keyword">foreach</span> (<span class="variable">$state</span> <span class="keyword">as</span> <span class="variable">$row</span>) {  
+                <span class="variable">$uFlyweight</span>-&gt;add(<span class="variable">$row</span>, <span class="variable">$this</span>-&gt;getFlyweigth(<span class="variable">$row</span>));  
+            }  
+            <span class="keyword">return</span> <span class="variable">$uFlyweight</span>;  
+        } <span class="keyword">else</span> <span class="keyword">if</span> (is_string(<span class="variable">$state</span>)) {  
+            <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>])) {  
+                <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>];  
+            } <span class="keyword">else</span> {  
+                <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>] = <span class="keyword">new</span> ConcreteFlyweight(<span class="variable">$state</span>);  
+            }  
+        } <span class="keyword">else</span> {  
+            <span class="keyword">return</span> <span class="keyword">null</span>;  
+        }  
+    }  
+
+}  
+
+<span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>{  
+    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span> <span class="params">()</span></span>{  
+        <span class="variable">$flyweightFactory</span> = <span class="keyword">new</span> FlyweightFactory();  
+        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state A'</span>);  
+        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state A'</span>);  
+
+        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state B'</span>);  
+        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state B'</span>);  
+
+        <span class="comment">/* 复合对象*/</span>  
+        <span class="variable">$uflyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="keyword">array</span>(<span class="string">'state A'</span>, <span class="string">'state B'</span>));  
+        <span class="variable">$uflyweight</span>-&gt;operation(<span class="string">'other state A'</span>);  
+
+    }  
+}  
+
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<h2 id="代理模式">代理模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
+<span class="comment">/**   
+ *   
+ * 代理模式   
+ *   
+ */</span>
+
+<span class="comment">//内部对象   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>{   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="string">'张三'</span>;   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getType</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="string">'付费用户'</span>;   
+    }   
+}   
+
+<span class="comment">//代理接口定义，例如开放平台   </span>
+<span class="class"><span class="keyword">interface</span> <span class="title">UserInterface</span> </span>{   
+    <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span></span>;   
+}   
+<span class="comment">//代理对象   </span>
+<span class="class"><span class="keyword">class</span> <span class="title">UserProxy</span> <span class="keyword">implements</span> <span class="title">UserInterface</span> </span>{   
+    <span class="keyword">protected</span> <span class="variable">$_user</span>;   
+    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{   
+        <span class="variable">$this</span>-&gt;_user = <span class="keyword">new</span> User();   
+    }   
+    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{   
+        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_user-&gt;getName();   
+    }   
+}   
+
+<span class="comment">//内部调用   </span>
+<span class="variable">$user</span> = <span class="keyword">new</span> User();   
+printf(<span class="string">"user name：%sn"</span>, <span class="variable">$user</span>-&gt;getName());   
+printf(<span class="string">"user type：%sn"</span>, <span class="variable">$user</span>-&gt;getType());   
+<span class="comment">//外部调用   </span>
+<span class="comment">// $user = new UserProxy();   </span>
+<span class="comment">// printf("user name：%sn", $user-&gt;getName());   </span>
+<span class="comment">// printf("user type：%sn", $user-&gt;getType()); //不能访问，及时知道内部对象有这个方法   </span>
+
+<span class="preprocessor">?&gt;</span>
+</code></pre>
+<ul>
+<li>代理模式、适配器模式、门面模式、装饰模式的区别</li>
+<li>相同之处：都封装一个内部对象，调用内部对象的方法</li>
+<li>不同之处：各自有各自的特性和应用场景，不能相互替代。所以用的时候要仔细分析用那种合适。</li>
+</ul>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/设计模式/"> #设计模式 </a>
+          
+            <a href="/tags/面向对象/"> #面向对象 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/10/14/object-c/uibutton/">UIButton详解</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/19/php/http头信息/">http头信息</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/10/13/php/设计模式/"
+               data-title="设计模式" data-url="http://blog.zlsky.me/2014/10/13/php/设计模式/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#单例模式"><span class="nav-number">1.</span> <span class="nav-text">单例模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工厂模式"><span class="nav-number">2.</span> <span class="nav-text">工厂模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建者模式"><span class="nav-number">3.</span> <span class="nav-text">创建者模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原型模式"><span class="nav-number">4.</span> <span class="nav-text">原型模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#适配器模式"><span class="nav-number">5.</span> <span class="nav-text">适配器模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#桥接模式"><span class="nav-number">6.</span> <span class="nav-text">桥接模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#装饰模式"><span class="nav-number">7.</span> <span class="nav-text">装饰模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组合模式"><span class="nav-number">8.</span> <span class="nav-text">组合模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#外观模式"><span class="nav-number">9.</span> <span class="nav-text">外观模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#单纯享元模式"><span class="nav-number">10.</span> <span class="nav-text">单纯享元模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复合享元模式"><span class="nav-number">11.</span> <span class="nav-text">复合享元模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理模式"><span class="nav-number">12.</span> <span class="nav-text">代理模式</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

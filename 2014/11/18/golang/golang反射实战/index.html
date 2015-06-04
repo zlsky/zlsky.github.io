@@ -1,0 +1,604 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="反射," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> golang反射实战 // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              golang反射实战
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/18/golang/golang反射实战/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/golang反射实战/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h1 id="反射实战">反射实战</h1><p>Go语言是静态类型，所有数据的类型在编译器都是明确的，规定好了的。<br>总之在编译的时候就决定了数据的类型的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> i <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> j MyInt</span><br></pre></td></tr></table></figure>
+<p>即使是底层存的是一个类型，声明的类型不一样，也要强制转换才能互用。</p>
+<p>另：go里面没有隐式转换，碰到类型不同只能强转。</p>
+<p>牛逼哄哄地不让你有半点越界。</p>
+<p>比如io package 里面的Reader和Writer。</p>
+<p>只要实现了Reader的read方法，就可以按照read来存</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line"><span class="comment">// and so on</span></span><br></pre></td></tr></table></figure>
+<p>标准输入可以作reader,用bufio.NewReader给reader加一层缓冲的reader也可以作为reader，</p>
+<p>bytes包里的Buffer也实现了read，所以也可以作为reader。</p>
+<p>这样的话，一种类型能够存储的东西就多了。但是对外的调用接口是不变的。</p>
+<p>静态类型的意义还是没有变，无论r存的是什么，它都是io.Reader。</p>
+<p>好了，好戏上演。</p>
+<p>最最极端的东西就是…………</p>
+<p>interface{} 画外音：我就是一个什么接口也不要实现的接口类型，是不是显得很拉风？</p>
+<p>之前这些，都是为了解释反射做的铺垫。有人说Go是动态类型的，那就只有“呵了个呵了个呵了个呵”啦。虽说存储的东西可能不一样，但是存储的东西始终都是满足了定义好的interface的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">type</span> Stringer <span class="keyword">interface</span> &#123;</span><br><span class="line">	String() <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Binary <span class="typename">uint64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (i Binary) String() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> strconv.Uitob64(i.Get(), <span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (i Binary) Get() <span class="typename">uint64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="typename">uint64</span>(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以这段代码为例。</p>
+<p>Interface就存两个指针，一个是指向Binary的，另一个指向的是iTable（interface Table），</p>
+<p>这个table，开始存数据的一些类型信息，后面接着存方法，比如fun[0]指向的就是binary的String。</p>
+<p>binary的Get在这里面就没有了。</p>
+<p>数据域的指针指向的是一个全新的拷贝，不是直接把指针指向了binary，就像var c uint64 = b一样的复制。</p>
+<p>如果想要获得数据的type的话，就像C表达一样 s.tab-&gt;type 就可以了。</p>
+<p>想要调用s.String（）的方法的话，就直接s.tab-&gt;fun<a href="">0</a>，也就是(*Binary).String()</p>
+<p>这里我们只考虑了只有一个method的interface，如果interface有很多的method话，在itab下面就会有更多的函数指针。</p>
+<p>总之一句话，interface会把存的具体的数据存在data域里，类型和方法存在itab里面。</p>
+<p>如果没有规定method的话，那么实际存储的时候只会保留type。</p>
+<p>还是铺垫…… 空的interface存起来，就是这么回事。</p>
+<p>接下来是refection</p>
+<p>反射只是用来检测(type,value)pair的。也就是之前提到的数据域和itab域里的type。</p>
+<p>相对应的，在refect的包里面，有Type和Value两个类型，而且Type和Value都提供了丰富的获取，改变，检查的函数，比如检查Func的参数，检查map的key，设置函数体等等。这两个类型提供接触interface值的方法，refect.TypeOf 和refect.ValueOf 可以从interface取到对应的内容（从Value类型里面也可以轻松取到Type，但是为了解释清楚，先分开来说）。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	fmt.Println(<span class="string">"type:"</span>, reflect.TypeOf(x))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: float64</span></span><br></pre></td></tr></table></figure>
+<p>先举个例子。</p>
+<p>之前说reflect是用来取interface的内容的，你这是怎么回事?</p>
+<p>实际上这个函数的定义是这样的。</p>
+<p>// TypeOf returns the reflection Type of the value in the interface{}. func TypeOf(i interface{}) Type 首先x会存储在空的interface里面，也就是根据之前那张图来存储。</p>
+<p>空的interface可以存任何类型的数据，因为它不需要实现任何方法。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, reflect.ValueOf(x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: &lt;float64 Value&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行这段代码你就知道区别了，x的类型和数据都被存储了起来。</p>
+<p>好啦。通过value和type这两个对象的一系列函数，我就能操作interface类型了。</p>
+<p>valueOf 获得的是复制，对于它的修改对原来的数据是没有影响的。如果想要修改原值，就要用指针。再用p.Elem就能获得可以修改的对象了。</p>
+<p>要处理struct的话，</p>
+<p>也要像这样:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">	A <span class="typename">int</span></span><br><span class="line">	B <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line">t := T&#123;<span class="number">23</span>, <span class="string">"skidoo"</span>&#125;</span><br><span class="line">s := reflect.ValueOf(&amp;t).Elem()</span><br><span class="line">typeOfT := s.Type()</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; s.NumField(); i++ &#123;</span><br><span class="line">	f := s.Field(i)</span><br><span class="line">	fmt.Printf(<span class="string">"%d: %s %s = %v\n"</span>, i,</span><br><span class="line">	typeOfT.Field(i).Name, f.Type(), f.Interface())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	0: A int = 23</span></span><br><span class="line">			<span class="number">1</span>: B <span class="typename">string</span> = skidoo</span><br></pre></td></tr></table></figure>
+<p>通过Elem的获得可修改对象，然后再Filed获取对应的value。</p>
+<p>这是一般类型。如果要处理channel，slice，func怎么办？</p>
+<p>剩下的就是一大堆标准库函数去慢慢折腾了。</p>
+<p>从官方的Func的example看看。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main()&#123;</span><br><span class="line">	<span class="comment">// swap is the implementation passed to MakeFunc.</span></span><br><span class="line">	<span class="comment">// It must work in terms of reflect.Values so that it is possible</span></span><br><span class="line">	<span class="comment">// to write code without knowing beforehand what the types</span></span><br><span class="line">	<span class="comment">// will be.</span></span><br><span class="line">	swap := <span class="keyword">func</span>(in []reflect.Value) []reflect.Value &#123;</span><br><span class="line">	    <span class="keyword">return</span> []reflect.Value&#123;in[<span class="number">1</span>], in[<span class="number">0</span>]&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// makeSwap expects fptr to be a pointer to a nil function.</span></span><br><span class="line">	<span class="comment">// It sets that pointer to a new function created with MakeFunc.</span></span><br><span class="line">	<span class="comment">// When the function is invoked, reflect turns the arguments</span></span><br><span class="line">	<span class="comment">// into Values, calls swap, and then turns swap's result slice</span></span><br><span class="line">	<span class="comment">// into the values returned by the new function.</span></span><br><span class="line">	makeSwap := <span class="keyword">func</span>(fptr <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	    <span class="comment">// fptr is a pointer to a function.</span></span><br><span class="line">	    <span class="comment">// Obtain the function value itself (likely nil) as a reflect.Value</span></span><br><span class="line">	    <span class="comment">// so that we can query its type and then set the value.</span></span><br><span class="line">	    fn := reflect.ValueOf(fptr).Elem()</span><br><span class="line">	    <span class="comment">// Make a function of the right type.</span></span><br><span class="line">	    v := reflect.MakeFunc(fn.Type(), swap)</span><br><span class="line">	    <span class="comment">// Assign it to the value fn represents.</span></span><br><span class="line">	    fn.Set(v)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Make and call a swap function for ints.</span></span><br><span class="line">	<span class="keyword">var</span> intSwap <span class="keyword">func</span>(<span class="typename">int</span>, <span class="typename">int</span>) (<span class="typename">int</span>, <span class="typename">int</span>)</span><br><span class="line">	makeSwap(&amp;intSwap)</span><br><span class="line">	fmt.Println(intSwap(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">	<span class="comment">// Make and call a swap function for float64s.</span></span><br><span class="line">	<span class="keyword">var</span> floatSwap <span class="keyword">func</span>(<span class="typename">float64</span>, <span class="typename">float64</span>) (<span class="typename">float64</span>, <span class="typename">float64</span>)</span><br><span class="line">	makeSwap(&amp;floatSwap)</span><br><span class="line">	fmt.Println(floatSwap(<span class="number">2.72</span>, <span class="number">3.14</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	1 0</span></span><br><span class="line">			<span class="number">3.14</span> <span class="number">2.72</span></span><br></pre></td></tr></table></figure>
+<p>这里也跟之前的那个x一样 intSwap和floatSwap都会存成interface{}</p>
+<p>然后通过MakeFunc这个函数依据类型和swap来构造一个函数。</p>
+<p>并且通过Set方法设置。</p>
+<p>用之前的思路解释一遍，就是传入函数指针，这个指针会被存为interface。Value存的是空值，Type存的是 <code>func(int,int)(int,int)</code>或者func<code>(float,float)(float,float)</code>。</p>
+<p>这个时候通过make构造一个Value出来给接口赋值，注意这里的区别，interface还是没有方法的空接口。</p>
+<p>我们之前说的接口的方法是存在itab下面的，这里的Value是存在data域下面的。</p>
+<p>因为这个对象是一个函数，所以函数的data域就是一个函数。</p>
+<p>之后再调用intSwap和floatSwap都可以跑出相应的结果，就是通过这样的方式实体化了函数的内容。</p>
+<p>这样就有点像C++里面的模板函数了。</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/反射/"> #反射 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/11/26/golang/reflect设计select/">reflect设计select</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/11/18/golang/unsafe简介/">利用unsafe操作未导出变量</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/11/18/golang/golang反射实战/"
+               data-title="golang反射实战" data-url="http://blog.zlsky.me/2014/11/18/golang/golang反射实战/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#反射实战"><span class="nav-number">1.</span> <span class="nav-text">反射实战</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

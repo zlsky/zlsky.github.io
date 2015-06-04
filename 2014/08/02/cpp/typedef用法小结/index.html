@@ -1,0 +1,625 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="基础," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> typedef用法小结 // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              typedef用法小结
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-08-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/08/02/cpp/typedef用法小结/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/02/cpp/typedef用法小结/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h1 id="typedef用法小结">typedef用法小结</h1><h2 id="第一、四个用途">第一、四个用途</h2><ul>
+<li><strong>用途一</strong>：定义一种类型的别名，而不只是简单的宏替换。可以用作同时声明指针型的多个对象。比如：</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">char</span>* pa, pb; <span class="comment">// 这多数不符合我们的意图，它只声明了一个指向字符变量的指针，和一个字符变量；</span></span><br><span class="line">	<span class="comment">//以下则可行：</span></span><br><span class="line">	<span class="keyword">typedef</span> <span class="keyword">char</span>* PCHAR; <span class="comment">// 一般用大写</span></span><br><span class="line">	PCHAR pa, pb; <span class="comment">// 可行，同时声明了两个指向字符变量的指针</span></span><br><span class="line">```	</span><br><span class="line">* **用途二**：用在旧的C的代码中（具体多旧没有查），帮助<span class="keyword">struct</span>。以前的代码中，声明<span class="keyword">struct</span>新对象时，必须要带上<span class="keyword">struct</span>，即形式为： <span class="keyword">struct</span> 结构名 对象名，如：</span><br></pre></td></tr></table></figure>
+<pre><code><span class="keyword">struct</span> tagPOINT1
+{
+    <span class="keyword">int</span> x;
+    <span class="keyword">int</span> y;
+};
+<span class="keyword">struct</span> tagPOINT1 p1;
+<span class="comment">//而在C++中，则可以直接写：结构名 对象名，即：tagPOINT1 p1;</span>
+<span class="comment">//估计某人觉得经常多写一个struct太麻烦了，于是就发明了：</span>
+<span class="keyword">typedef</span> <span class="keyword">struct</span> tagPOINT
+{
+    <span class="keyword">int</span> x;
+    <span class="keyword">int</span> y;
+}POINT;
+POINT p1; <span class="comment">// 这样就比原来的方式少写了一个struct，比较省事，尤其在大量使用的时</span>
+<span class="comment">//或许，在C++中，typedef的这种用途二不是很大，但是理解了它，对掌握以前的旧代码还是有帮助的，毕竟我们在项目中有可能会遇到较早些年代遗留下来的代码。</span>
+</code></pre><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* **用途三**：</span><br><span class="line">-<span class="ruby"> 用typedef来定义与平台无关的类型。</span><br><span class="line"></span>-<span class="ruby"> 比如定义一个叫 <span class="constant">REAL</span> 的浮点类型，在目标平台一上，让它表示最高精度的类型为：</span><br><span class="line"></span>-<span class="ruby"> typedef long double <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 在不支持 long double 的平台二上，改为：</span><br><span class="line"></span>-<span class="ruby"> typedef double <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 在连 double 都不支持的平台三上，改为：</span><br><span class="line"></span>-<span class="ruby"> typedef float <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 也就是说，当跨平台时，只要改下 typedef 本身就行，不用对其他源码做任何修改。</span><br><span class="line"></span>-<span class="ruby"> 标准库就广泛使用了这个技巧，比如size_t。</span><br><span class="line"></span>-<span class="ruby"> 另外，因为typedef是定义了一种类型的新别名，不是简单的字符串替换，所以它比宏来得稳健（虽然用宏有时也可以完成以上的用途）。</span><br><span class="line"></span></span><br><span class="line">* **用途四**：为复杂的声明定义一个新的简单的别名。方法是：在原来的声明里逐步用别名替换一部分复杂声明，如此循环，把带变量名的部分留到最后替换，得到的就是原声明的最简化版。举例：</span><br></pre></td></tr></table></figure>
+<pre><code><span class="comment">//1. 原声明：int *(*a[5])(int, char*);</span>
+<span class="comment">//变量名为a，直接用一个新别名pFun替换a就可以了：</span>
+typedef int *<span class="comment">(*pFun)(int, char*)</span>; 
+<span class="comment">//原声明的最简化版：</span>
+pFun a[<span class="number">5</span>];
+</code></pre><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">	<span class="comment">//2. 原声明：void (*b[10]) (void (*)());</span></span><br><span class="line">	<span class="comment">//变量名为b，先替换右边部分括号里的，pFunParam为别名一：</span></span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*pFunParam)</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">//再替换左边的变量b，pFunx为别名二：</span></span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*pFunx)</span><span class="params">(pFunParam)</span></span>;</span><br><span class="line">	<span class="comment">//原声明的最简化版：</span></span><br><span class="line">	pFunx b[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//3. 原声明：doube(*)() (*e)[9]; </span></span><br><span class="line"><span class="comment">//变量名为e，先替换左边部分，pFuny为别名一：</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">double</span><span class="params">(*pFuny)</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">//再替换右边的变量e，pFunParamy为别名二</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">pFuny</span> <span class="params">(*pFunParamy)</span>[9]</span>;</span><br><span class="line"><span class="comment">//原声明的最简化版：</span></span><br><span class="line">pFunParamy e;</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">理解复杂声明可用的“右左法则”：</span><br><span class="line">从变量名看起，先往右，再往左，碰到一个圆括号就调转阅读的方向；括号内分析完就跳出括号，还是按先右后左的顺序，如此循环，直到整个声明分析完。举例：</span><br><span class="line"><span class="typename">int</span> (*<span class="keyword">func</span>)(<span class="typename">int</span> *p);</span><br><span class="line">首先找到变量名<span class="keyword">func</span>，外面有一对圆括号，而且左边是一个*号，这说明<span class="keyword">func</span>是一个指针；然后跳出这个圆括号，先看右边，又遇到圆括号，这说明(*<span class="keyword">func</span>)是一个函数，所以<span class="keyword">func</span>是一个指向这类函数的指针，即函数指针，这类函数具有<span class="typename">int</span>*类型的形参，返回值类型是<span class="typename">int</span>。</span><br><span class="line"><span class="typename">int</span> (*<span class="keyword">func</span>[<span class="number">5</span>])(<span class="typename">int</span> *);</span><br><span class="line"><span class="keyword">func</span>右边是一个[]运算符，说明<span class="keyword">func</span>是具有<span class="number">5</span>个元素的数组；<span class="keyword">func</span>的左边有一个*，说明<span class="keyword">func</span>的元素是指针（注意这里的*不是修饰<span class="keyword">func</span>，而是修饰<span class="keyword">func</span>[<span class="number">5</span>]的，原因是[]运算符优先级比*高，<span class="keyword">func</span>先跟[]结合）。跳出这个括号，看右边，又遇到圆括号，说明<span class="keyword">func</span>数组的元素是函数类型的指针，它指向的函数具有<span class="typename">int</span>*类型的形参，返回值类型为<span class="typename">int</span>。</span><br></pre></td></tr></table></figure>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">也可以记住<span class="number">2</span>个模式：</span><br><span class="line"><span class="keyword">type</span> <span class="comment">(*)(....)`函数指针</span><br><span class="line">`type (*)</span>[]`数组指针</span><br></pre></td></tr></table></figure>
+<h2 id="第二、两大陷阱">第二、两大陷阱</h2><ul>
+<li><strong>陷阱一：</strong> </li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//记住，typedef是定义了一种类型的新别名，不同于宏，它不是简单的字符串替换。比如：</span></span><br><span class="line"><span class="comment">//先定义：</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span>* PSTR;</span><br><span class="line"><span class="comment">//然后：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(<span class="keyword">const</span> PSTR, <span class="keyword">const</span> PSTR)</span></span>;</span><br><span class="line"><span class="keyword">const</span> PSTR实际上相当于<span class="keyword">const</span> <span class="keyword">char</span>*吗？不是的，它实际上相当于<span class="keyword">char</span>* <span class="keyword">const</span>。</span><br><span class="line"><span class="comment">//原因在于const给予了整个指针本身以常量性，也就是形成了常量指针char* const。</span></span><br><span class="line"><span class="comment">//简单来说，记住当const和typedef一起出现时，typedef不会是简单的字符串替换就行。</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>陷阱二：</strong></li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span>在语法上是一个存储类的关键字（如<span class="keyword">auto</span>、<span class="keyword">extern</span>、<span class="keyword">mutable</span>、<span class="keyword">static</span>、<span class="keyword">register</span>等一样），虽然它并不真正影响对象的存储特性，如：</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">static</span> <span class="keyword">int</span> INT2; <span class="comment">//不可行</span></span><br><span class="line">编译将失败，会提示“指定了一个以上的存储类”。</span><br></pre></td></tr></table></figure>
+<h2 id="第三、typedef_与_#define的区别">第三、typedef 与 #define的区别</h2><ul>
+<li>案例一：</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//通常讲，typedef要比<span class="label">#define</span>要好，特别是在有指针的场合。请看例子：</span><br><span class="line"><span class="label">typedef</span> char *pStr1<span class="comment">;</span></span><br><span class="line"><span class="label">#define</span> pStr2 char *<span class="comment">;</span></span><br><span class="line"><span class="label">pStr1</span> <span class="literal">s1</span>, <span class="literal">s2</span><span class="comment">;</span></span><br><span class="line"><span class="label">pStr2</span> <span class="literal">s3</span>, <span class="literal">s4</span><span class="comment">;</span></span><br><span class="line">//在上述的变量定义中，<span class="literal">s1</span>、<span class="literal">s2</span>、<span class="literal">s3</span>都被定义为char *，而<span class="literal">s4</span>则定义成了char，不是我们所预期的指针变量，根本原因就在于<span class="label">#define</span>只是简单的字符串替换而typedef则是为一个类型起新名字。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>案例二：</li>
+</ul>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//下面的代码中编译器会报一个错误，你知道是哪个语句错了吗？</span><br><span class="line"><span class="label">typedef</span> char * pStr<span class="comment">;</span></span><br><span class="line"><span class="label">char</span> <span class="keyword">string[4] </span>= <span class="string">"abc"</span><span class="comment">;</span></span><br><span class="line"><span class="label">const</span> char *<span class="literal">p1</span> = <span class="keyword">string;</span><br><span class="line"></span><span class="label">const</span> pStr <span class="literal">p2</span> = <span class="keyword">string;</span><br><span class="line"></span><span class="label">p1</span>++<span class="comment">;</span></span><br><span class="line"><span class="label">p2</span>++<span class="comment">;</span></span><br><span class="line">//是<span class="literal">p2</span>++出错了。这个问题再一次提醒我们：typedef和<span class="label">#define</span>不同，它不是简单的文本替换。上述代码中const pStr <span class="literal">p2</span>并不等于const char * <span class="literal">p2</span>。const pStr <span class="literal">p2</span>和const long x本质上没有区别，都是对变量进行只读限制，只不过此处变量<span class="literal">p2</span>的数据类型是我们自己定义的而不是系统固有类型而已。因此，const pStr <span class="literal">p2</span>的含义是：限定数据类型为char *的变量<span class="literal">p2</span>为只读，因此<span class="literal">p2</span>++错误。</span><br></pre></td></tr></table></figure>
+<h2 id="第四部分资料：使用_typedef_抑制劣质代码">第四部分资料：使用 typedef 抑制劣质代码</h2><p>typedef 声明，简称 typedef，为现有类型创建一个新的名字。比如人们常常使用 typedef 来编写更美观和可读的代码。所谓美观，意指 typedef 能隐藏笨拙的语法构造以及平台相关的数据类型，从而增强可移植性和以及未来的可维护性。本文下面将竭尽全力来揭示 typedef 强大功能以及如何避免一些常见的陷阱。</p>
+<p>Q：如何创建平台无关的数据类型，隐藏笨拙且难以理解的语法?</p>
+<p>A： 使用 typedefs 为现有类型创建同义字。</p>
+<p><strong>定义易于记忆的类型名</strong></p>
+<p>typedef 使用最多的地方是创建易于记忆的类型名，用它来归档程序员的意图。类型出现在所声明的变量名字中，位于 “”typedef”” 关键字右边。例如：</p>
+<p><code>typedef int size;</code></p>
+<p>此声明定义了一个 int 的同义字，名字为 size。注意 typedef 并不创建新的类型。它仅仅为现有类型添加一个同义字。你可以在任何需要 int 的上下文中使用 size：</p>
+<p><code>void measure(size * psz); size array[4];size len = file.getlength();std::vector &lt;size&gt; vs;</code></p>
+<p>typedef 还可以掩饰符合类型，如指针和数组。例如，你不用象下面这样重复定义有 81 个字符元素的数组：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="value">char</span> <span class="value">line</span><span class="attr_selector">[81]</span>;<span class="value">char</span> <span class="value">text</span><span class="attr_selector">[81]</span>;</span><br><span class="line"><span class="comment">//定义一个 typedef，每当要用到相同类型和大小的数组时，可以这样：</span></span><br><span class="line">typedef <span class="value">char</span> <span class="value">Line</span><span class="attr_selector">[81]</span>; <span class="value">Line</span> <span class="value">text</span>, secondline;<span class="function">getline</span>(<span class="value">text</span>);</span><br></pre></td></tr></table></figure>
+<p>同样，可以象下面这样隐藏指针语法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> * pstr;<span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(pstr, pstr)</span></span>;</span><br><span class="line"><span class="comment">//这里将带我们到达第一个 typedef 陷阱。标准函数 strcmp()有两个‘const char *’类型的参数。因此，它可能会误导人们象下面这样声明 mystrcmp()：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(<span class="keyword">const</span> pstr, <span class="keyword">const</span> pstr)</span></span>; </span><br><span class="line"><span class="comment">//这是错误的，按照顺序，‘const pstr’被解释为‘char * const’（一个指向 char 的常量指针），而不是‘const char *’（指向常量 char 的指针）。这个问题很容易解决：</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">char</span> * cpstr; <span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(cpstr, cpstr)</span></span>; <span class="comment">// 现在是正确的</span></span><br></pre></td></tr></table></figure>
+<p><strong>记住</strong>：不管什么时候，只要为指针声明 typedef，那么都要在最终的 typedef 名称中加一个 const，以使得该指针本身是常量，而不是对象。</p>
+<p><strong>代码简化</strong></p>
+<p>　　上面讨论的 typedef 行为有点像 #define 宏，用其实际类型替代同义字。不同点是 typedef 在编译时被解释，因此让编译器来应付超越预处理器能力的文本替换。例如：</p>
+<p><code>typedef int (*PF) (const char *, const char *);</code></p>
+<p>这个声明引入了 PF 类型作为函数指针的同义字，该函数有两个 const char * 类型的参数以及一个 int 类型的返回值。如果要使用下列形式的函数声明，那么上述这个 typedef 是不可或缺的：</p>
+<p><code>PF Register(PF pf);</code></p>
+<p>Register() 的参数是一个 PF 类型的回调函数，返回某个函数的地址，其署名与先前注册的名字相同。做一次深呼吸。下面我展示一下如果不用 typedef，我们是如何实现这个声明的：</p>
+<p><code>int (*Register (int (*pf)(const char *, const char *))) (const char *, const char *);</code></p>
+<p>很少有程序员理解它是什么意思，更不用说这种费解的代码所带来的出错风险了。显然，这里使用 typedef 不是一种特权，而是一种必需。持怀疑态度的人可能会问：“OK，有人还会写这样的代码吗？”，快速浏览一下揭示 signal()函数的头文件 <csinal>，一个有同样接口的函数。</csinal></p>
+<p><strong>typedef 和存储类关键字（storage class specifier）</strong></p>
+<p>种说法是不是有点令人惊讶，typedef 就像 auto，extern，mutable，static，和 register 一样，是一个存储类关键字。这并是说 typedef 会真正影响对象的存储特性；它只是说在语句构成上，typedef 声明看起来象 static，extern 等类型的变量声明。下面将带到第二个陷阱：</p>
+<p><code>typedef register int FAST_COUNTER; // 错误</code></p>
+<p>编译通不过。问题出在你不能在声明中有多个存储类关键字。因为符号 typedef 已经占据了存储类关键字的位置，在 typedef 声明中不能用 register（或任何其它存储类关键字）。</p>
+<p><strong>促进跨平台开发</strong></p>
+<p>typedef 有另外一个重要的用途，那就是定义机器无关的类型，例如，你可以定义一个叫 REAL 的浮点类型，在目标机器上它可以i获得最高的精度：</p>
+<p><code>typedef long double REAL;</code></p>
+<p>在不支持 long double 的机器上，该 typedef 看起来会是下面这样：</p>
+<p><code>typedef double REAL;</code></p>
+<p>并且，在连 double 都不支持的机器上，该 typedef 看起来会是这样： </p>
+<p><code>typedef float REAL;</code></p>
+<p>你不用对源代码做任何修改，便可以在每一种平台上编译这个使用 REAL 类型的应用程序。唯一要改的是 typedef 本身。在大多数情况下，甚至这个微小的变动完全都可以通过奇妙的条件编译来自动实现。不是吗? 标准库广泛地使用 typedef 来创建这样的平台无关类型：size_t，ptrdiff 和 fpos_t 就是其中的例子。此外，象 std::string 和 std::ofstream 这样的 typedef 还隐藏了长长的，难以理解的模板特化语法，例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">basic_string&lt;<span class="keyword">char</span>, <span class="keyword">char_t</span>raits&lt;<span class="keyword">char</span>&gt;，allocator&lt;<span class="keyword">char</span>&gt;&gt; </span><br><span class="line">basic_ofstream&lt;<span class="keyword">char</span>, <span class="keyword">char_t</span>raits&lt;<span class="keyword">char</span>&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/基础/"> #基础 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/08/08/object-c/ios-sdk笔记/">ios sdk笔记</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/07/25/object-c/object-c_学习笔记/">object-c 学习笔记</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/08/02/cpp/typedef用法小结/"
+               data-title="typedef用法小结" data-url="http://blog.zlsky.me/2014/08/02/cpp/typedef用法小结/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#typedef用法小结"><span class="nav-number">1.</span> <span class="nav-text">typedef用法小结</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第一、四个用途"><span class="nav-number">1.1.</span> <span class="nav-text">第一、四个用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第二、两大陷阱"><span class="nav-number">1.2.</span> <span class="nav-text">第二、两大陷阱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第三、typedef_与_#define的区别"><span class="nav-number">1.3.</span> <span class="nav-text">第三、typedef 与 #define的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第四部分资料：使用_typedef_抑制劣质代码"><span class="nav-number">1.4.</span> <span class="nav-text">第四部分资料：使用 typedef 抑制劣质代码</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

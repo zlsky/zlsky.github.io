@@ -1,0 +1,583 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="opengl," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> opengl学习笔记 // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              opengl学习笔记
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-04-20
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/04/20/graphical/opengl学习笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/20/graphical/opengl学习笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h1 id="opengl学习笔记">opengl学习笔记</h1><h2 id="glut">glut</h2><p>glut是opengl实用工具箱(Opengl utility toolkit),不要与glu(Opengl utility library)弄混了.而freeglut是一个免费开源的库,用来代替glut的</p>
+<h2 id="glew">glew</h2><p>glew是一个自动初始化所有新函数指针并且包含所需类型定义,常量和枚举值的扩展加载库,而且gltools就是依赖此库</p>
+<h2 id="gltools">gltools</h2><p>是蓝宝书的工具集,包含一个用于操作矩阵和向量的3D数学库,并且依靠glew获得opengl3.3中用来产生和渲染的一些简单3D对象的函数.</p>
+<h2 id="API函数笔记">API函数笔记</h2><ul>
+<li><code>Glenum glGetError(void);</code><br>返回错误,常见错误如下:<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">GL_INVALID_ENUM</span>         枚举参数超出范围</span><br><span class="line">GL_INVALID_VALUE        数值参数超出范围</span><br><span class="line">GL_INVALID_OPERATION    在当前状态中的操作非法</span><br><span class="line">GL_OUT_OF_MEMORY        没有足够的内存来执行这条命令</span><br><span class="line">GL_NO_ERROR             没有出现错误</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启关闭状态</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glEnable</span><span class="params">(GLenum capability)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glDisable</span><span class="params">(GLenum capability)</span></span>;</span><br><span class="line"></span><br><span class="line">GL_DEPTH_TEST <span class="comment">//开启深度测试</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//状态是否被打开</span></span><br><span class="line"><span class="function">GLboolean <span class="title">glIsenabled</span><span class="params">(GLenum capability)</span></span>;</span><br><span class="line"><span class="comment">//获取状态值</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetBooleanv</span><span class="params">(GLenum pname,GLboolean *params)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetDoublev</span><span class="params">(GLenum pname,GLdouble *params)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetFloatv</span><span class="params">(GLenum pname,GLfloat *params)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetIntegerv</span><span class="params">(GLenum pname,GLine *params)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">GL_DEPTH_TEST   <span class="comment">//深度测试状态</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置显示模式</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">glutInitDisplayMode</span><span class="params">( <span class="keyword">unsigned</span> <span class="keyword">int</span> displayMode )</span></span>;</span><br><span class="line"> GLUT_DOUBLE    <span class="comment">//双缓冲窗口</span></span><br><span class="line"> GLUT_RBGA  <span class="comment">//red,blue,green,alpha 颜色模式</span></span><br><span class="line"> GLUT_DEPTH <span class="comment">//深度缓冲区</span></span><br><span class="line"> GLUT_STENCIL   <span class="comment">//模板缓冲</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//清除一个或一组特定的缓冲区</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glClear</span> <span class="params">(GLbitfield mask)</span></span>;</span><br><span class="line"></span><br><span class="line">GL_COLOR_BUFFER_BIT <span class="comment">//颜色缓冲区</span></span><br><span class="line">GL_DEPTH_BUFFER_BIT <span class="comment">//深度缓冲区</span></span><br><span class="line">GL_STENCIL_BUFFER_BIT  <span class="comment">//模板缓冲区</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">glutSpecialFunc(SpecialKeys);<span class="comment">//按上,下,左右键时会触发的函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glutPostRedisplay</span><span class="params">()</span></span>;<span class="comment">//手动触发渲染事件</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//正交投影,一般用于2D游戏开发.这里不存在缩放</span></span><br><span class="line"><span class="comment">//这里设置最小值最大值,三个轴都要设置</span></span><br><span class="line"><span class="keyword">void</span> GLFrustum::SetOrthographic(GLfloat xMin, GLfloat xMax, GLfloat yMin, GLfloat yMax, GLfloat zMin, GLfloat zMax);</span><br><span class="line"></span><br><span class="line"><span class="comment">//透视投影</span></span><br><span class="line"><span class="comment">//fFov:锥体的顶与底的角度,fAspect:宽高比,fNear,fFar:近与远的距离</span></span><br><span class="line"><span class="keyword">void</span> GLFrustum::SetPerspective(<span class="keyword">float</span> fFov, <span class="keyword">float</span> fAspect, <span class="keyword">float</span> fNear, <span class="keyword">float</span> fFar);</span><br></pre></td></tr></table></figure>
+<h2 id="存储着色器">存储着色器</h2><h3 id="Uniform值">Uniform值</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置Uniform值</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLenum, ...);</span><br><span class="line"></span><br><span class="line"><span class="comment">//单位着色器,在所有片段都使用同一种颜色</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLT_ATTRIBUTE_VERTEX,GLfloat vColor[<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//平面着色器,应该是对向量进行矩阵变化,因为opengl是列向量,所以矩阵在左边</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLT_SHADER_FLAT,GLfloat mvp[<span class="number">16</span>],GLfloat vColor[<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//上色着色器</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLT_SHADER_SHADER,GLfloat mvp[<span class="number">16</span>]);</span><br></pre></td></tr></table></figure>
+<h2 id="点和线">点和线</h2><h3 id="GLBatch">GLBatch</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">primitive:</span><br><span class="line">GL_POINTS   <span class="comment">//每个顶点在屏幕上都是一个单独的点</span></span><br><span class="line">GL_LINES    <span class="comment">//每一对顶点定义了一个线段</span></span><br><span class="line">GL_LINE_STRIP   <span class="comment">//一个从第一个顶点依次经过每个后续顶点而绘制的线条</span></span><br><span class="line">GL_LINE_LOOP    <span class="comment">//和GL_LINE_STRIP相同,但最后一个顶点和第一个顶点连起来了</span></span><br><span class="line">GL_TRIANGLES    <span class="comment">//每三个顶点定义了一个新的三角形</span></span><br><span class="line">GL_TRIANGLE_STRIP   <span class="comment">//共用一条带上的顶点的一组三角形</span></span><br><span class="line">GL_TRIANGLE_FAN <span class="comment">//以一个圆点为中心呈扇形排列,共用相邻顶点的一组三角形 </span></span><br><span class="line">nVerts:顶点数量</span><br><span class="line"><span class="keyword">void</span> GLBatch::Begin(GLenum primitive, GLuint nVerts, GLuint nTextureUnits = <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//复制顶点数组,这里至少要3维</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyVertexData3f(GLfloat *vVerts);</span><br><span class="line"><span class="comment">//复制表面法线</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyNormalDataf(GLfloat *vNorms);</span><br><span class="line"><span class="comment">//复制颜色</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyColorData4f(GLfloat *vColors);</span><br><span class="line"><span class="comment">//复制纹理坐标</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyTextCoordData2f(GLfloat *vTexCoords,GLuint uiTextureLayer);</span><br></pre></td></tr></table></figure>
+<h3 id="点">点</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glPointSize</span><span class="params">(GLfloat size)</span></span>;<span class="comment">//设置点的大小</span></span><br><span class="line"></span><br><span class="line">GLfloat sizes[<span class="number">2</span>];   <span class="comment">//存储支持的点大小范围</span></span><br><span class="line">GLfloat step;   <span class="comment">//存储支持的点大小增量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取支持的点大小范围和步长(增量)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetFloatv</span><span class="params">(GL_POINT_SIZE_RANGE,sizes)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getGetFloatv</span><span class="params">(GL_POINT_SIZE_GRANULARITY,&amp;step)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当GLBathc::begin(GL_LINES)时</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glLineWidth</span><span class="params">(GLfloat width)</span></span>;<span class="comment">//设置线的宽度</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//三角形</span></span><br><span class="line">glFrontFace(GL_CW);<span class="comment">//绘制时让三角形以顺时针方式绘制</span></span><br><span class="line">glFrontFace(GL_CCW);<span class="comment">//绘制三角形时以默认逆时针方式绘制</span></span><br></pre></td></tr></table></figure>
+<h3 id="剔除表面">剔除表面</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启关闭剔除表面</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glEnable</span><span class="params">(GL_CULL_FACE)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glDisable</span><span class="params">(GL_CULL_FACE)</span></span>;</span><br><span class="line"><span class="comment">//可以修改剔除背面还是正面</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CullFace</span><span class="params">(GL_BACK)</span></span>;<span class="comment">//可选参数为:GL_FRONT,GL_BACK,GL_FRONT_AND_BACK</span></span><br></pre></td></tr></table></figure>
+<h3 id="填充模式">填充模式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置显示模式</span></span><br><span class="line">face:剔除表面: GL_FRONT,GL_BACK,GL_FRONT_AND_BACK</span><br><span class="line">mode:GL_FILL(完全填充),GL_LINE(线的方式),GL_POINT(点的方式)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glpolygonMode</span><span class="params">(GLenum face,GLenum mode)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//片段深度值,用于在同一z轴情况下,填充不同的颜色,以达到花纹效果</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glPolygonOffset</span><span class="params">(GLfloat factor,GLfloat units)</span></span>;</span><br><span class="line"><span class="comment">//Depth Offset=(DZ*factor)+(r*units)</span></span><br></pre></td></tr></table></figure>
+<h3 id="裁剪">裁剪</h3><p>裁剪可以局部渲染,加速性能,在指定区域渲染<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启裁剪</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glEnable</span><span class="params">(GL_SCISSOR_TEST)</span></span>;</span><br><span class="line"><span class="comment">//设置裁剪范围,只在这个范围内渲染</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glScissor</span><span class="params">(GLint x,GLint y,GLsizei width,Glsizei height)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<h3 id="混合,抗锯齿">混合,抗锯齿</h3><p>默认公式:Cf=(Cs<em>S)+(Cd</em>D)<br>Cs: 源颜色,也就是当前渲染命令的结果进入颜色缓冲区的颜色<br>Cd: 目标颜色,已经存储在颜色缓冲区的颜色<br>S:  源混合因子<br>D:  目标混合因子<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_BLEND);<span class="comment">//开启颜色混合</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//例:接收源颜色,并将这个颜色(RGB值)与alpha相乘,然后把这个结果加上目标颜色乘以"1减源颜色的alpha值"</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glBlendFunc</span><span class="params">(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>Cd=(1.0f,0.0f,0.0f,0.0f)<br>Cs=(0.0f,0.0f,1.0f,0.5f)<br>S=0.6<br>D=1.0-0.6=0.4<br>Cf=(Bule<em>0.6)+(Red</em>0.4)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//更换颜色混合公式</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glBlendEquation</span><span class="params">(GLenum mode)</span></span>;</span><br><span class="line">GL_FUNC_ADD    Cf=(Cs*S)+(Cd*D)</span><br><span class="line">GL_FUNC_SUBTRACT Cf=(Cs*S)-(Cd*D)</span><br><span class="line">GL_FUNC_REVERSE_SUBTRACT    Cf=(Cd*D)-(Cs*S)</span><br><span class="line"><span class="function">GL_MIN <span class="title">min</span><span class="params">(Cs,Cd)</span></span><br><span class="line">GL_MAX <span class="title">max</span><span class="params">(Cs,Cd)</span></span></span><br></pre></td></tr></table></figure>
+<p>抗锯齿必须要开启混合<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_BLEND);</span><br><span class="line">glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHE);</span><br><span class="line"></span><br><span class="line"><span class="comment">//对点,直线,多边形进行抗锯齿</span></span><br><span class="line">glEnable(GL_POINT_SMOOTH);</span><br><span class="line">glEnable(GL_LINE_SMOOTH);</span><br><span class="line">glEnable(GL_POLYGON_SMOOTH);</span><br><span class="line"></span><br><span class="line"><span class="comment">//雾化效果</span></span><br><span class="line">target:指定所控制行为的符号常量.</span><br><span class="line">mod: 指定所采取行为的质量,GL_FASTEST(快速),GL_NICEST(高质量),GL_DONT_CARE(对选项不做考虑)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glHint</span><span class="params">(GLenum target,GLenum mod)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<h2 id="gltools-1">gltools</h2><h3 id="创建形状">创建形状</h3><p>球体<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">sphereBatch:    是指批次</span><br><span class="line">fRadius:    半径大小</span><br><span class="line">iSlices:    是指多少对,意思就像是一个桔子是多少瓣</span><br><span class="line">iStacks:    指某个桔子这一瓣是三角形带的数量</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeSphere</span><span class="params">(GLTriangleBatch&amp; sphereBatch, GLfloat fRadius, GLint iSlices, GLint iStacks)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>这里是一个球体,iSlices=5,iStacks=6</p>
+<p><img src="/images/opengl_notes/gltools_球体.png" alt="/images/opengl_notes/gltools_球体.png"></p>
+<p>花托<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">torusBatch: 是指批次顶点</span><br><span class="line">majorRadius: 外半径</span><br><span class="line">minorRadius: 内半径</span><br><span class="line">numMajor: 跟球体的iSlices一样</span><br><span class="line">numMinor: 跟球体的iStacks一样</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeTorus</span><span class="params">(GLTriangleBatch&amp; torusBatch, GLfloat majorRadius, GLfloat minorRadius, GLint numMajor, GLint numMinor)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>这里一个花托,numMajor=15,numMinor=15</p>
+<p><img src="/images/opengl_notes/gltools_花托.png" alt="/images/opengl_notes/gltools_花托.png"></p>
+<p>圆椎体<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">cylinderBatch: 批次</span><br><span class="line">baseRadius: 底部半径</span><br><span class="line">topRadius:  顶部半径</span><br><span class="line">fLength:    长度</span><br><span class="line">numSlices:  跟球体的iSlices一样</span><br><span class="line">numStacks:  跟球体的iStacks一样</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeCylinder</span><span class="params">(GLTriangleBatch&amp; cylinderBatch, GLfloat baseRadius, GLfloat topRadius, GLfloat fLength, GLint numSlices, GLint numStacks)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>创建一个没有底的桶,底部跟顶部的半径都一样,长度为3,分为13瓣,每瓣2个三角形带<br><code>gltMakeCylinder(cylinderBatch, 2.0f, 2.0f, 3.0f, 13, 2);</code></p>
+<p><img src="/images/opengl_notes/gltools_cylinder.png" alt="/images/opengl_notes/gltools_cylinder.png"></p>
+<p>创建一个椎体,顶部半径为0<br><code>gltMakeCylinder(coneBatch, 2.0f, 0.0f, 3.0f, 13, 2);</code></p>
+<p><img src="/images/opengl_notes/gltools_cone.png" alt="/images/opengl_notes/gltools_cone.png"></p>
+<p>圆盘<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">innerRadius:    内半径</span><br><span class="line">outerRadius:    外半径</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeDisk</span><span class="params">(GLTriangleBatch&amp; diskBatch, GLfloat innerRadius, GLfloat outerRadius:, GLint nSlices, GLint nStacks)</span></span>;</span><br></pre></td></tr></table></figure></p>
+<p>创建一个圆盘,内半径1.5,外半径2.0,分13瓣,三角形带为3<br>gltMakeDisk(diskBatch, 1.5f, 3.0f, 13, 3);</p>
+<p><img src="/images/opengl_notes/gltools_disk.png" alt="/images/opengl_notes/gltools_disk.png"></p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/opengl/"> #opengl </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/04/21/graphical/什么是光栅化/">什么是光栅化</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/04/16/graphical/opengl超级宝典配置/">opengl超级宝典配置</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/04/20/graphical/opengl学习笔记/"
+               data-title="opengl学习笔记" data-url="http://blog.zlsky.me/2015/04/20/graphical/opengl学习笔记/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#opengl学习笔记"><span class="nav-number">1.</span> <span class="nav-text">opengl学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#glut"><span class="nav-number">1.1.</span> <span class="nav-text">glut</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#glew"><span class="nav-number">1.2.</span> <span class="nav-text">glew</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gltools"><span class="nav-number">1.3.</span> <span class="nav-text">gltools</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#API函数笔记"><span class="nav-number">1.4.</span> <span class="nav-text">API函数笔记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储着色器"><span class="nav-number">1.5.</span> <span class="nav-text">存储着色器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Uniform值"><span class="nav-number">1.5.1.</span> <span class="nav-text">Uniform值</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点和线"><span class="nav-number">1.6.</span> <span class="nav-text">点和线</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#GLBatch"><span class="nav-number">1.6.1.</span> <span class="nav-text">GLBatch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#点"><span class="nav-number">1.6.2.</span> <span class="nav-text">点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#剔除表面"><span class="nav-number">1.6.3.</span> <span class="nav-text">剔除表面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#填充模式"><span class="nav-number">1.6.4.</span> <span class="nav-text">填充模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#裁剪"><span class="nav-number">1.6.5.</span> <span class="nav-text">裁剪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#混合,抗锯齿"><span class="nav-number">1.6.6.</span> <span class="nav-text">混合,抗锯齿</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gltools-1"><span class="nav-number">1.7.</span> <span class="nav-text">gltools</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建形状"><span class="nav-number">1.7.1.</span> <span class="nav-text">创建形状</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

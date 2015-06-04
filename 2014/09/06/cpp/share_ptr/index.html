@@ -1,0 +1,573 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.3"/>
+
+
+
+
+  <meta name="keywords" content="基础," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.3" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'post'
+  };
+</script>
+
+
+
+
+  <title> share_ptr // Three Stone </title>
+</head>
+
+<body>
+<!--[if lte IE 8]> <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'> <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode"><img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari." style='margin-left:auto;margin-right:auto;display: block;'/></a></div> <![endif]-->
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Three Stone</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+
+  <ul id="menu" class="menu">
+     
+    
+      
+      <li class="menu-item menu-item-home">
+        <a href="/">
+          <i class="menu-item-icon icon-home"></i> <br />
+          首頁
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-about">
+        <a href="/about">
+          <i class="menu-item-icon icon-about"></i> <br />
+          關於
+        </a>
+      </li>
+    
+      
+      <li class="menu-item menu-item-archives">
+        <a href="/archives">
+          <i class="menu-item-icon icon-archives"></i> <br />
+          歸檔
+        </a>
+      </li>
+    
+  </ul>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              share_ptr
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-06
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/06/cpp/share_ptr/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/06/cpp/share_ptr/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h1 id="share_ptr">share_ptr</h1><ul>
+<li>shared_ptr是一个最像指针的”智能指针”，是boost.smart_ptr库中最有价值、最重要的组成部分，也是最有用的，Boost库的许多组件—甚至还包括其他一些领域的智能指针都使用了shared_ptr。抱歉，我实在想不出什么更恰当的词汇来形容它在软件开发中的重要性。再强调一遍，shared_ptr非常有价值、非常重要、非常有用。</li>
+</ul>
+<ul>
+<li><p>shared_ptr与scoped_ptr一样包装了new操作符在堆上分配的动态对象，但它实现的是引用计数型的智能指针 ，可以被自由地拷贝和赋值，在任意的地方共享它，当没有代码使用（引用计数为0）它时才删除被包装的动态分配的对象。shared_ptr也可以安全地放到标准容器中，并弥补了auto_ptr因为转移语义而不能把指针作为STL容器元素的缺陷。</p>
+</li>
+<li><p>在C++历史上曾经出现过无数的引用计数型智能指针实现，但没有一个比得上boost::shared_ptr，在过去、现在和将来，它都是最好的。</p>
+</li>
+</ul>
+<h2 id="shared_ptr的线程安全性"><strong>shared_ptr的线程安全性</strong></h2><ul>
+<li>shared_ptr 本身不是 100% 线程安全的。它的引用计数本身是安全且无锁的，但对象的读写则不是，因为 shared_ptr 有两个数据成员，读写操作不能原子化。根据文档，shared_ptr 的线程安全级别和内建类型、标准库容器、string 一样，即：</li>
+</ul>
+<figure class="highlight ceylon"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">一个 <span class="annotation">shared</span><span class="number">_p</span>tr 实体可被多个线程同时读取；</span><br><span class="line">两个的 <span class="annotation">shared</span><span class="number">_p</span>tr 实体可以被两个线程同时写入，“析构”算写操作；</span><br><span class="line">如果要从多个线程读写同一个 <span class="annotation">shared</span><span class="number">_p</span>tr 对象，那么需要加锁。</span><br></pre></td></tr></table></figure>
+<h2 id="shared_ptr用法"><strong>shared_ptr用法</strong></h2><p>示例一：</p>
+<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;int&gt; sp<span class="params">(new int<span class="params">(<span class="number">10</span>)</span>)</span>;                <span class="comment">//一个指向整数的shared_ptr  </span></span><br><span class="line">assert<span class="params">(sp.unique<span class="params">()</span>)</span>;                            <span class="comment">//现在shared_ptr是指针的唯一持有者   </span></span><br><span class="line">shared_ptr&lt;int&gt; sp2 = sp;                       <span class="comment">//第二个shared_ptr,拷贝构造函数   </span></span><br><span class="line">assert<span class="params">(sp == sp2 &amp;&amp; sp.use_count<span class="params">()</span> == <span class="number">2</span>)</span>;		<span class="comment">//两个shared_ptr相等,指向同一个对象,引用计数为2  </span></span><br><span class="line"><span class="built_in">*</span>sp2 = <span class="number">100</span>;										<span class="comment">//使用解引用操作符修改被指对象  </span></span><br><span class="line">assert<span class="params">(*sp == <span class="number">100</span>)</span>;								<span class="comment">//另一个shared_ptr也同时被修改   </span></span><br><span class="line">sp.reset<span class="params">()</span>;                                     <span class="comment">//停止shared_ptr的使用  </span></span><br><span class="line">assert<span class="params">(!sp)</span>;                                    <span class="comment">//sp不再持有任何指针(空指针)</span></span><br></pre></td></tr></table></figure>
+<p>示例一：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> shared                                    <span class="comment">//一个拥有shared_ptr的类  </span></span><br><span class="line">&#123;  </span><br><span class="line"><span class="keyword">private</span>:      </span><br><span class="line">	<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p;                          <span class="comment">//shared_ptr成员变量  </span></span><br><span class="line"><span class="keyword">public</span>:      </span><br><span class="line">	shared(<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p_):p(p_)&#123;&#125;          <span class="comment">//构造函数初始化shared_ptr      </span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span>                                <span class="comment">//输出shared_ptr的引用计数和指向的值      </span></span><br><span class="line">	</span>&#123;          <span class="built_in">cout</span> &lt;&lt; <span class="string">"count:"</span> &lt;&lt; p.use_count()              </span><br><span class="line">	&lt;&lt; <span class="string">"v ="</span> &lt;&lt;*p &lt;&lt; endl;      </span><br><span class="line">	&#125;  </span><br><span class="line">&#125;;  </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print_func</span><span class="params">(<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p)</span>				<span class="comment">//使用shared_ptr作为函数参数  </span></span><br><span class="line"></span>&#123;       </span><br><span class="line">	<span class="comment">//同样输出shared_ptr的引用计数和指向的值      </span></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"count:"</span> &lt;&lt; p.use_count()          </span><br><span class="line">		&lt;&lt; <span class="string">" v="</span> &lt;&lt;*p &lt;&lt; endl;  &#125;  </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>  </span><br><span class="line"></span>&#123;      </span><br><span class="line">	<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p(<span class="keyword">new</span> <span class="keyword">int</span>(<span class="number">100</span>));      </span><br><span class="line">	<span class="function">shared <span class="title">s1</span><span class="params">(p)</span>, <span class="title">s2</span><span class="params">(p)</span></span>;                        <span class="comment">//构造两个自定义类       </span></span><br><span class="line">	s1.print();      </span><br><span class="line">	s2.print();       </span><br><span class="line">	*p = <span class="number">20</span>;                                    <span class="comment">//修改shared_ptr所指的值      </span></span><br><span class="line">	print_func(p);      </span><br><span class="line">	s1.print();  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="应用于标准容器">应用于标准容器</h2><p>有两种方式可以将shared_ptr应用于标准容器（或者容器适配器等其他容器）。</p>
+<p>一种用法是将容器作为shared_ptr管理的对象，如shared_ptr<list<t> &gt;，使容器可以被安全地共享，用法与普通shared_ptr没有区别，我们不再讨论。</list<t></p>
+<p>另一种用法是将shared_ptr作为容器的元素，如vector<shared_ptr<t> &gt;，因为shared_ptr支持拷贝语义和比较操作，符合标准容器对元素的要求，所以可以实现在容器中安全地容纳元素的指针而不是拷贝。</shared_ptr<t></p>
+<p>标准容器不能容纳auto_ptr，这是C++标准特别规定的（读者永远也不要有这种想法）。标准容器也不能容纳scoped_ptr，因为scoped_ptr不能拷贝和赋值。标准容器可以容纳原始指针，但这就丧失了容器的许多好处，因为标准容器无法自动管理类型为指针的元素，必须编写额外的大量代码来保证指针最终被正确删除，这通常很麻烦很难实现。</p>
+<p>存储shared_ptr的容器与存储原始指针的容器功能几乎一样，但shared_ptr为程序员做了指针的管理工作，可以任意使用shared_ptr而不用担心资源泄漏。</p>
+<p>下面的代码示范了将shared_ptr应用于标准容器的用法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;boost/make_shared.hpp&gt; </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span>  </span><br><span class="line"></span>&#123;      </span><br><span class="line">	<span class="keyword">typedef</span> <span class="built_in">vector</span>&lt;<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; &gt; vs;    <span class="comment">//一个持有shared_ptr的标准容器类型      </span></span><br><span class="line">	<span class="function">vs <span class="title">v</span><span class="params">(10)</span></span>;                               <span class="comment">//声明一个拥有10个元素的容器，元素被初始化为空指针       </span></span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;      </span><br><span class="line">	<span class="keyword">for</span> (vs::iterator pos = v.begin(); pos != v.end(); ++pos)      </span><br><span class="line">	&#123;          </span><br><span class="line">		(*pos) = make_shared&lt;<span class="keyword">int</span>&gt;(++i);     <span class="comment">//使用工厂函数赋值          </span></span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; *(*pos) &lt;&lt; <span class="string">", "</span>;            <span class="comment">//输出值      </span></span><br><span class="line">	&#125;      </span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; endl;       </span><br><span class="line">	<span class="built_in">shared_ptr</span>&lt;<span class="keyword">int</span>&gt; p = v[<span class="number">9</span>];      </span><br><span class="line">	*p = <span class="number">100</span>;      </span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; *v[<span class="number">9</span>] &lt;&lt; endl;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这段代码需要注意的是迭代器和operator[]的用法，因为容器内存储的是shared_ptr，我们必须对迭代器pos使用一次解引用操作符*以获得shared_ptr，然后再对shared_ptr使用解引用操作符*才能操作真正的值。*(*pos)也可以直接写成**pos，但前者更清晰，后者很容易让人迷惑。vector的operator[]用法与迭代器类似，也需要使用*获取真正的值。</p>
+</blockquote>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/基础/"> #基础 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2014/09/07/cpp/std_find,std_find_if/">std::find,std::find_if</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2014/09/05/cpp/pair与make_pair/">C++ std::pair 与 std::make_pair</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2014/09/06/cpp/share_ptr/"
+               data-title="share_ptr" data-url="http://blog.zlsky.me/2014/09/06/cpp/share_ptr/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="zhulei" />
+          <p class="site-author-name">zhulei</p>
+        </div>
+        <p class="site-description motion-element"></p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            
+              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-name">標籤</span>
+              
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="https://twitter.com/zl8522115" target="_blank">Twitter</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://weibo.com/zlsky" target="_blank">Weibo</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/zhu-lei-46-87" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#share_ptr"><span class="nav-number">1.</span> <span class="nav-text">share_ptr</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#shared_ptr的线程安全性"><span class="nav-number">1.1.</span> <span class="nav-text">shared_ptr的线程安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#shared_ptr用法"><span class="nav-number">1.2.</span> <span class="nav-text">shared_ptr用法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用于标准容器"><span class="nav-number">1.3.</span> <span class="nav-text">应用于标准容器</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp;  2012 - 
+  2015
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">zhulei</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js" id="motion.global"></script>
+
+
+
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"threestone"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>
