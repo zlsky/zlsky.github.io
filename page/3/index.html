@@ -117,6 +117,174 @@
           
           
             
+              <a class="post-title-link" href="/2015/01/05/arithmetic/堆与堆排序/">
+                堆与堆排序
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-01-05
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/算法/">算法</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/01/05/arithmetic/堆与堆排序/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/05/arithmetic/堆与堆排序/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  新加入i结点  其父结点为(i - 1) / 2</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MinHeapFixup</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> i)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> j, temp;</span><br><span class="line">	temp = a[i];</span><br><span class="line">	j = (i - <span class="number">1</span>) / <span class="number">2</span>;      		<span class="comment">//父结点</span></span><br><span class="line">	<span class="keyword">while</span> (j &gt;= <span class="number">0</span> &amp;&amp; i != <span class="number">0</span>)	<span class="comment">//必须要父结点,而且新加入的节点不能是第一个</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">if</span> (a[j] &lt;= temp)		<span class="comment">//如果父节点小于或等于当前新加入的节点值,就直接pass掉</span></span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		a[i] = a[j];     		<span class="comment">//将当前新加入的节点与父节点的值互换</span></span><br><span class="line">		i = j;					<span class="comment">//将父节点给予当前节点</span></span><br><span class="line">		j = (i - <span class="number">1</span>) / <span class="number">2</span>;		<span class="comment">//寻找当前节点的父节点,然后递归的找...</span></span><br><span class="line">	&#125;</span><br><span class="line">	a[i] = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//  从i节点开始调整,n为节点总数 从0开始计算 i节点的子节点为 2*i+1, 2*i+2  </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MinHeapFixdown</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> i, <span class="keyword">int</span> n)</span>  </span><br><span class="line"></span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> j, temp;  </span><br><span class="line">    temp = a[i];  	<span class="comment">//第0个元素的值</span></span><br><span class="line">    j = <span class="number">2</span> * i + <span class="number">1</span>;  <span class="comment">//第0个元素的左节点</span></span><br><span class="line">    <span class="keyword">while</span> (j &lt; n)  <span class="comment">//子节点不能为最后一个节点,因为最后一个节点要被删除掉</span></span><br><span class="line">    &#123;  </span><br><span class="line">        <span class="keyword">if</span> (j + <span class="number">1</span> &lt; n &amp;&amp; a[j + <span class="number">1</span>] &lt; a[j]) <span class="comment">//右节点不能为最后一个节点,并且(右节点)小于(左节点)</span></span><br><span class="line">            j++;  <span class="comment">//这样的话就取右节点,意思就是看哪个节点小,就取哪个节点</span></span><br><span class="line">        <span class="keyword">if</span> (a[j] &gt;= temp)  <span class="comment">//如果这个子节点大于父节点,就可以跳过了.</span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">        a[i] = a[j];     <span class="comment">//把较小的子结点往上移动,替换它的父结点  </span></span><br><span class="line">        i = j;  <span class="comment">//这个子节点为父节点</span></span><br><span class="line">        j = <span class="number">2</span> * i + <span class="number">1</span>;  <span class="comment">//找到这个节点的左子节点</span></span><br><span class="line">    &#125;  </span><br><span class="line">    a[i] = temp;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="comment">//在最小堆中删除数  </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MinHeapDeleteNumber</span><span class="params">(<span class="keyword">int</span> a[], <span class="keyword">int</span> n)</span>  </span><br><span class="line"></span>&#123;  </span><br><span class="line">    Swap(a[<span class="number">0</span>], a[n - <span class="number">1</span>]);  </span><br><span class="line">    MinHeapFixdown(a, <span class="number">0</span>, n - <span class="number">1</span>);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/24/database/mongodb2.4用户权限/">
+                mongodb2.4权限管理
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-24
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/database/">database</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/24/database/mongodb2.4用户权限/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/24/database/mongodb2.4用户权限/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="权限管理">权限管理</h1><p>官方文档<a href="http://docs.mongodb.org/manual/reference/method/db.getUser/" target="_blank" rel="external">http://docs.mongodb.org/manual/reference/method/db.getUser/</a><br>也比较简单,这里给出中文解释</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//db.createUser()</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> (<span class="params">userObj, writeConcern</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> commandExisted = <span class="keyword">this</span>._createUser(userObj, writeConcern);</span><br><span class="line">    <span class="keyword">if</span> (!commandExisted) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="built_in">Error</span>(<span class="string">"'createUser' command not found.  This is most likely because you are "</span> +</span><br><span class="line">                    <span class="string">"talking to an old (pre v2.6) MongoDB server"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里重点说一下userObj,userObj是一个json,这里举一个例子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">use admin</span><br><span class="line">db.createUser(&#123;</span><br><span class="line">	user:<span class="string">"admin"</span></span><br><span class="line">	pwd:<span class="string">"123456"</span></span><br><span class="line">	roles:[&#123;</span><br><span class="line">		&#123;role:<span class="string">"readWrite"</span>,db:<span class="string">"test"</span>&#125;</span><br><span class="line">	&#125;]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这里的意思是说建一个用户:”user”,密码:”123456”,对于test数据库有读和写的权限<br>再来一个例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">use test</span><br><span class="line">db.createUser(&#123;</span><br><span class="line">	user:<span class="string">"admin"</span></span><br><span class="line">	pwd:<span class="string">"123456"</span></span><br><span class="line">	roles:[<span class="string">"readWrite"</span>,<span class="string">"clusterAdmin"</span>]</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>这里的意思是说新新一个用户”admin”,密码:”123456”,可以读写,还有集群管理的权限,但这里roles是数组,意思就是当前数据库,也就是”test”</p>
+<h2 id="role权限列表">role权限列表</h2><h3 id="read_指定数据库的只读权限，拥有以下权限：">read 指定数据库的只读权限，拥有以下权限：</h3><p>aggregate,checkShardingIndex,cloneCollectionAsCapped,collStats<br>count,dataSize,dbHash,dbStats,distinct,filemd5<br>geoNear,geoSearch,geoWalk,group<br>mapReduce (inline output only.),text (beta feature.)</p>
+<h3 id="readWrite_拥有指定数据库的读写权限，除了具有read权限，还拥有以下权限：">readWrite 拥有指定数据库的读写权限，除了具有read权限，还拥有以下权限：</h3><p>cloneCollection (as the target database.),convertToCapped<br>create (and to create collections implicitly.)<br>drop(),dropIndexes,emptycapped,ensureIndex()<br>findAndModify,mapReduce (output to a collection.)<br>renameCollection (within the same database.)</p>
+<h3 id="dbAdmin_指定数据库的管理权限">dbAdmin 指定数据库的管理权限</h3><p>clean,collMod,collStats,compact,convertToCapped<br>create,db.createCollection(),dbStats,drop(),dropIndexes,ensureIndex()<br>indexStats,profile,reIndex,renameCollection (within a single database.),validate</p>
+<h3 id="userAdmin_指定数据库的用户管理权限">userAdmin 指定数据库的用户管理权限</h3><p>这个一般用于admin数据库,修改用户之类的</p>
+<h3 id="clusterAdmin_集群管理权限(副本集、分片、主从等相关管理)">clusterAdmin 集群管理权限(副本集、分片、主从等相关管理)</h3><p>addShard,closeAllDatabases,connPoolStats,connPoolSync,_cpuProfilerStart<br>_cpuProfilerStop,cursorInfo,diagLogging,dropDatabase<br>enableSharding,flushRouterConfig,fsync,db.fsyncUnlock()<br>getCmdLineOpts,getLog,getParameter,getShardMap,getShardVersion<br>hostInfo,db.currentOp(),db.killOp(),listDatabases,listShards<br>logRotate,moveChunk,movePrimary,netstat,removeShard,unsetSharding<br>repairDatabase,replSetFreeze,replSetGetStatus,replSetInitiate<br>replSetMaintenance,replSetReconfig,replSetStepDown,replSetSyncFrom<br>resync,serverStatus,setParameter,setShardVersion,shardCollection<br>shardingState,shutdown,splitChunk,splitVector,split,top,touch</p>
+<h3 id="readAnyDatabase">readAnyDatabase</h3><p>任何数据库的只读权限(和read相似)</p>
+<h3 id="readWriteAnyDatabase">readWriteAnyDatabase</h3><p>任何数据库的读写权限(和readWrite相似)</p>
+<h3 id="userAdminAnyDatabase">userAdminAnyDatabase</h3><p>任何数据库用户的管理权限(和userAdmin相似)</p>
+<h3 id="dbAdminAnyDatabase">dbAdminAnyDatabase</h3><p>任何数据库的管理权限(dbAdmin相似)</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/18/database/mongodb索引/">
                 mongodb索引
               </a>
@@ -214,6 +382,84 @@
 <h2 id="TTL索引">TTL索引</h2><p>这种索引允许为每一个文档设置一个超时时间。一个文档到达预设置的老化程度之后就会被删除。这种类型的索引对于缓存问题（比如会话的保存）非常有用。<br>在ensureIndex 中指定expireAfterSecs 选项就可以创建一个TTL 索引：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment">// 超时时间为24 小时</span></span><br><span class="line">&gt; db.foo.ensureIndex(&#123;<span class="string">"lastUpdated"</span> : <span class="number">1</span>&#125;, &#123;<span class="string">"expireAfterSecs"</span> : <span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>&#125;)</span><br></pre></td></tr></table></figure></p>
 <p>这样就在”lastUpdated” 字段上建立了一个TTL 索引。如果一个文档的”lastUpdated” 字段存在并且它的值是日期类型， 当服务器时间比文档的”lastUpdated” 字段的时间晚expireAfterSecs 秒时，文档就会被删除。</p>
 <p>MongoDB 每分钟对TTL 索引进行一次清理，所以不应该依赖以秒为单位的时间保证索引的存活状态。可以使用collMod 命令修改expireAfterSecs 的值：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.runCommand(&#123;<span class="string">"collMod"</span> : <span class="string">"someapp.cache"</span>, <span class="string">"expireAfterSecs"</span> : <span class="number">3600</span>&#125;)</span><br><span class="line"><span class="comment">//修改sameapp.cache集合里面的ttl索引,由每分钟清理变为3600秒清理一次</span></span><br></pre></td></tr></table></figure></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/18/database/mongodb集合/">
+                mongodb集合
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/database/">database</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/18/database/mongodb集合/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/18/database/mongodb集合/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="集合">集合</h1><h2 id="固定集合">固定集合</h2><p>固定集合就是一个环状队列,固定大小,永远循环下去.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.createCollection(<span class="string">"my_collection"</span>, &#123;<span class="string">"capped"</span> : <span class="literal">true</span>, <span class="string">"size"</span> : <span class="number">100000</span>,<span class="string">"max"</span>:<span class="number">100</span>&#125;);</span><br><span class="line">&#123; <span class="string">"ok"</span> : <span class="literal">true</span> &#125;</span><br><span class="line"><span class="comment">//创建了一个名为my_collection 大小为100 000 字节的固定集合并且最大的记录数为100</span></span><br><span class="line">db.my_collection.find().sort(&#123;<span class="string">"$natural"</span> : -<span class="number">1</span>&#125;)</span><br><span class="line"><span class="comment">//可以按order by desc的方式搜索数据</span></span><br></pre></td></tr></table></figure></p>
+<p>这个固定集合可以用一个循环游标在后台持续运行<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$cursor</span> = <span class="variable">$collection</span>-&gt;find()-&gt;tailable();</span><br><span class="line"><span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">	<span class="keyword">if</span> (!<span class="variable">$cursor</span>-&gt;hasNext()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="variable">$cursor</span>-&gt;dead()) &#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		sleep(<span class="number">1</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="keyword">while</span> (<span class="variable">$cursor</span>-&gt;hasNext()) &#123;</span><br><span class="line">			do_stuff(<span class="variable">$cursor</span>-&gt;getNext());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//游标超过10 分钟没有新的结果或者人为中止查询操作,才会结束</span></span><br></pre></td></tr></table></figure></p>
 
         
       
@@ -937,336 +1183,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/11/26/golang/reflect设计select/">
-                reflect设计select
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-26
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/26/golang/reflect设计select/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/26/golang/reflect设计select/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="常规模式:">常规模式:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> chs1 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">var</span> chs2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">float64</span>)</span><br><span class="line">	<span class="keyword">var</span> chs3 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">	<span class="keyword">var</span> ch4close = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">defer</span> <span class="built_in">close</span>(ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">int</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- i</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs1, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">float64</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="typename">float64</span>(i) + <span class="number">0.1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs2, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">string</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="string">"string:"</span> + strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs3, ch4close)</span><br><span class="line">	done := <span class="number">0</span></span><br><span class="line">	finished := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> finished &lt; <span class="number">3</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs1:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">0</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs2:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">1</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs3:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">2</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> _, ok := &lt;-ch4close:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				finished = finished + <span class="number">1</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">"Done"</span>, done)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="reflect设计:">reflect设计:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> chs1 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">var</span> chs2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">float64</span>)</span><br><span class="line">	<span class="keyword">var</span> chs3 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">	<span class="keyword">var</span> ch4close = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">defer</span> <span class="built_in">close</span>(ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">int</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- i</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs1, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">float64</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="typename">float64</span>(i) + <span class="number">0.1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs2, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">string</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="string">"string:"</span> + strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs3, ch4close)</span><br><span class="line">	<span class="keyword">var</span> selectCase = <span class="built_in">make</span>([]reflect.SelectCase, <span class="number">4</span>)</span><br><span class="line">	selectCase[<span class="number">0</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">0</span>].Chan = reflect.ValueOf(chs1)</span><br><span class="line">	selectCase[<span class="number">1</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">1</span>].Chan = reflect.ValueOf(chs2)</span><br><span class="line">	selectCase[<span class="number">2</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">2</span>].Chan = reflect.ValueOf(chs3)</span><br><span class="line">	selectCase[<span class="number">3</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">3</span>].Chan = reflect.ValueOf(ch4close)</span><br><span class="line">	done := <span class="number">0</span></span><br><span class="line">	finished := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> finished &lt; <span class="built_in">len</span>(selectCase)-<span class="number">1</span> &#123;</span><br><span class="line">		chosen, recv, recvOk := reflect.Select(selectCase)</span><br><span class="line">		<span class="keyword">if</span> recvOk &#123;</span><br><span class="line">			done = done+<span class="number">1</span></span><br><span class="line">			<span class="keyword">switch</span> chosen &#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">				fmt.Println(chosen, recv.Int())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">				fmt.Println(chosen, recv.Float())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">				fmt.Println(chosen, recv.String())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">				finished = finished+<span class="number">1</span></span><br><span class="line">				done = done-<span class="number">1</span></span><br><span class="line">				<span class="comment">// fmt.Println("finished\t", finished)</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">"Done"</span>, done)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="reflect-SelectCase是用来描述select_&gt;_case里面的语句"><code>reflect.SelectCase</code>是用来描述select &gt; case里面的语句</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> SelectCase <span class="keyword">struct</span> &#123;</span><br><span class="line">    Dir  SelectDir <span class="comment">// case的方向</span></span><br><span class="line">    Chan Value     <span class="comment">// 使用的通道（收/发）</span></span><br><span class="line">    Send Value     <span class="comment">// 用于发送的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>如果Dir是SelectDefault，该条case代表default case。Chan和Send字段必须是Value零值。</li>
-<li>如果Dir是SelectSend，该条case代表一个发送操作。Chan字段底层必须是一个chan类型，Send的底层必须是可以直接赋值给该chan类型成员类型的类型。如果Chan是Value零值，则不管Send字段是不是零值，该条case都会被忽略。</li>
-<li>如果Dir是SelectRecv，该条case代表一个接收操作。Chan字段底层必须是一个chan类型，而Send必须是一个Value零值。如果Chan是Value零值，该条case会被忽略，但Send字段仍需是Value零值。当该条case被执行时，接收到的值会被Select返回。</li>
-</ul>
-<h3 id="reflect-Select(cases_[]SelectCase)_(chosen_int,_recv_Value,_recvOK_bool)">reflect.Select(cases []SelectCase) (chosen int, recv Value, recvOK bool)</h3><p>Select函数执行cases切片描述的select操作。 类似go的select语句，它会阻塞直到至少一条case可以执行，从可执行的case中（伪）随机的选择一条，并执行该条case。它会返回选择执行的case的索引，以及如果执行的是接收case时，会返回接收到的值，以及一个布尔值说明该值是否对应于通道中某次发送的值（用以区分通道关闭时接收到的零值，此时recvOK会设为false）。</p>
-<blockquote>
-<p>这样的好处是当select &gt; case时一大堆时,要写一大堆,直接用反射包就能很好的解决了.</p>
-</blockquote>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/11/18/golang/golang反射实战/">
-                golang反射实战
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/18/golang/golang反射实战/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/golang反射实战/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="反射实战">反射实战</h1><p>Go语言是静态类型，所有数据的类型在编译器都是明确的，规定好了的。<br>总之在编译的时候就决定了数据的类型的。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> i <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> j MyInt</span><br></pre></td></tr></table></figure>
-<p>即使是底层存的是一个类型，声明的类型不一样，也要强制转换才能互用。</p>
-<p>另：go里面没有隐式转换，碰到类型不同只能强转。</p>
-<p>牛逼哄哄地不让你有半点越界。</p>
-<p>比如io package 里面的Reader和Writer。</p>
-<p>只要实现了Reader的read方法，就可以按照read来存</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line"><span class="comment">// and so on</span></span><br></pre></td></tr></table></figure>
-<p>标准输入可以作reader,用bufio.NewReader给reader加一层缓冲的reader也可以作为reader，</p>
-<p>bytes包里的Buffer也实现了read，所以也可以作为reader。</p>
-<p>这样的话，一种类型能够存储的东西就多了。但是对外的调用接口是不变的。</p>
-<p>静态类型的意义还是没有变，无论r存的是什么，它都是io.Reader。</p>
-<p>好了，好戏上演。</p>
-<p>最最极端的东西就是…………</p>
-<p>interface{} 画外音：我就是一个什么接口也不要实现的接口类型，是不是显得很拉风？</p>
-<p>之前这些，都是为了解释反射做的铺垫。有人说Go是动态类型的，那就只有“呵了个呵了个呵了个呵”啦。虽说存储的东西可能不一样，但是存储的东西始终都是满足了定义好的interface的。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">type</span> Stringer <span class="keyword">interface</span> &#123;</span><br><span class="line">	String() <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Binary <span class="typename">uint64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (i Binary) String() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> strconv.Uitob64(i.Get(), <span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (i Binary) Get() <span class="typename">uint64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="typename">uint64</span>(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>以这段代码为例。</p>
-<p>Interface就存两个指针，一个是指向Binary的，另一个指向的是iTable（interface Table），</p>
-<p>这个table，开始存数据的一些类型信息，后面接着存方法，比如fun[0]指向的就是binary的String。</p>
-<p>binary的Get在这里面就没有了。</p>
-<p>数据域的指针指向的是一个全新的拷贝，不是直接把指针指向了binary，就像var c uint64 = b一样的复制。</p>
-<p>如果想要获得数据的type的话，就像C表达一样 s.tab-&gt;type 就可以了。</p>
-<p>想要调用s.String（）的方法的话，就直接s.tab-&gt;fun<a href="">0</a>，也就是(*Binary).String()</p>
-<p>这里我们只考虑了只有一个method的interface，如果interface有很多的method话，在itab下面就会有更多的函数指针。</p>
-<p>总之一句话，interface会把存的具体的数据存在data域里，类型和方法存在itab里面。</p>
-<p>如果没有规定method的话，那么实际存储的时候只会保留type。</p>
-<p>还是铺垫…… 空的interface存起来，就是这么回事。</p>
-<p>接下来是refection</p>
-<p>反射只是用来检测(type,value)pair的。也就是之前提到的数据域和itab域里的type。</p>
-<p>相对应的，在refect的包里面，有Type和Value两个类型，而且Type和Value都提供了丰富的获取，改变，检查的函数，比如检查Func的参数，检查map的key，设置函数体等等。这两个类型提供接触interface值的方法，refect.TypeOf 和refect.ValueOf 可以从interface取到对应的内容（从Value类型里面也可以轻松取到Type，但是为了解释清楚，先分开来说）。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	fmt.Println(<span class="string">"type:"</span>, reflect.TypeOf(x))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: float64</span></span><br></pre></td></tr></table></figure>
-<p>先举个例子。</p>
-<p>之前说reflect是用来取interface的内容的，你这是怎么回事?</p>
-<p>实际上这个函数的定义是这样的。</p>
-<p>// TypeOf returns the reflection Type of the value in the interface{}. func TypeOf(i interface{}) Type 首先x会存储在空的interface里面，也就是根据之前那张图来存储。</p>
-<p>空的interface可以存任何类型的数据，因为它不需要实现任何方法。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, reflect.ValueOf(x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: &lt;float64 Value&gt;</span></span><br></pre></td></tr></table></figure>
-<p>运行这段代码你就知道区别了，x的类型和数据都被存储了起来。</p>
-<p>好啦。通过value和type这两个对象的一系列函数，我就能操作interface类型了。</p>
-<p>valueOf 获得的是复制，对于它的修改对原来的数据是没有影响的。如果想要修改原值，就要用指针。再用p.Elem就能获得可以修改的对象了。</p>
-<p>要处理struct的话，</p>
-<p>也要像这样:</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">	A <span class="typename">int</span></span><br><span class="line">	B <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line">t := T&#123;<span class="number">23</span>, <span class="string">"skidoo"</span>&#125;</span><br><span class="line">s := reflect.ValueOf(&amp;t).Elem()</span><br><span class="line">typeOfT := s.Type()</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; s.NumField(); i++ &#123;</span><br><span class="line">	f := s.Field(i)</span><br><span class="line">	fmt.Printf(<span class="string">"%d: %s %s = %v\n"</span>, i,</span><br><span class="line">	typeOfT.Field(i).Name, f.Type(), f.Interface())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	0: A int = 23</span></span><br><span class="line">			<span class="number">1</span>: B <span class="typename">string</span> = skidoo</span><br></pre></td></tr></table></figure>
-<p>通过Elem的获得可修改对象，然后再Filed获取对应的value。</p>
-<p>这是一般类型。如果要处理channel，slice，func怎么办？</p>
-<p>剩下的就是一大堆标准库函数去慢慢折腾了。</p>
-<p>从官方的Func的example看看。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main()&#123;</span><br><span class="line">	<span class="comment">// swap is the implementation passed to MakeFunc.</span></span><br><span class="line">	<span class="comment">// It must work in terms of reflect.Values so that it is possible</span></span><br><span class="line">	<span class="comment">// to write code without knowing beforehand what the types</span></span><br><span class="line">	<span class="comment">// will be.</span></span><br><span class="line">	swap := <span class="keyword">func</span>(in []reflect.Value) []reflect.Value &#123;</span><br><span class="line">	    <span class="keyword">return</span> []reflect.Value&#123;in[<span class="number">1</span>], in[<span class="number">0</span>]&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// makeSwap expects fptr to be a pointer to a nil function.</span></span><br><span class="line">	<span class="comment">// It sets that pointer to a new function created with MakeFunc.</span></span><br><span class="line">	<span class="comment">// When the function is invoked, reflect turns the arguments</span></span><br><span class="line">	<span class="comment">// into Values, calls swap, and then turns swap's result slice</span></span><br><span class="line">	<span class="comment">// into the values returned by the new function.</span></span><br><span class="line">	makeSwap := <span class="keyword">func</span>(fptr <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	    <span class="comment">// fptr is a pointer to a function.</span></span><br><span class="line">	    <span class="comment">// Obtain the function value itself (likely nil) as a reflect.Value</span></span><br><span class="line">	    <span class="comment">// so that we can query its type and then set the value.</span></span><br><span class="line">	    fn := reflect.ValueOf(fptr).Elem()</span><br><span class="line">	    <span class="comment">// Make a function of the right type.</span></span><br><span class="line">	    v := reflect.MakeFunc(fn.Type(), swap)</span><br><span class="line">	    <span class="comment">// Assign it to the value fn represents.</span></span><br><span class="line">	    fn.Set(v)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Make and call a swap function for ints.</span></span><br><span class="line">	<span class="keyword">var</span> intSwap <span class="keyword">func</span>(<span class="typename">int</span>, <span class="typename">int</span>) (<span class="typename">int</span>, <span class="typename">int</span>)</span><br><span class="line">	makeSwap(&amp;intSwap)</span><br><span class="line">	fmt.Println(intSwap(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">	<span class="comment">// Make and call a swap function for float64s.</span></span><br><span class="line">	<span class="keyword">var</span> floatSwap <span class="keyword">func</span>(<span class="typename">float64</span>, <span class="typename">float64</span>) (<span class="typename">float64</span>, <span class="typename">float64</span>)</span><br><span class="line">	makeSwap(&amp;floatSwap)</span><br><span class="line">	fmt.Println(floatSwap(<span class="number">2.72</span>, <span class="number">3.14</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	1 0</span></span><br><span class="line">			<span class="number">3.14</span> <span class="number">2.72</span></span><br></pre></td></tr></table></figure>
-<p>这里也跟之前的那个x一样 intSwap和floatSwap都会存成interface{}</p>
-<p>然后通过MakeFunc这个函数依据类型和swap来构造一个函数。</p>
-<p>并且通过Set方法设置。</p>
-<p>用之前的思路解释一遍，就是传入函数指针，这个指针会被存为interface。Value存的是空值，Type存的是 <code>func(int,int)(int,int)</code>或者func<code>(float,float)(float,float)</code>。</p>
-<p>这个时候通过make构造一个Value出来给接口赋值，注意这里的区别，interface还是没有方法的空接口。</p>
-<p>我们之前说的接口的方法是存在itab下面的，这里的Value是存在data域下面的。</p>
-<p>因为这个对象是一个函数，所以函数的data域就是一个函数。</p>
-<p>之后再调用intSwap和floatSwap都可以跑出相应的结果，就是通过这样的方式实体化了函数的内容。</p>
-<p>这样就有点像C++里面的模板函数了。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/11/18/golang/unsafe简介/">
-                利用unsafe操作未导出变量
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/18/golang/unsafe简介/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/unsafe简介/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>unsafe.Pointer其实就是类似C的void *，在golang中是用于各种指针相互转换的桥梁。uintptr是golang的内置类型，是能存储指针的整型，uintptr的底层类型是int，它和unsafe.Pointer可相互转换。uintptr和unsafe.Pointer的区别就是：unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算；而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象，uintptr类型的目标会被回收。golang的unsafe包很强大，基本上很少会去用它。它可以像C一样去操作内存，但由于golang不支持直接进行指针运算，所以用起来稍显麻烦。</p>
-<p>切入正题。利用unsafe包，可操作私有变量(在golang中称为“未导出变量”，变量名以小写字母开始)，下面是具体例子。</p>
-<p>在$GOPATH/src下建立poit包，并在poit下建立子包p，目录结构如下：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$GOPATH/src</span><br><span class="line">-<span class="ruby">---poit</span><br><span class="line"></span>-<span class="ruby">-------p</span><br><span class="line"></span>-<span class="ruby">-----------v.go</span><br><span class="line"></span>-<span class="ruby">-------main.go</span></span><br></pre></td></tr></table></figure></p>
-<p>以下是v.go的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> V <span class="keyword">struct</span> &#123;</span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutI() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"i=%d\n"</span>, this.i)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutJ() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"j=%d\n"</span>, this.j)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>意图很明显，我是想通过unsafe包来实现对V的成员i和j赋值，然后通过PutI()和PutJ()来打印观察输出结果。</p>
-<p>以下是main.go源代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"poit/p"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br><span class="line">    <span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br><span class="line">    *i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br><span class="line">    <span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br><span class="line">    *j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br><span class="line">    v.PutI()</span><br><span class="line">    v.PutJ()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当然会有些限制，比如需要知道结构体V的成员布局，要修改的成员大小以及成员的偏移量。我们的核心思想就是：结构体的成员在内存中的分配是一段连续的内存，结构体中第一个成员的地址就是这个结构体的地址，您也可以认为是相对于这个结构体偏移了0。相同的，这个结构体中的任一成员都可以相对于这个结构体的偏移来计算出它在内存中的绝对地址。</p>
-<p>具体来讲解下main方法的实现：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br></pre></td></tr></table></figure>
-<p>new是golang的内置方法，用来分配一段内存(会按类型的零值来清零)，并返回一个指针。所以v就是类型为p.V的一个指针。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br></pre></td></tr></table></figure>
-<p>将指针v转成通用指针，再转成int32指针。这里就看到了unsafe.Pointer的作用了，您不能直接将v转成int32类型的指针，那样将会panic。刚才说了v的地址其实就是它的第一个成员的地址，所以这个i就很显然指向了v的成员i，通过给i赋值就相当于给v.i赋值了，但是别忘了i只是个指针，要赋值得解引用。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br></pre></td></tr></table></figure>
-<p>现在已经成功的改变了v的私有成员i的值，好开心^_^</p>
-<p>但是对于v.j来说，怎么来得到它在内存中的地址呢？其实我们可以获取它相对于v的偏移量(unsafe.Sizeof可以为我们做这个事)，但我上面的代码并没有这样去实现。各位别急，一步步来。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br></pre></td></tr></table></figure>
-<p>其实我们已经知道v是有两个成员的，包括i和j，并且在定义中，i位于j的前面，而i是int32类型，也就是说i占4个字节。所以j是相对于v偏移了4个字节。您可以用uintptr(4)或uintptr(unsafe.Sizeof(int32(0)))来做这个事。unsafe.Sizeof方法用来得到一个值应该占用多少个字节空间。注意这里跟C的用法不一样，C是直接传入类型，而golang是传入值。之所以转成uintptr类型是因为需要做指针运算。v的地址加上j相对于v的偏移地址，也就得到了v.j在内存中的绝对地址，别忘了j的类型是int64，所以现在的j就是一个指向v.j的指针，接下来给它赋值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br></pre></td></tr></table></figure>
-<p>好吧，现在貌视一切就绪了，来打印下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v.PutI()</span><br><span class="line">v.PutJ()</span><br></pre></td></tr></table></figure>
-<p>如果您看到了正确的输出，那恭喜您，您做到了！</p>
-<p>但是，别忘了上面的代码其实是有一些问题的，您发现了吗？</p>
-<p>在p目录下新建w.go文件，代码如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> W <span class="keyword">struct</span> &#123;</span><br><span class="line">    b <span class="typename">byte</span></span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> init() &#123;</span><br><span class="line">    <span class="keyword">var</span> w *W = <span class="built_in">new</span>(W)</span><br><span class="line">    fmt.Printf(<span class="string">"size=%d\n"</span>, unsafe.Sizeof(*w))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>需要修改main.go的代码吗？不需要，我们只是来测试一下。w.go里定义了一个特殊方法init，它会在导入p包时自动执行，别忘了我们有在main.go里导入p包。每个包都可定义多个init方法，它们会在包被导入时自动执行(在执行main方法前被执行，通常用于初始化工作)，但是，最好在一个包中只定义一个init方法，否则您或许会很难预期它的行为)。我们来看下它的输出：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">size=<span class="number">16</span></span><br></pre></td></tr></table></figure>
-<p>等等，好像跟我们想像的不一致。来手动计算一下：b是byte类型，占1个字节；i是int32类型，占4个字节；j是int64类型，占8个字节，1+4+8=13。这是怎么回事呢？这是因为发生了对齐。在struct中，它的对齐值是它的成员中的最大对齐值。每个成员类型都有它的对齐值，可以用unsafe.Alignof方法来计算，比如unsafe.Alignof(w.b)就可以得到b在w中的对齐值。同理，我们可以计算出w.b的对齐值是1，w.i的对齐值是4，w.j的对齐值也是4。如果您认为w.j的对齐值是8那就错了，所以我们前面的代码能正确执行(试想一下，如果w.j的对齐值是8，那前面的赋值代码就有问题了。也就是说前面的赋值中，如果v.j的对齐值是8，那么v.i跟v.j之间应该有4个字节的填充。所以得到正确的对齐值是很重要的)。对齐值最小是1，这是因为存储单元是以字节为单位。所以b就在w的首地址，而i的对齐值是4，它的存储地址必须是4的倍数，因此，在b和i的中间有3个填充，同理j也需要对齐，但因为i和j之间不需要填充，所以w的Sizeof值应该是13+3=16。如果要通过unsafe来对w的三个私有成员赋值，b的赋值同前，而i的赋值则需要跳过3个字节，也就是计算偏移量的时候多跳过3个字节，同理j的偏移可以通过简单的数学运算就能得到。</p>
-<p>比如也可以通过unsafe来灵活取值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> b []<span class="typename">byte</span> = []<span class="typename">byte</span>&#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> c *<span class="typename">byte</span> = &amp;b[<span class="number">0</span>]</span><br><span class="line">    fmt.Println(*(*<span class="typename">byte</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(c)) + <span class="typename">uintptr</span>(<span class="number">1</span>))))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>关于填充，FastCGI协议就用到了。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1305,21 +1221,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-count">68</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

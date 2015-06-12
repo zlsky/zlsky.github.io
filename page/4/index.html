@@ -117,6 +117,336 @@
           
           
             
+              <a class="post-title-link" href="/2014/11/26/golang/reflect设计select/">
+                reflect设计select
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-26
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/26/golang/reflect设计select/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/26/golang/reflect设计select/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="常规模式:">常规模式:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> chs1 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">var</span> chs2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">float64</span>)</span><br><span class="line">	<span class="keyword">var</span> chs3 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">	<span class="keyword">var</span> ch4close = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">defer</span> <span class="built_in">close</span>(ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">int</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- i</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs1, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">float64</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="typename">float64</span>(i) + <span class="number">0.1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs2, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">string</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="string">"string:"</span> + strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs3, ch4close)</span><br><span class="line">	done := <span class="number">0</span></span><br><span class="line">	finished := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> finished &lt; <span class="number">3</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs1:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">0</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs2:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">1</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs3:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">2</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> _, ok := &lt;-ch4close:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				finished = finished + <span class="number">1</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">"Done"</span>, done)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="reflect设计:">reflect设计:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> chs1 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">var</span> chs2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">float64</span>)</span><br><span class="line">	<span class="keyword">var</span> chs3 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">	<span class="keyword">var</span> ch4close = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">defer</span> <span class="built_in">close</span>(ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">int</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- i</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs1, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">float64</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="typename">float64</span>(i) + <span class="number">0.1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs2, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">string</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="string">"string:"</span> + strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs3, ch4close)</span><br><span class="line">	<span class="keyword">var</span> selectCase = <span class="built_in">make</span>([]reflect.SelectCase, <span class="number">4</span>)</span><br><span class="line">	selectCase[<span class="number">0</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">0</span>].Chan = reflect.ValueOf(chs1)</span><br><span class="line">	selectCase[<span class="number">1</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">1</span>].Chan = reflect.ValueOf(chs2)</span><br><span class="line">	selectCase[<span class="number">2</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">2</span>].Chan = reflect.ValueOf(chs3)</span><br><span class="line">	selectCase[<span class="number">3</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">3</span>].Chan = reflect.ValueOf(ch4close)</span><br><span class="line">	done := <span class="number">0</span></span><br><span class="line">	finished := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> finished &lt; <span class="built_in">len</span>(selectCase)-<span class="number">1</span> &#123;</span><br><span class="line">		chosen, recv, recvOk := reflect.Select(selectCase)</span><br><span class="line">		<span class="keyword">if</span> recvOk &#123;</span><br><span class="line">			done = done+<span class="number">1</span></span><br><span class="line">			<span class="keyword">switch</span> chosen &#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">				fmt.Println(chosen, recv.Int())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">				fmt.Println(chosen, recv.Float())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">				fmt.Println(chosen, recv.String())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">				finished = finished+<span class="number">1</span></span><br><span class="line">				done = done-<span class="number">1</span></span><br><span class="line">				<span class="comment">// fmt.Println("finished\t", finished)</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">"Done"</span>, done)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="reflect-SelectCase是用来描述select_&gt;_case里面的语句"><code>reflect.SelectCase</code>是用来描述select &gt; case里面的语句</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> SelectCase <span class="keyword">struct</span> &#123;</span><br><span class="line">    Dir  SelectDir <span class="comment">// case的方向</span></span><br><span class="line">    Chan Value     <span class="comment">// 使用的通道（收/发）</span></span><br><span class="line">    Send Value     <span class="comment">// 用于发送的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果Dir是SelectDefault，该条case代表default case。Chan和Send字段必须是Value零值。</li>
+<li>如果Dir是SelectSend，该条case代表一个发送操作。Chan字段底层必须是一个chan类型，Send的底层必须是可以直接赋值给该chan类型成员类型的类型。如果Chan是Value零值，则不管Send字段是不是零值，该条case都会被忽略。</li>
+<li>如果Dir是SelectRecv，该条case代表一个接收操作。Chan字段底层必须是一个chan类型，而Send必须是一个Value零值。如果Chan是Value零值，该条case会被忽略，但Send字段仍需是Value零值。当该条case被执行时，接收到的值会被Select返回。</li>
+</ul>
+<h3 id="reflect-Select(cases_[]SelectCase)_(chosen_int,_recv_Value,_recvOK_bool)">reflect.Select(cases []SelectCase) (chosen int, recv Value, recvOK bool)</h3><p>Select函数执行cases切片描述的select操作。 类似go的select语句，它会阻塞直到至少一条case可以执行，从可执行的case中（伪）随机的选择一条，并执行该条case。它会返回选择执行的case的索引，以及如果执行的是接收case时，会返回接收到的值，以及一个布尔值说明该值是否对应于通道中某次发送的值（用以区分通道关闭时接收到的零值，此时recvOK会设为false）。</p>
+<blockquote>
+<p>这样的好处是当select &gt; case时一大堆时,要写一大堆,直接用反射包就能很好的解决了.</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/18/golang/golang反射实战/">
+                golang反射实战
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/18/golang/golang反射实战/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/golang反射实战/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="反射实战">反射实战</h1><p>Go语言是静态类型，所有数据的类型在编译器都是明确的，规定好了的。<br>总之在编译的时候就决定了数据的类型的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> i <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> j MyInt</span><br></pre></td></tr></table></figure>
+<p>即使是底层存的是一个类型，声明的类型不一样，也要强制转换才能互用。</p>
+<p>另：go里面没有隐式转换，碰到类型不同只能强转。</p>
+<p>牛逼哄哄地不让你有半点越界。</p>
+<p>比如io package 里面的Reader和Writer。</p>
+<p>只要实现了Reader的read方法，就可以按照read来存</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line"><span class="comment">// and so on</span></span><br></pre></td></tr></table></figure>
+<p>标准输入可以作reader,用bufio.NewReader给reader加一层缓冲的reader也可以作为reader，</p>
+<p>bytes包里的Buffer也实现了read，所以也可以作为reader。</p>
+<p>这样的话，一种类型能够存储的东西就多了。但是对外的调用接口是不变的。</p>
+<p>静态类型的意义还是没有变，无论r存的是什么，它都是io.Reader。</p>
+<p>好了，好戏上演。</p>
+<p>最最极端的东西就是…………</p>
+<p>interface{} 画外音：我就是一个什么接口也不要实现的接口类型，是不是显得很拉风？</p>
+<p>之前这些，都是为了解释反射做的铺垫。有人说Go是动态类型的，那就只有“呵了个呵了个呵了个呵”啦。虽说存储的东西可能不一样，但是存储的东西始终都是满足了定义好的interface的。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">type</span> Stringer <span class="keyword">interface</span> &#123;</span><br><span class="line">	String() <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Binary <span class="typename">uint64</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (i Binary) String() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> strconv.Uitob64(i.Get(), <span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (i Binary) Get() <span class="typename">uint64</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="typename">uint64</span>(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以这段代码为例。</p>
+<p>Interface就存两个指针，一个是指向Binary的，另一个指向的是iTable（interface Table），</p>
+<p>这个table，开始存数据的一些类型信息，后面接着存方法，比如fun[0]指向的就是binary的String。</p>
+<p>binary的Get在这里面就没有了。</p>
+<p>数据域的指针指向的是一个全新的拷贝，不是直接把指针指向了binary，就像var c uint64 = b一样的复制。</p>
+<p>如果想要获得数据的type的话，就像C表达一样 s.tab-&gt;type 就可以了。</p>
+<p>想要调用s.String（）的方法的话，就直接s.tab-&gt;fun<a href="">0</a>，也就是(*Binary).String()</p>
+<p>这里我们只考虑了只有一个method的interface，如果interface有很多的method话，在itab下面就会有更多的函数指针。</p>
+<p>总之一句话，interface会把存的具体的数据存在data域里，类型和方法存在itab里面。</p>
+<p>如果没有规定method的话，那么实际存储的时候只会保留type。</p>
+<p>还是铺垫…… 空的interface存起来，就是这么回事。</p>
+<p>接下来是refection</p>
+<p>反射只是用来检测(type,value)pair的。也就是之前提到的数据域和itab域里的type。</p>
+<p>相对应的，在refect的包里面，有Type和Value两个类型，而且Type和Value都提供了丰富的获取，改变，检查的函数，比如检查Func的参数，检查map的key，设置函数体等等。这两个类型提供接触interface值的方法，refect.TypeOf 和refect.ValueOf 可以从interface取到对应的内容（从Value类型里面也可以轻松取到Type，但是为了解释清楚，先分开来说）。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	fmt.Println(<span class="string">"type:"</span>, reflect.TypeOf(x))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: float64</span></span><br></pre></td></tr></table></figure>
+<p>先举个例子。</p>
+<p>之前说reflect是用来取interface的内容的，你这是怎么回事?</p>
+<p>实际上这个函数的定义是这样的。</p>
+<p>// TypeOf returns the reflection Type of the value in the interface{}. func TypeOf(i interface{}) Type 首先x会存储在空的interface里面，也就是根据之前那张图来存储。</p>
+<p>空的interface可以存任何类型的数据，因为它不需要实现任何方法。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, reflect.ValueOf(x))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: &lt;float64 Value&gt;</span></span><br></pre></td></tr></table></figure>
+<p>运行这段代码你就知道区别了，x的类型和数据都被存储了起来。</p>
+<p>好啦。通过value和type这两个对象的一系列函数，我就能操作interface类型了。</p>
+<p>valueOf 获得的是复制，对于它的修改对原来的数据是没有影响的。如果想要修改原值，就要用指针。再用p.Elem就能获得可以修改的对象了。</p>
+<p>要处理struct的话，</p>
+<p>也要像这样:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">	A <span class="typename">int</span></span><br><span class="line">	B <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line">t := T&#123;<span class="number">23</span>, <span class="string">"skidoo"</span>&#125;</span><br><span class="line">s := reflect.ValueOf(&amp;t).Elem()</span><br><span class="line">typeOfT := s.Type()</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; s.NumField(); i++ &#123;</span><br><span class="line">	f := s.Field(i)</span><br><span class="line">	fmt.Printf(<span class="string">"%d: %s %s = %v\n"</span>, i,</span><br><span class="line">	typeOfT.Field(i).Name, f.Type(), f.Interface())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	0: A int = 23</span></span><br><span class="line">			<span class="number">1</span>: B <span class="typename">string</span> = skidoo</span><br></pre></td></tr></table></figure>
+<p>通过Elem的获得可修改对象，然后再Filed获取对应的value。</p>
+<p>这是一般类型。如果要处理channel，slice，func怎么办？</p>
+<p>剩下的就是一大堆标准库函数去慢慢折腾了。</p>
+<p>从官方的Func的example看看。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main()&#123;</span><br><span class="line">	<span class="comment">// swap is the implementation passed to MakeFunc.</span></span><br><span class="line">	<span class="comment">// It must work in terms of reflect.Values so that it is possible</span></span><br><span class="line">	<span class="comment">// to write code without knowing beforehand what the types</span></span><br><span class="line">	<span class="comment">// will be.</span></span><br><span class="line">	swap := <span class="keyword">func</span>(in []reflect.Value) []reflect.Value &#123;</span><br><span class="line">	    <span class="keyword">return</span> []reflect.Value&#123;in[<span class="number">1</span>], in[<span class="number">0</span>]&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// makeSwap expects fptr to be a pointer to a nil function.</span></span><br><span class="line">	<span class="comment">// It sets that pointer to a new function created with MakeFunc.</span></span><br><span class="line">	<span class="comment">// When the function is invoked, reflect turns the arguments</span></span><br><span class="line">	<span class="comment">// into Values, calls swap, and then turns swap's result slice</span></span><br><span class="line">	<span class="comment">// into the values returned by the new function.</span></span><br><span class="line">	makeSwap := <span class="keyword">func</span>(fptr <span class="keyword">interface</span>&#123;&#125;) &#123;</span><br><span class="line">	    <span class="comment">// fptr is a pointer to a function.</span></span><br><span class="line">	    <span class="comment">// Obtain the function value itself (likely nil) as a reflect.Value</span></span><br><span class="line">	    <span class="comment">// so that we can query its type and then set the value.</span></span><br><span class="line">	    fn := reflect.ValueOf(fptr).Elem()</span><br><span class="line">	    <span class="comment">// Make a function of the right type.</span></span><br><span class="line">	    v := reflect.MakeFunc(fn.Type(), swap)</span><br><span class="line">	    <span class="comment">// Assign it to the value fn represents.</span></span><br><span class="line">	    fn.Set(v)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// Make and call a swap function for ints.</span></span><br><span class="line">	<span class="keyword">var</span> intSwap <span class="keyword">func</span>(<span class="typename">int</span>, <span class="typename">int</span>) (<span class="typename">int</span>, <span class="typename">int</span>)</span><br><span class="line">	makeSwap(&amp;intSwap)</span><br><span class="line">	fmt.Println(intSwap(<span class="number">0</span>, <span class="number">1</span>))</span><br><span class="line">	<span class="comment">// Make and call a swap function for float64s.</span></span><br><span class="line">	<span class="keyword">var</span> floatSwap <span class="keyword">func</span>(<span class="typename">float64</span>, <span class="typename">float64</span>) (<span class="typename">float64</span>, <span class="typename">float64</span>)</span><br><span class="line">	makeSwap(&amp;floatSwap)</span><br><span class="line">	fmt.Println(floatSwap(<span class="number">2.72</span>, <span class="number">3.14</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	1 0</span></span><br><span class="line">			<span class="number">3.14</span> <span class="number">2.72</span></span><br></pre></td></tr></table></figure>
+<p>这里也跟之前的那个x一样 intSwap和floatSwap都会存成interface{}</p>
+<p>然后通过MakeFunc这个函数依据类型和swap来构造一个函数。</p>
+<p>并且通过Set方法设置。</p>
+<p>用之前的思路解释一遍，就是传入函数指针，这个指针会被存为interface。Value存的是空值，Type存的是 <code>func(int,int)(int,int)</code>或者func<code>(float,float)(float,float)</code>。</p>
+<p>这个时候通过make构造一个Value出来给接口赋值，注意这里的区别，interface还是没有方法的空接口。</p>
+<p>我们之前说的接口的方法是存在itab下面的，这里的Value是存在data域下面的。</p>
+<p>因为这个对象是一个函数，所以函数的data域就是一个函数。</p>
+<p>之后再调用intSwap和floatSwap都可以跑出相应的结果，就是通过这样的方式实体化了函数的内容。</p>
+<p>这样就有点像C++里面的模板函数了。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/18/golang/unsafe简介/">
+                利用unsafe操作未导出变量
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/18/golang/unsafe简介/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/unsafe简介/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>unsafe.Pointer其实就是类似C的void *，在golang中是用于各种指针相互转换的桥梁。uintptr是golang的内置类型，是能存储指针的整型，uintptr的底层类型是int，它和unsafe.Pointer可相互转换。uintptr和unsafe.Pointer的区别就是：unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算；而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象，uintptr类型的目标会被回收。golang的unsafe包很强大，基本上很少会去用它。它可以像C一样去操作内存，但由于golang不支持直接进行指针运算，所以用起来稍显麻烦。</p>
+<p>切入正题。利用unsafe包，可操作私有变量(在golang中称为“未导出变量”，变量名以小写字母开始)，下面是具体例子。</p>
+<p>在$GOPATH/src下建立poit包，并在poit下建立子包p，目录结构如下：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$GOPATH/src</span><br><span class="line">-<span class="ruby">---poit</span><br><span class="line"></span>-<span class="ruby">-------p</span><br><span class="line"></span>-<span class="ruby">-----------v.go</span><br><span class="line"></span>-<span class="ruby">-------main.go</span></span><br></pre></td></tr></table></figure></p>
+<p>以下是v.go的代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> V <span class="keyword">struct</span> &#123;</span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutI() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"i=%d\n"</span>, this.i)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutJ() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"j=%d\n"</span>, this.j)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>意图很明显，我是想通过unsafe包来实现对V的成员i和j赋值，然后通过PutI()和PutJ()来打印观察输出结果。</p>
+<p>以下是main.go源代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"poit/p"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br><span class="line">    <span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br><span class="line">    *i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br><span class="line">    <span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br><span class="line">    *j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br><span class="line">    v.PutI()</span><br><span class="line">    v.PutJ()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然会有些限制，比如需要知道结构体V的成员布局，要修改的成员大小以及成员的偏移量。我们的核心思想就是：结构体的成员在内存中的分配是一段连续的内存，结构体中第一个成员的地址就是这个结构体的地址，您也可以认为是相对于这个结构体偏移了0。相同的，这个结构体中的任一成员都可以相对于这个结构体的偏移来计算出它在内存中的绝对地址。</p>
+<p>具体来讲解下main方法的实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br></pre></td></tr></table></figure>
+<p>new是golang的内置方法，用来分配一段内存(会按类型的零值来清零)，并返回一个指针。所以v就是类型为p.V的一个指针。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br></pre></td></tr></table></figure>
+<p>将指针v转成通用指针，再转成int32指针。这里就看到了unsafe.Pointer的作用了，您不能直接将v转成int32类型的指针，那样将会panic。刚才说了v的地址其实就是它的第一个成员的地址，所以这个i就很显然指向了v的成员i，通过给i赋值就相当于给v.i赋值了，但是别忘了i只是个指针，要赋值得解引用。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br></pre></td></tr></table></figure>
+<p>现在已经成功的改变了v的私有成员i的值，好开心^_^</p>
+<p>但是对于v.j来说，怎么来得到它在内存中的地址呢？其实我们可以获取它相对于v的偏移量(unsafe.Sizeof可以为我们做这个事)，但我上面的代码并没有这样去实现。各位别急，一步步来。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br></pre></td></tr></table></figure>
+<p>其实我们已经知道v是有两个成员的，包括i和j，并且在定义中，i位于j的前面，而i是int32类型，也就是说i占4个字节。所以j是相对于v偏移了4个字节。您可以用uintptr(4)或uintptr(unsafe.Sizeof(int32(0)))来做这个事。unsafe.Sizeof方法用来得到一个值应该占用多少个字节空间。注意这里跟C的用法不一样，C是直接传入类型，而golang是传入值。之所以转成uintptr类型是因为需要做指针运算。v的地址加上j相对于v的偏移地址，也就得到了v.j在内存中的绝对地址，别忘了j的类型是int64，所以现在的j就是一个指向v.j的指针，接下来给它赋值：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br></pre></td></tr></table></figure>
+<p>好吧，现在貌视一切就绪了，来打印下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v.PutI()</span><br><span class="line">v.PutJ()</span><br></pre></td></tr></table></figure>
+<p>如果您看到了正确的输出，那恭喜您，您做到了！</p>
+<p>但是，别忘了上面的代码其实是有一些问题的，您发现了吗？</p>
+<p>在p目录下新建w.go文件，代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> W <span class="keyword">struct</span> &#123;</span><br><span class="line">    b <span class="typename">byte</span></span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> init() &#123;</span><br><span class="line">    <span class="keyword">var</span> w *W = <span class="built_in">new</span>(W)</span><br><span class="line">    fmt.Printf(<span class="string">"size=%d\n"</span>, unsafe.Sizeof(*w))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要修改main.go的代码吗？不需要，我们只是来测试一下。w.go里定义了一个特殊方法init，它会在导入p包时自动执行，别忘了我们有在main.go里导入p包。每个包都可定义多个init方法，它们会在包被导入时自动执行(在执行main方法前被执行，通常用于初始化工作)，但是，最好在一个包中只定义一个init方法，否则您或许会很难预期它的行为)。我们来看下它的输出：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">size=<span class="number">16</span></span><br></pre></td></tr></table></figure>
+<p>等等，好像跟我们想像的不一致。来手动计算一下：b是byte类型，占1个字节；i是int32类型，占4个字节；j是int64类型，占8个字节，1+4+8=13。这是怎么回事呢？这是因为发生了对齐。在struct中，它的对齐值是它的成员中的最大对齐值。每个成员类型都有它的对齐值，可以用unsafe.Alignof方法来计算，比如unsafe.Alignof(w.b)就可以得到b在w中的对齐值。同理，我们可以计算出w.b的对齐值是1，w.i的对齐值是4，w.j的对齐值也是4。如果您认为w.j的对齐值是8那就错了，所以我们前面的代码能正确执行(试想一下，如果w.j的对齐值是8，那前面的赋值代码就有问题了。也就是说前面的赋值中，如果v.j的对齐值是8，那么v.i跟v.j之间应该有4个字节的填充。所以得到正确的对齐值是很重要的)。对齐值最小是1，这是因为存储单元是以字节为单位。所以b就在w的首地址，而i的对齐值是4，它的存储地址必须是4的倍数，因此，在b和i的中间有3个填充，同理j也需要对齐，但因为i和j之间不需要填充，所以w的Sizeof值应该是13+3=16。如果要通过unsafe来对w的三个私有成员赋值，b的赋值同前，而i的赋值则需要跳过3个字节，也就是计算偏移量的时候多跳过3个字节，同理j的偏移可以通过简单的数学运算就能得到。</p>
+<p>比如也可以通过unsafe来灵活取值：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> b []<span class="typename">byte</span> = []<span class="typename">byte</span>&#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> c *<span class="typename">byte</span> = &amp;b[<span class="number">0</span>]</span><br><span class="line">    fmt.Println(*(*<span class="typename">byte</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(c)) + <span class="typename">uintptr</span>(<span class="number">1</span>))))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于填充，FastCGI协议就用到了。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/11/18/cpp/内存对齐基础/">
                 C++对象对齐基础
               </a>
@@ -989,1127 +1319,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/14/object-c/uibutton/">
-                UIButton详解
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-14
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/14/object-c/uibutton/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/14/object-c/uibutton/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="创建">创建</h2><ol>
-<li><p><strong>常规的 initWithFrame</strong><br><code>UIButton *btn1 = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 80, 44)];</code><br>对代码创建View（UIControl继承自UIView，所以也是view）不甚了解的请参看：《有关View的几个基础知识点》</p>
-</li>
-<li><p><strong>UIButton 的一个类方法（也可以说是静态方法）buttonWithType</strong><br><code>UIButton *btn2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];</code><br>风格有如下:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;  </span><br><span class="line">    <span class="built_in">UIButtonTypeCustom</span> = <span class="number">0</span>,           <span class="comment">// 自定义，无风格  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeRoundedRect</span>,        <span class="comment">// 白色圆角矩形，类似偏好设置表格单元或者地址簿卡片  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeDetailDisclosure</span>,<span class="comment">//蓝色的披露按钮，可放在任何文字旁  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeInfoLight</span>,<span class="comment">//微件(widget)使用的小圆圈信息按钮，可以放在任何文字旁  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeInfoDark</span>,<span class="comment">//白色背景下使用的深色圆圈信息按钮  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeContactAdd</span>,<span class="comment">//蓝色加号(+)按钮，可以放在任何文字旁  </span></span><br><span class="line">&#125; <span class="built_in">UIButtonType</span>;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="设置属性">设置属性</h2><ul>
-<li><p><strong>Frame属性</strong><br>第2种方法创建按钮后你可以给按钮的frame属性赋值，用一个CGRect结构设置他的位置和大小.</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGRect</span> btn2Frame = <span class="built_in">CGRectMake</span>(<span class="number">10.0</span>, <span class="number">10.0</span>, <span class="number">60.0</span>, <span class="number">44.0</span>);  </span><br><span class="line">btn2<span class="variable">.frame</span> =btn2Frame;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>属性</strong><br>对于任何特定状态下的按钮，都可以设定该按钮该状态下的按钮标题。用setTitle 方法 设置即可：<br><code>[btn1 setTitle:@&quot;BTN1&quot; forState:UIControlStateNormal];</code><br>你也可以为按钮的某一状态设置为图。用 setImage 即可：<br><code>[btn2 setImage:[UIImage imageNamed:@&quot;pic&quot;] forState:UIControlStateNormal];</code><br>此外，你还可以为每种按钮状态设置标题的颜色和阴影，以及按钮的背景。方法 setTitleColor 和 setTitleShadowColor 都需要一个UIColor对象做参数：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[btn1 setTitleColor:[<span class="built_in">UIColor</span> redColor] forState:<span class="built_in">UIControlStateNormal</span>];			<span class="comment">//设置标题颜色  </span></span><br><span class="line">[btn1 setTitleShadowColor:[<span class="built_in">UIColor</span> grayColor] forState:<span class="built_in">UIControlStateNormal</span> ];	<span class="comment">//阴影  </span></span><br><span class="line">[btn1 setBackgroundImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"PIC"</span>] forState:<span class="built_in">UIControlStateHighlighted</span>];	<span class="comment">//背景图像</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>上面几个方法都提到 共同的参数 forState . 这个参数决定了标题、图像或其他属性将在何种状态下显现。你可以编程令按钮在那个状态变化<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;  </span><br><span class="line">    <span class="built_in">UIControlStateNormal</span>       = <span class="number">0</span>,				<span class="comment">//常态                       </span></span><br><span class="line">    <span class="built_in">UIControlStateHighlighted</span>  = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,		<span class="comment">//高亮  </span></span><br><span class="line">    <span class="built_in">UIControlStateDisabled</span>     = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,		<span class="comment">//禁用  </span></span><br><span class="line">    <span class="built_in">UIControlStateSelected</span>     = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,		<span class="comment">// 选中  </span></span><br><span class="line">    <span class="built_in">UIControlStateApplication</span>  = <span class="number">0x00FF0000</span>,	<span class="comment">// 当应用程序标志使用时  </span></span><br><span class="line">    <span class="built_in">UIControlStateReserved</span>     = <span class="number">0xFF000000</span>		<span class="comment">// 为内部框架预留的  </span></span><br><span class="line">&#125;;  </span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">NSUInteger</span> <span class="built_in">UIControlState</span>;</span><br></pre></td></tr></table></figure></p>
-<p>你只要掌握前四种状态就好了。<br>当按钮高亮或者禁用，UIButton 类可以调整自己的外观，下面几个属性可以让你按照需要对按钮的外观进行微调：<br><strong>adjustsImageWhenHighlighted</strong><br>默认情况下，在按钮被禁用时，图像会被画的颜色深一些。要禁用此功能，请将这个属性设置为NO：<br><code>btn1.adjustsImageWhenHighlighted = NO;</code><br><strong>adjustsImageWhenDisabled</strong><br>默认情况下，按钮在被禁用时，图像会被画的颜色淡一些。要禁用此功能，请将这个属性设置为NO：<br><code>btn1.adjustsImageWhenDisabled = NO;</code><br><strong>showsTouchWhenHighlighted</strong><br>这个属性设置为YES，可令按钮在按下时发光。这可以用于信息按钮或者有些重要的按钮：<br><code>btn1.showsTouchWhenHighlighted = YES;</code></p>
-<h2 id="显示控件">显示控件</h2><p>显示控件一如继往的简单：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span><span class="variable">.view</span> addSubview:btn1];  </span><br><span class="line">[<span class="keyword">self</span><span class="variable">.view</span> addSubview:btn2];</span><br></pre></td></tr></table></figure></p>
-<h2 id="重写绘制行为">重写绘制行为</h2><p>你可以通过子类化按钮来定制属于你自己的按钮类。在子类化的时候你可以重载下面这些方法，这些方法返回CGRect结构，指明了按钮每一组成部分的边界。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">backgroundRectForBounds   <span class="comment">//指定背景边界  </span></span><br><span class="line">contentRectForBounds <span class="comment">// 指定内容边界  </span></span><br><span class="line">titleRectForContentRect    <span class="comment">// 指定文字标题边界  </span></span><br><span class="line">imageRectForContentRect     <span class="comment">//指定按钮图像边界  </span></span><br><span class="line"><span class="comment">//例：</span></span><br><span class="line">- (<span class="built_in">CGRect</span>)imageRectForContentRect:(<span class="built_in">CGRect</span>)bounds&#123;  </span><br><span class="line">     <span class="keyword">return</span> <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">44</span>, <span class="number">44</span>);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   注意：不要直接调用这些方法， 这些方法是你写给系统调用的。</p>
-</blockquote>
-<h2 id="添加动作">添加动作</h2><p>按钮是用来干嘛的？用来激发某个动作或事件的。那我们我们要为他添加一个动作，与 UIControl 里讲的一样：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[btn1 addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(btnPressed:) forControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>];  </span><br><span class="line">-(<span class="keyword">void</span>)btnPressed:(<span class="keyword">id</span>)sender&#123;  </span><br><span class="line">	<span class="built_in">UIButton</span>* btn = (<span class="built_in">UIButton</span>*)sender;   </span><br><span class="line">	<span class="comment">//开始写你自己的动作  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/13/php/设计模式/">
-                设计模式
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-13
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/php/">php</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/13/php/设计模式/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/13/php/设计模式/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="单例模式">单例模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
-<span class="comment">/**
- * 单例模式
- *
- */</span>
-<span class="class"><span class="keyword">class</span> <span class="title">DbConn</span>
-</span>{
-       <span class="keyword">private</span> <span class="keyword">static</span> <span class="variable">$_instance</span> = <span class="keyword">null</span>;
-       <span class="keyword">protected</span> <span class="keyword">static</span> <span class="variable">$_counter</span> = <span class="number">0</span>;
-       <span class="keyword">protected</span> <span class="variable">$_db</span>;
-       <span class="comment">//私有化构造函数，不允许外部创建实例</span>
-       <span class="keyword">private</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span>
-       </span>{
-              <span class="keyword">self</span>::<span class="variable">$_counter</span> += <span class="number">1</span>;
-       }
-
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getInstance</span><span class="params">()</span>
-       </span>{
-              <span class="keyword">if</span> (<span class="keyword">self</span>::<span class="variable">$_instance</span> == <span class="keyword">null</span>)
-              {
-                     <span class="keyword">self</span>::<span class="variable">$_instance</span> = <span class="keyword">new</span> DbConn();
-              }
-              <span class="keyword">return</span> <span class="keyword">self</span>::<span class="variable">$_instance</span>;
-       }
-
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">connect</span><span class="params">()</span>
-       </span>{
-              <span class="keyword">echo</span> <span class="string">"connected: "</span>.(<span class="keyword">self</span>::<span class="variable">$_counter</span>).<span class="string">"n"</span>;
-              <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_db;
-       }
-}
-<span class="comment">/*
- * 不使用单例模式时，删除构造函数的private后再测试，第二次调用构造函数后，_counter变成2
-*/</span>
-<span class="comment">// $conn = new DbConn();</span>
-<span class="comment">// $conn-&gt;connect();</span>
-<span class="comment">// $conn = new DbConn();</span>
-<span class="comment">// $conn-&gt;connect();</span>
-<span class="comment">//使用单例模式后不能直接new对象，必须调用getInstance获取</span>
-<span class="variable">$conn</span> = DbConn::getInstance();
-<span class="variable">$db</span> = <span class="variable">$conn</span>-&gt;connect();
-<span class="comment">//第二次调用是同一个实例，_counter还是1</span>
-<span class="variable">$conn</span> = DbConn::getInstance();
-<span class="variable">$db</span> = <span class="variable">$conn</span>-&gt;connect();
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>特别说明：这里getInstance里有if判断然后再生成对象，在多线程语言里是会有并发问题的。例如java的解决方案有二个，给方法加上synchronized关键词变成同步，或者把_instanc的初始化提前放到类成员变量定义时，但是这2种方式php都不支持。不过因为php不支持多线程所以不需要考虑这个问题了。</li>
-</ul>
-<h2 id="工厂模式">工厂模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
-<span class="comment">/**
- *
- * 工厂模式
- *
- */</span>
-
-<span class="comment">//抽象产品</span>
-<span class="class"><span class="keyword">interface</span> <span class="title">Person</span> </span>{
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span></span>; 
-}
-<span class="comment">//具体产品实现</span>
-<span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> <span class="keyword">implements</span> <span class="title">Person</span> </span>{
-    <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{
-        <span class="keyword">return</span> <span class="string">"老师n"</span>;
-    }
-}
-<span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Person</span> </span>{
-    <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{
-        <span class="keyword">return</span> <span class="string">"学生n"</span>;
-    }
-}
-
-<span class="comment">//简单工厂</span>
-<span class="class"><span class="keyword">class</span> <span class="title">SimpleFactory</span> </span>{
-       <span class="keyword">public</span> <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">(<span class="variable">$type</span>)</span> </span>{
-              <span class="variable">$person</span> = <span class="keyword">null</span>;
-              <span class="keyword">if</span> (<span class="variable">$type</span> == <span class="string">'teacher'</span>) {
-                     <span class="variable">$person</span> = <span class="keyword">new</span> Teacher();
-              } <span class="keyword">elseif</span> (<span class="variable">$type</span> == <span class="string">'student'</span>) {
-                     <span class="variable">$person</span> = <span class="keyword">new</span> Student();
-              }
-              <span class="keyword">return</span> <span class="variable">$person</span>;
-       }
-}
-
-<span class="comment">//简单工厂调用</span>
-<span class="class"><span class="keyword">class</span> <span class="title">SimpleClient</span> </span>{
-       <span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span> </span>{
-              <span class="comment">// 如果不用工厂模式，则需要提前指定具体类</span>
-              <span class="comment">// $person = new Teacher();</span>
-              <span class="comment">// echo $person-&gt;getName();</span>
-              <span class="comment">// $person = new Student();</span>
-              <span class="comment">// echo $person-&gt;getName();</span>
-
-              <span class="comment">// 用工厂模式，则不需要知道对象由什么类产生，交给工厂去决定</span>
-              <span class="variable">$person</span> = SimpleFactory::getPerson(<span class="string">'teacher'</span>);
-              <span class="keyword">echo</span> <span class="variable">$person</span>-&gt;getName();
-              <span class="variable">$person</span> = SimpleFactory::getPerson(<span class="string">'student'</span>);
-              <span class="keyword">echo</span> <span class="variable">$person</span>-&gt;getName();
-       }
-}
-
-
-<span class="comment">//工厂方法</span>
-<span class="class"><span class="keyword">interface</span> <span class="title">CommFactory</span> </span>{
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span></span>;
-}
-<span class="comment">//具体工厂实现</span>
-<span class="class"><span class="keyword">class</span> <span class="title">StudentFactory</span> <span class="keyword">implements</span> <span class="title">CommFactory</span> </span>{
-    <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span></span>{
-        <span class="keyword">return</span> <span class="keyword">new</span> Student();
-    }
-}
-<span class="class"><span class="keyword">class</span> <span class="title">TeacherFactory</span> <span class="keyword">implements</span> <span class="title">CommFactory</span> </span>{
-    <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
-        <span class="keyword">return</span> <span class="keyword">new</span> Teacher();
-    }
-}
-
-<span class="comment">//工厂方法调用</span>
-<span class="class"><span class="keyword">class</span> <span class="title">CommClient</span> </span>{
-    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span> </span>{
-           <span class="variable">$factory</span> = <span class="keyword">new</span> TeacherFactory();
-           <span class="keyword">echo</span> <span class="variable">$factory</span>-&gt;getPerson()-&gt;getName();
-           <span class="variable">$factory</span> = <span class="keyword">new</span> StudentFactory();
-           <span class="keyword">echo</span> <span class="variable">$factory</span>-&gt;getPerson()-&gt;getName();
-    }
-}
-
-
-
-<span class="comment">//抽象工厂模式另一条产品线</span>
-<span class="class"><span class="keyword">interface</span> <span class="title">Grade</span> </span>{
-       <span class="function"><span class="keyword">function</span> <span class="title">getYear</span><span class="params">()</span></span>;
-}
-<span class="comment">//另一条产品线的具体产品</span>
-<span class="class"><span class="keyword">class</span> <span class="title">Grade1</span> <span class="keyword">implements</span> <span class="title">Grade</span> </span>{
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getYear</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="string">'2003级'</span>;
-       }
-}
-<span class="class"><span class="keyword">class</span> <span class="title">Grade2</span> <span class="keyword">implements</span> <span class="title">Grade</span> </span>{
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getYear</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="string">'2004级'</span>;
-       }
-}
-<span class="comment">//抽象工厂</span>
-<span class="class"><span class="keyword">interface</span> <span class="title">AbstractFactory</span> </span>{
-       <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span></span>;
-       <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span></span>;
-}
-<span class="comment">//具体工厂可以产生每个产品线的产品</span>
-<span class="class"><span class="keyword">class</span> <span class="title">Grade1TeacherFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>{
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="keyword">new</span> Teacher();
-       }
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="keyword">new</span> Grade1();
-       }
-}
-<span class="class"><span class="keyword">class</span> <span class="title">Grade1StudentFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>{
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="keyword">new</span> Student();
-       }
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="keyword">new</span> Grade1();
-       }
-}
-<span class="class"><span class="keyword">class</span> <span class="title">Grade2TeacherFactory</span> <span class="keyword">implements</span> <span class="title">AbstractFactory</span> </span>{
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPerson</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="keyword">new</span> Teacher();
-       }
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getGrade</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="keyword">new</span> Grade2();
-       }
-}
-<span class="comment">//抽象工厂调用</span>
-<span class="class"><span class="keyword">class</span> <span class="title">FactoryClient</span> </span>{
-       <span class="function"><span class="keyword">function</span> <span class="title">printInfo</span><span class="params">(<span class="variable">$factory</span>)</span> </span>{
-              <span class="keyword">echo</span> <span class="variable">$factory</span>-&gt;getGrade()-&gt;getYear().<span class="variable">$factory</span>-&gt;getPerson()-&gt;getName();
-       }
-       <span class="function"><span class="keyword">function</span> <span class="title">main</span><span class="params">()</span> </span>{
-              <span class="variable">$client</span> = <span class="keyword">new</span> FactoryClient();
-              <span class="variable">$factory</span> = <span class="keyword">new</span> Grade1TeacherFactory();
-              <span class="variable">$client</span>-&gt;printInfo(<span class="variable">$factory</span>);
-              <span class="variable">$factory</span> = <span class="keyword">new</span> Grade1StudentFactory();
-              <span class="variable">$client</span>-&gt;printInfo(<span class="variable">$factory</span>);
-              <span class="variable">$factory</span> = <span class="keyword">new</span> Grade2TeacherFactory();
-              <span class="variable">$client</span>-&gt;printInfo(<span class="variable">$factory</span>);
-       }
-}
-
-
-<span class="comment">//简单工厂</span>
-<span class="comment">//SimpleClient::main();</span>
-<span class="comment">//工厂方法</span>
-<span class="comment">//CommClient::main();</span>
-<span class="comment">//抽象工厂</span>
-FactoryClient::main();
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>三种工厂的区别是，抽象工厂由多条产品线，而工厂方法只有一条产品线，是抽象工厂的简化。而工厂方法和简单工厂相对，大家初看起来好像工厂方法增加了许多代码但是实现的功能和简单工厂一样。但本质是，简单工厂并未严格遵循设计模式的开闭原则，当需要增加新产品时也需要修改工厂代码。但是工厂方法则严格遵守开闭原则，模式只负责抽象工厂接口，具体工厂交给客户去扩展。在分工时，核心工程师负责抽象工厂和抽象产品的定义，业务工程师负责具体工厂和具体产品的实现。只要抽象层设计的好，框架就是非常稳定的。</li>
-</ul>
-<h2 id="创建者模式">创建者模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
-<span class="comment">/**
- *
- * 创建者模式
- *
- */</span>
-
-<span class="comment">//购物车</span>
-<span class="class"><span class="keyword">class</span> <span class="title">ShoppingCart</span> </span>{
-       <span class="comment">//选中的商品</span>
-    <span class="keyword">private</span> <span class="variable">$_goods</span> = <span class="keyword">array</span>();
-    <span class="comment">//使用的优惠券</span>
-    <span class="keyword">private</span> <span class="variable">$_tickets</span> = <span class="keyword">array</span>();
-
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addGoods</span><span class="params">(<span class="variable">$goods</span>)</span> </span>{
-              <span class="variable">$this</span>-&gt;_goods[] = <span class="variable">$goods</span>;
-       }
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">addTicket</span><span class="params">(<span class="variable">$ticket</span>)</span> </span>{
-           <span class="variable">$this</span>-&gt;_tickets[] = <span class="variable">$ticket</span>;
-    }
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">printInfo</span><span class="params">()</span> </span>{
-           printf(<span class="string">"goods:%s, tickets:%sn"</span>, implode(<span class="string">','</span>, <span class="variable">$this</span>-&gt;_goods), implode(<span class="string">','</span>, <span class="variable">$this</span>-&gt;_tickets));
-    }
-}
-
-<span class="comment">//假如我们要还原购物车的东西，比如用户关闭浏览器后再打开时会根据cookie还原</span>
-<span class="variable">$data</span> = <span class="keyword">array</span>(
-       <span class="string">'goods'</span> =&gt; <span class="keyword">array</span>(<span class="string">'衣服'</span>, <span class="string">'鞋子'</span>),
-       <span class="string">'tickets'</span> =&gt; <span class="keyword">array</span>(<span class="string">'减10'</span>),
-);
-
-<span class="comment">//如果不使用创建者模式，则需要业务类里一步步还原购物车</span>
-<span class="comment">// $cart = new ShoppingCart();</span>
-<span class="comment">// foreach ($data['goods'] as $goods) {</span>
-<span class="comment">//   $cart-&gt;addGoods($goods);</span>
-<span class="comment">// }</span>
-<span class="comment">// foreach ($data['tickets'] as $ticket) {</span>
-<span class="comment">//   $cart-&gt;addTicket($ticket);</span>
-<span class="comment">// }</span>
-<span class="comment">// $cart-&gt;printInfo();</span>
-<span class="comment">// exit;</span>
-
-
-<span class="comment">//我们提供创建者类来封装购物车的数据组装</span>
-<span class="class"><span class="keyword">class</span> <span class="title">CardBuilder</span> </span>{
-       <span class="keyword">private</span> <span class="variable">$_card</span>;
-       <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$card</span>)</span> </span>{
-              <span class="variable">$this</span>-&gt;_card = <span class="variable">$card</span>;
-       }
-       <span class="function"><span class="keyword">function</span> <span class="title">build</span><span class="params">(<span class="variable">$data</span>)</span> </span>{
-              <span class="keyword">foreach</span> (<span class="variable">$data</span>[<span class="string">'goods'</span>] <span class="keyword">as</span> <span class="variable">$goods</span>) {
-                     <span class="variable">$this</span>-&gt;_card-&gt;addGoods(<span class="variable">$goods</span>);
-              }
-              <span class="keyword">foreach</span> (<span class="variable">$data</span>[<span class="string">'tickets'</span>] <span class="keyword">as</span> <span class="variable">$ticket</span>) {
-                     <span class="variable">$this</span>-&gt;_card-&gt;addTicket(<span class="variable">$ticket</span>);
-              }
-       }
-       <span class="function"><span class="keyword">function</span> <span class="title">getCrad</span><span class="params">()</span> </span>{
-              <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_card;
-       }
-}
-
-<span class="variable">$cart</span> = <span class="keyword">new</span> ShoppingCart();
-<span class="variable">$builder</span> = <span class="keyword">new</span> CardBuilder(<span class="variable">$cart</span>);
-<span class="variable">$builder</span>-&gt;build(<span class="variable">$data</span>);
-<span class="keyword">echo</span> <span class="string">"after builder:n"</span>;
-<span class="variable">$cart</span>-&gt;printInfo();
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>可以看出，使用创建者模式对内部数据复杂的对象封装数据组装过程后，对外接口就会非常简单和规范，增加修改新数据项也不会对外部造成任何影响。</li>
-</ul>
-<h2 id="原型模式">原型模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>
-<span class="comment">/**
- *
- * 原型模式
- */</span>
-
-<span class="comment">//声明一个克隆自身的接口</span>
-<span class="class"><span class="keyword">interface</span> <span class="title">Prototype</span> </span>{
-    <span class="function"><span class="keyword">function</span> <span class="title">copy</span><span class="params">()</span></span>; 
-}   
-
-<span class="comment">//产品要实现克隆自身的操作</span>
-<span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">implements</span> <span class="title">Prototype</span> </span>{
-       <span class="comment">//简单起见，这里没有使用get set</span>
-    <span class="keyword">public</span> <span class="variable">$school</span>;
-    <span class="keyword">public</span> <span class="variable">$major</span>;
-       <span class="keyword">public</span> <span class="variable">$name</span>;
-
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$school</span>, <span class="variable">$major</span>, <span class="variable">$name</span>)</span> </span>{
-              <span class="variable">$this</span>-&gt;school = <span class="variable">$school</span>;
-              <span class="variable">$this</span>-&gt;major = <span class="variable">$major</span>;
-              <span class="variable">$this</span>-&gt;name = <span class="variable">$name</span>;
-       }
-
-       <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">printInfo</span><span class="params">()</span> </span>{
-              printf(<span class="string">"%s,%s,%sn"</span>, <span class="variable">$this</span>-&gt;school, <span class="variable">$this</span>-&gt;major, <span class="variable">$this</span>-&gt;name);
-       }
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">copy</span><span class="params">()</span> </span>{
-           <span class="keyword">return</span> <span class="keyword">clone</span> <span class="variable">$this</span>;
-    }
-}
-
-<span class="variable">$stu1</span> = <span class="keyword">new</span> Student(<span class="string">'清华大学'</span>, <span class="string">'计算机'</span>, <span class="string">'张三'</span>);
-<span class="variable">$stu1</span>-&gt;printInfo();
-
-<span class="variable">$stu2</span> = <span class="variable">$stu1</span>-&gt;copy();
-<span class="variable">$stu2</span>-&gt;name = <span class="string">'李四'</span>;
-<span class="variable">$stu2</span>-&gt;printInfo();
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>这里可以看到，如果类的成员变量非常多，如果由外部创建多个新对象再一个个赋值，则效率不高代码冗余也容易出错，通过原型拷贝复制自身再进行微小修改就是另一个新对象了。</li>
-</ul>
-<h2 id="适配器模式">适配器模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>  
-<span class="comment">/**  
- *  
- * 适配器模式  
- *  
- */</span>
-
-<span class="comment">//老的代码   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>{  
-    <span class="keyword">private</span> <span class="variable">$name</span>;  
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$name</span>)</span> </span>{  
-        <span class="variable">$this</span>-&gt;name = <span class="variable">$name</span>;  
-    }  
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{  
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;name;  
-    }  
-}  
-
-<span class="comment">//新代码，开放平台标准接口  </span>
-<span class="class"><span class="keyword">interface</span> <span class="title">UserInterface</span> </span>{  
-    <span class="function"><span class="keyword">function</span> <span class="title">getUserName</span><span class="params">()</span></span>;  
-}  
-<span class="class"><span class="keyword">class</span> <span class="title">UserInfo</span> <span class="keyword">implements</span> <span class="title">UserInterface</span> </span>{  
-    <span class="keyword">protected</span> <span class="variable">$user</span>;  
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$user</span>)</span> </span>{  
-        <span class="variable">$this</span>-&gt;user = <span class="variable">$user</span>;  
-    }  
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getUserName</span><span class="params">()</span> </span>{  
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;user-&gt;getName();  
-    }  
-}  
-
-<span class="variable">$olduser</span> = <span class="keyword">new</span> User(<span class="string">'张三'</span>);  
-<span class="keyword">echo</span> <span class="variable">$olduser</span>-&gt;getName().<span class="string">"n"</span>;  
-<span class="variable">$newuser</span> = <span class="keyword">new</span> UserInfo(<span class="variable">$olduser</span>);  
-<span class="keyword">echo</span> <span class="variable">$newuser</span>-&gt;getUserName().<span class="string">"n"</span>;  
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>注意点：这里的新接口使用了组合方式，UserInfo内部有一个成员变量保存老接口User对象，模块之间是松耦合的，这种结构其实就是组合模式。不要使用继承，虽然UserInfo继承User也能达到同样的目的，但是耦合度高，相互产生影响。</li>
-</ul>
-<h2 id="桥接模式">桥接模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
-<span class="comment">/**   
- *   
- * 桥接模式   
- *   
- */</span>
-
-<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>{   
-    <span class="keyword">abstract</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span></span>;   
-}   
-
-<span class="class"><span class="keyword">class</span> <span class="title">Student</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="string">'学生'</span>;   
-    }   
-}   
-
-<span class="class"><span class="keyword">class</span> <span class="title">Teacher</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="string">'老师'</span>;   
-    }   
-}   
-
-<span class="class"><span class="keyword">class</span> <span class="title">BridgeObj</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$_person</span>;   
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setPerson</span><span class="params">(<span class="variable">$person</span>)</span> </span>{   
-        <span class="variable">$this</span>-&gt;_person = <span class="variable">$person</span>;   
-    }   
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getJob</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_person-&gt;getJob();   
-    }   
-}   
-
-<span class="variable">$obj</span> = <span class="keyword">new</span> BridgeObj();   
-<span class="variable">$obj</span>-&gt;setPerson(<span class="keyword">new</span> Student());   
-printf(<span class="string">"本次桥接对象：%sn"</span>, <span class="variable">$obj</span>-&gt;getJob());   
-<span class="variable">$obj</span>-&gt;setPerson(<span class="keyword">new</span> Teacher());   
-printf(<span class="string">"本次桥接对象：%sn"</span>, <span class="variable">$obj</span>-&gt;getJob());   
-
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>将抽象部分与它的实现部分分离，使它们都可以独立变化</li>
-</ul>
-<h2 id="装饰模式">装饰模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
-<span class="comment">/**   
- *   
- * 装饰模式   
- *    
- */</span>
-
-<span class="comment">//产品   </span>
-<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>{   
-    <span class="keyword">abstract</span> <span class="function"><span class="keyword">function</span> <span class="title">getPermission</span><span class="params">()</span></span>;   
-}   
-<span class="comment">//被装饰者   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPermission</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="string">'公开文档'</span>;   
-    }   
-}   
-<span class="comment">//装饰类   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">PermUser</span> <span class="keyword">extends</span> <span class="title">Person</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$_user</span>;   
-    <span class="keyword">protected</span> <span class="variable">$_special</span> = <span class="string">''</span>;   
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$user</span>)</span> </span>{   
-        <span class="variable">$this</span>-&gt;_user = <span class="variable">$user</span>;   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getPermission</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_user-&gt;getPermission() . <span class="variable">$this</span>-&gt;_special;   
-    }   
-}   
-<span class="comment">//装饰类产品   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">JavaUser</span> <span class="keyword">extends</span> <span class="title">PermUser</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$_special</span> = <span class="string">' java程序'</span>;   
-}   
-<span class="class"><span class="keyword">class</span> <span class="title">CPlusUser</span> <span class="keyword">extends</span> <span class="title">PermUser</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$_special</span> = <span class="string">' c++程序'</span>;   
-}   
-
-
-<span class="variable">$user</span> = <span class="keyword">new</span> User();   
-printf(<span class="string">"permission：%sn"</span>, <span class="variable">$user</span>-&gt;getPermission());   
-<span class="variable">$user</span> = <span class="keyword">new</span> JavaUser(<span class="variable">$user</span>);   
-printf(<span class="string">"permission：%sn"</span>, <span class="variable">$user</span>-&gt;getPermission());   
-<span class="variable">$user</span> = <span class="keyword">new</span> CPlusUser(<span class="variable">$user</span>);   
-printf(<span class="string">"permission：%sn"</span>, <span class="variable">$user</span>-&gt;getPermission());   
-
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>大家想想装饰和继承的区别在哪？</li>
-<li>如果是上面的例子，如果用继承，是CPlusUser继承JavaUser还是反过来呢？谁也不知道最终使用者需要哪一种。</li>
-<li>在多层关系的情况下，装饰是和顺序无关并且随时增加装饰，而继承只能是特定的顺序，所以装饰模式会更加的灵活。</li>
-</ul>
-<h2 id="组合模式">组合模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
-<span class="comment">/**   
- *   
- * 组合模式   
- *    
- */</span>
-
-<span class="comment">//继承模式   </span>
-
-<span class="class"><span class="keyword">class</span> <span class="title">UserBaseInfo</span> </span>{   
-    <span class="keyword">private</span> <span class="variable">$name</span>;   
-
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$name</span>)</span> </span>{   
-        <span class="variable">$this</span>-&gt;name = <span class="variable">$name</span>;   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;name;   
-    }   
-}   
-<span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">extends</span> <span class="title">UserBaseInfo</span> </span>{   
-    <span class="keyword">private</span> <span class="variable">$login</span> = <span class="keyword">false</span>;   
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setLogin</span><span class="params">(<span class="variable">$islogin</span>)</span> </span>{   
-        <span class="variable">$this</span>-&gt;login = <span class="variable">$islogin</span>;   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isLogin</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;login;   
-    }   
-}   
-
-<span class="variable">$user</span> = <span class="keyword">new</span> User(<span class="string">'张三'</span>);   
-<span class="variable">$user</span>-&gt;setLogin(<span class="keyword">true</span>);   
-<span class="keyword">if</span> (<span class="variable">$user</span>-&gt;isLogin()) {   
-    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"已经登录了n"</span>;   
-} <span class="keyword">else</span> {   
-    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"还没有登录n"</span>;   
-}   
-
-
-<span class="comment">//组合模式   </span>
-
-<span class="class"><span class="keyword">class</span> <span class="title">LoginInfo</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$user</span>;   
-    <span class="keyword">protected</span> <span class="variable">$login</span> = <span class="keyword">false</span>;   
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">setLogin</span><span class="params">(<span class="variable">$user</span>, <span class="variable">$isLogin</span>)</span> </span>{   
-        <span class="variable">$this</span>-&gt;user = <span class="variable">$user</span>;   
-        <span class="variable">$this</span>-&gt;login = <span class="variable">$isLogin</span>;   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">isLogin</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;login;   
-    }   
-}   
-
-<span class="variable">$user</span> = <span class="keyword">new</span> User(<span class="string">'张三'</span>);   
-<span class="variable">$login</span> = <span class="keyword">new</span> LoginInfo();   
-<span class="variable">$login</span>-&gt;setLogin(<span class="variable">$user</span>, <span class="keyword">true</span>);   
-<span class="keyword">if</span> (<span class="variable">$login</span>-&gt;isLogin()) {   
-    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"已经登录了n"</span>;   
-} <span class="keyword">else</span> {   
-    <span class="keyword">echo</span> <span class="variable">$user</span>-&gt;getName().<span class="string">"还没有登录n"</span>;   
-}   
-
-<span class="comment">//部分可以更换，用继承则不行   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">Admin</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$level</span>;   
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$level</span>)</span> </span>{   
-        <span class="variable">$this</span>-&gt;level = <span class="variable">$level</span>;   
-    }   
-    <span class="function"><span class="keyword">function</span> <span class="title">getLevel</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;level;   
-    }   
-}   
-<span class="variable">$admin</span> = <span class="keyword">new</span> Admin(<span class="number">1</span>);   
-<span class="variable">$login</span>-&gt;setLogin(<span class="variable">$admin</span>, <span class="keyword">true</span>);   
-<span class="keyword">if</span> (<span class="variable">$login</span>-&gt;isLogin()) {   
-    printf(<span class="string">"级别为 %d 的管理员已经登录了n"</span>, <span class="variable">$admin</span>-&gt;getLevel());   
-} <span class="keyword">else</span> {   
-    printf(<span class="string">"级别为 %d 的管理员还没有登录n"</span>, <span class="variable">$admin</span>-&gt;getLevel());   
-}   
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>上面的例子分别展示了使用继承和组合来处理新功能，在简单的情况下看似区别不大，但在项目后期越来越复杂的时候组合模式的优势就越来越明显了。</li>
-<li>例如上面的登录信息，如果要增加登录次数、最后登录时间、登录ip等信息，登录本身就会变成一个比较复杂的对象。如果以后有新的需求比如好友信息、用户的访问信息等，再要继承的话，用户类就会变得非常庞大，难免各父类之间没有冲突的变量和方法，而外部访问用户类的众多方法也变得很费劲。采用组合模式后，一个类负责一个角色，功能区分非常明显，扩展方便。</li>
-</ul>
-<h2 id="外观模式">外观模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
-<span class="comment">/**   
- *   
- * 外观模式，也叫门面模式   
- *    
- */</span>
-
-
-<span class="class"><span class="keyword">class</span> <span class="title">Operation</span> </span>{   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testPlus</span><span class="params">()</span> </span>{   
-        printf(<span class="string">"plus: %sn"</span>, (<span class="number">1</span> + <span class="number">2</span> == <span class="number">3</span> ? <span class="string">'true'</span> : <span class="string">'false'</span>));   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testMinus</span><span class="params">()</span> </span>{   
-        printf(<span class="string">"minus: %sn"</span>, (<span class="number">3</span> - <span class="number">2</span> == <span class="number">2</span> ? <span class="string">'true'</span> : <span class="string">'false'</span>));   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testTimes</span><span class="params">()</span> </span>{   
-        printf(<span class="string">"times: %sn"</span>, (<span class="number">2</span> * <span class="number">3</span> == <span class="number">6</span> ? <span class="string">'true'</span> : <span class="string">'false'</span>));   
-    }   
-}   
-
-<span class="class"><span class="keyword">class</span> <span class="title">Tester</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$_operation</span>;   
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{   
-        <span class="variable">$this</span>-&gt;_operation = <span class="keyword">new</span> Operation();   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">testAll</span><span class="params">()</span> </span>{   
-        <span class="variable">$this</span>-&gt;_operation-&gt;testPlus();   
-        <span class="variable">$this</span>-&gt;_operation-&gt;testMinus();   
-        <span class="variable">$this</span>-&gt;_operation-&gt;testTimes();   
-    }   
-}   
-
-<span class="comment">//测试用例，测试全部接口   </span>
-<span class="variable">$tester</span> = <span class="keyword">new</span> Tester();   
-<span class="variable">$tester</span>-&gt;testAll();   
-
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>门面模式估计大家在实际代码中都已经使用到了，接口较多时把相似功能的接口封装成一个接口供外部调用，这就是门面模式。</li>
-</ul>
-<h2 id="单纯享元模式">单纯享元模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>  
-
-
-<span class="comment">/** 
- * 抽象享元角色 
- */</span>  
-<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Flyweight</span> </span>{  
-
-    <span class="comment">/** 
-     * 示意性方法 
-     * <span class="doctag">@param</span> string $state 外部状态 
-     */</span>  
-    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span></span>;  
-}  
-
-<span class="comment">/** 
- * 具体享元角色 
- */</span>  
-<span class="class"><span class="keyword">class</span> <span class="title">ConcreteFlyweight</span> <span class="keyword">extends</span> <span class="title">Flyweight</span> </span>{  
-
-    <span class="keyword">private</span> <span class="variable">$_intrinsicState</span> = <span class="keyword">null</span>;  
-
-    <span class="comment">/** 
-     * 构造方法 
-     * <span class="doctag">@param</span> string $state  内部状态 
-     */</span>  
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="variable">$this</span>-&gt;_intrinsicState = <span class="variable">$state</span>;  
-    }  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="keyword">echo</span> <span class="string">'ConcreteFlyweight operation, Intrinsic State = '</span> . <span class="variable">$this</span>-&gt;_intrinsicState  
-        . <span class="string">' Extrinsic State = '</span> . <span class="variable">$state</span> . <span class="string">'&lt;br /&gt;'</span>;  
-    }  
-
-}  
-
-
-<span class="comment">/** 
- * 享元工厂角色 
- */</span>  
-<span class="class"><span class="keyword">class</span> <span class="title">FlyweightFactory</span> </span>{  
-
-    <span class="keyword">private</span> <span class="variable">$_flyweights</span>;  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{  
-        <span class="variable">$this</span>-&gt;_flyweights = <span class="keyword">array</span>();  
-    }  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlyweigth</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>])) {  
-            <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>];  
-        } <span class="keyword">else</span> {  
-            <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>] = <span class="keyword">new</span> ConcreteFlyweight(<span class="variable">$state</span>);  
-        }  
-    }  
-
-}  
-
-<span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>{  
-    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span> <span class="params">()</span></span>{  
-        <span class="variable">$flyweightFactory</span> = <span class="keyword">new</span> FlyweightFactory();  
-        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state A'</span>);  
-        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state A'</span>);  
-
-        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state B'</span>);  
-        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state B'</span>);  
-
-    }  
-}  
-
-
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<h2 id="复合享元模式">复合享元模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>  
-
-<span class="comment">/** 
- * 复合享元模式 
- *  
- */</span>  
-
-<span class="comment">/** 
- * 抽象享元角色 
- */</span>  
-<span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Flyweight</span> </span>{  
-
-    <span class="comment">/** 
-     * 示意性方法 
-     * <span class="doctag">@param</span> string $state 外部状态 
-     */</span>  
-    <span class="keyword">abstract</span> <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span></span>;  
-}  
-
-<span class="comment">/** 
- * 具体享元角色 
- */</span>  
-<span class="class"><span class="keyword">class</span> <span class="title">ConcreteFlyweight</span> <span class="keyword">extends</span> <span class="title">Flyweight</span> </span>{  
-
-    <span class="keyword">private</span> <span class="variable">$_intrinsicState</span> = <span class="keyword">null</span>;  
-
-    <span class="comment">/** 
-     * 构造方法 
-     * <span class="doctag">@param</span> string $state  内部状态 
-     */</span>  
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="variable">$this</span>-&gt;_intrinsicState = <span class="variable">$state</span>;  
-    }  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="keyword">echo</span> <span class="string">'ConcreteFlyweight operation, Intrinsic State = '</span> . <span class="variable">$this</span>-&gt;_intrinsicState  
-        . <span class="string">' Extrinsic State = '</span> . <span class="variable">$state</span> . <span class="string">'&lt;br /&gt;'</span>;  
-    }  
-
-}  
-
-<span class="comment">/** 
- * 不共享的具体享元，客户端直接调用 
- */</span>  
-<span class="class"><span class="keyword">class</span> <span class="title">UnsharedConcreteFlyweight</span> <span class="keyword">extends</span> <span class="title">Flyweight</span> </span>{  
-
-    <span class="keyword">private</span> <span class="variable">$_flyweights</span>;  
-
-    <span class="comment">/** 
-     * 构造方法 
-     * <span class="doctag">@param</span> string $state  内部状态 
-     */</span>  
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{  
-        <span class="variable">$this</span>-&gt;_flyweights = <span class="keyword">array</span>();  
-    }  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">operation</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="keyword">foreach</span> (<span class="variable">$this</span>-&gt;_flyweights <span class="keyword">as</span> <span class="variable">$flyweight</span>) {  
-            <span class="variable">$flyweight</span>-&gt;operation(<span class="variable">$state</span>);  
-        }  
-    }  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span><span class="params">(<span class="variable">$state</span>, Flyweight <span class="variable">$flyweight</span>)</span> </span>{  
-        <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>] = <span class="variable">$flyweight</span>;  
-    }  
-
-}  
-
-<span class="comment">/** 
-* 享元工厂角色 
-*/</span>  
-<span class="class"><span class="keyword">class</span> <span class="title">FlyweightFactory</span> </span>{  
-
-    <span class="keyword">private</span> <span class="variable">$_flyweights</span>;  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{  
-        <span class="variable">$this</span>-&gt;_flyweights = <span class="keyword">array</span>();  
-    }  
-
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFlyweigth</span><span class="params">(<span class="variable">$state</span>)</span> </span>{  
-        <span class="keyword">if</span> (is_array(<span class="variable">$state</span>)) { <span class="comment">//  复合模式  </span>
-            <span class="variable">$uFlyweight</span> = <span class="keyword">new</span> UnsharedConcreteFlyweight();  
-
-            <span class="keyword">foreach</span> (<span class="variable">$state</span> <span class="keyword">as</span> <span class="variable">$row</span>) {  
-                <span class="variable">$uFlyweight</span>-&gt;add(<span class="variable">$row</span>, <span class="variable">$this</span>-&gt;getFlyweigth(<span class="variable">$row</span>));  
-            }  
-            <span class="keyword">return</span> <span class="variable">$uFlyweight</span>;  
-        } <span class="keyword">else</span> <span class="keyword">if</span> (is_string(<span class="variable">$state</span>)) {  
-            <span class="keyword">if</span> (<span class="keyword">isset</span>(<span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>])) {  
-                <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>];  
-            } <span class="keyword">else</span> {  
-                <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_flyweights[<span class="variable">$state</span>] = <span class="keyword">new</span> ConcreteFlyweight(<span class="variable">$state</span>);  
-            }  
-        } <span class="keyword">else</span> {  
-            <span class="keyword">return</span> <span class="keyword">null</span>;  
-        }  
-    }  
-
-}  
-
-<span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>{  
-    <span class="keyword">static</span> <span class="function"><span class="keyword">function</span> <span class="title">main</span> <span class="params">()</span></span>{  
-        <span class="variable">$flyweightFactory</span> = <span class="keyword">new</span> FlyweightFactory();  
-        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state A'</span>);  
-        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state A'</span>);  
-
-        <span class="variable">$flyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="string">'state B'</span>);  
-        <span class="variable">$flyweight</span>-&gt;operation(<span class="string">'other state B'</span>);  
-
-        <span class="comment">/* 复合对象*/</span>  
-        <span class="variable">$uflyweight</span> = <span class="variable">$flyweightFactory</span>-&gt;getFlyweigth(<span class="keyword">array</span>(<span class="string">'state A'</span>, <span class="string">'state B'</span>));  
-        <span class="variable">$uflyweight</span>-&gt;operation(<span class="string">'other state A'</span>);  
-
-    }  
-}  
-
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<h2 id="代理模式">代理模式</h2><pre><code class="php"><span class="preprocessor">&lt;?php</span>   
-<span class="comment">/**   
- *   
- * 代理模式   
- *   
- */</span>
-
-<span class="comment">//内部对象   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>{   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="string">'张三'</span>;   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getType</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="string">'付费用户'</span>;   
-    }   
-}   
-
-<span class="comment">//代理接口定义，例如开放平台   </span>
-<span class="class"><span class="keyword">interface</span> <span class="title">UserInterface</span> </span>{   
-    <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span></span>;   
-}   
-<span class="comment">//代理对象   </span>
-<span class="class"><span class="keyword">class</span> <span class="title">UserProxy</span> <span class="keyword">implements</span> <span class="title">UserInterface</span> </span>{   
-    <span class="keyword">protected</span> <span class="variable">$_user</span>;   
-    <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">()</span> </span>{   
-        <span class="variable">$this</span>-&gt;_user = <span class="keyword">new</span> User();   
-    }   
-    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getName</span><span class="params">()</span> </span>{   
-        <span class="keyword">return</span> <span class="variable">$this</span>-&gt;_user-&gt;getName();   
-    }   
-}   
-
-<span class="comment">//内部调用   </span>
-<span class="variable">$user</span> = <span class="keyword">new</span> User();   
-printf(<span class="string">"user name：%sn"</span>, <span class="variable">$user</span>-&gt;getName());   
-printf(<span class="string">"user type：%sn"</span>, <span class="variable">$user</span>-&gt;getType());   
-<span class="comment">//外部调用   </span>
-<span class="comment">// $user = new UserProxy();   </span>
-<span class="comment">// printf("user name：%sn", $user-&gt;getName());   </span>
-<span class="comment">// printf("user type：%sn", $user-&gt;getType()); //不能访问，及时知道内部对象有这个方法   </span>
-
-<span class="preprocessor">?&gt;</span>
-</code></pre>
-<ul>
-<li>代理模式、适配器模式、门面模式、装饰模式的区别</li>
-<li>相同之处：都封装一个内部对象，调用内部对象的方法</li>
-<li>不同之处：各自有各自的特性和应用场景，不能相互替代。所以用的时候要仔细分析用那种合适。</li>
-</ul>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/09/19/php/http头信息/">
-                http头信息
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-09-19
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/php/">php</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/09/19/php/http头信息/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/19/php/http头信息/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="常见头信息">常见头信息</h1><ol>
-<li><p>Accept：告诉服务器，客户端可以接受的资源类型，可以是一个类型，也可以是多个类型，多个类型间用逗号分隔开<br>特殊的<em>/</em>表示什么类型都可以;q表示希望返回资源的级别，没有的话默认是1，显示写的话通常在类型后用分号分开，往往是一个键值对的形式，如q=0.8。通常服务器会响应一个Content-type的响应头信息。</p>
-</li>
-<li><p>Accept-Encoding:告诉服务器，客户端支持什么样的压缩算法，可以为一个值或多个值，用逗号分开，常用的压缩算法有gzip。服务器在收到这个字段后，会检查服务器是否支持这个算法，如果支持，就会在发回响应信息前，对资源进行压缩，这样可以减小响应资源的大小。通常服务器会响应一个Content-Encoding:gzip的响应头信息。</p>
-</li>
-<li><p>Accept-Language:告诉服务器，客户端希望服务器返回的语言格式，对于支持国际话的服务端来说，这个字段很重要，可以通过这个字段，返回不同语言的资源</p>
-</li>
-<li><p>Cache-Control：这个值告诉服务器客户端希望的缓存策略，如果出现在客户端的请求头中，值往往是max-age=0,告诉服务器，客户端是不缓存服务器资源的</p>
-</li>
-<li><p>Connection：客户端发送的值往往是keep-alive，这个值告诉服务器自己打开的是一个长tcp连接，服务器接受到这个值后，如果接受这个长连接，就会返回Connection：keep-alive，这样当客户端再有请求发送时，就会重用这个tcp连接；如果不接受长连接就会返回Connection：close。正确的理解keep-alive必须对tcp/ip协议有一定的了解</p>
-</li>
-<li><p>Cookie：这个值是服务器存储在客户端的数据，cookie是一组键值对，用；分隔开。Cookie有很多重要的知识点，对web开发人员来说极其重要，以后会单独来说明。</p>
-</li>
-<li><p>Host：这个值对应的是服务器域名或者ip地址。</p>
-</li>
-<li><p>User-Agent:这个值描述了客户端的详细信息。如果你想写一个简单的爬虫软件，没有这个字段的话，是会被一些服务器拦截的（曾经爬网易的时候就遇到过这个问题）。</p>
-</li>
-</ol>
-<p><strong>上面的这些是chrome请求oschina时的请求头信息，HTTP协议规定的请求头当然远远不止上面说的这些，下面我们再说一些比较常用的请求头：</strong></p>
-<ol>
-<li><p>Referer:当点击某个网页的的a标签时或者表单提交时，会带上这个值，告诉服务器，这个请求时从哪个页面来的，这样服务器通过这个值就可以统计流量都是从哪里来的，一些广告服务提供商就是靠这个值来收费的。</p>
-</li>
-<li><p>if-modified-since:这个值是服务器上次响应时请求时发送给客户端的date时间，如果服务器看到这个字段，如果在这段时间没有修改过资源，服务器就会返回304 not modified，如果修改了，就返回资源。</p>
-</li>
-<li><p>if-none-match:这个值的意义跟if-modified-since一样，也是一个条件请求，但这个值比上面的值有增强效果，因为文件即使修改时间变了，不一定说明资源变了。</p>
-</li>
-<li><p>Range：可以告诉服务器，只请求资源的一段，值可以是这样bytes=100-1000，通过这个，可以做到断点下载。</p>
-</li>
-<li><p>Authorization：当服务器资源需要权限才能访问时，客户端会带上这个请求头信息，将认证信息通过这个字段传递给服务器，通常这个值会采用base64编码，将username:password类型的值编码后通过网络传递给服务器，因为base64编码是可逆的，不够安全，所以现在的安全控制很少用这种方式，一般是用https。</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -2148,21 +1357,21 @@ printf(<span class="string">"user type：%sn"</span>, <span class="variable">$us
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">65</span>
+              <span class="site-state-item-count">68</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">11</span>
+              <span class="site-state-item-count">12</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">46</span>
+              <span class="site-state-item-count">48</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
