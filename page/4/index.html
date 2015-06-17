@@ -117,6 +117,228 @@
           
           
             
+              <a class="post-title-link" href="/2014/11/29/arithmetic/进制转换/">
+                进制运算过程
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-29
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/算法/">算法</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/29/arithmetic/进制转换/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/29/arithmetic/进制转换/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="进制运算">进制运算</h1><p>当一个10进制的数:354要表示出来应该是<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3<span class="keyword">*</span>(10的2次方)+5<span class="keyword">*</span>(10的1次方)+4<span class="keyword">*</span>(10的0次方)</span><br><span class="line">=3<span class="keyword">*</span>100+5<span class="keyword">*</span>10+4</span><br><span class="line">=354</span><br></pre></td></tr></table></figure></p>
+<p>相信大家对这个比较明了.我们换一种方式<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">354</span> / <span class="number">10</span> =<span class="number">35</span> 余 <span class="number">4</span></span><br><span class="line"><span class="number">35</span> / <span class="number">10</span> = <span class="number">3</span> 余 <span class="number">5</span></span><br><span class="line"><span class="number">3</span> / <span class="number">10</span> = <span class="number">0</span> 余 <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//这个数正好就是余数</span></span><br></pre></td></tr></table></figure></p>
+<p>现在我们试着转换成其它进制<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//转成8进制</span></span><br><span class="line">(10)354</span><br><span class="line">354 / 8 = 44 余 2</span><br><span class="line">44 / 8  = 5 余 4</span><br><span class="line">5 / 8   = 0 余 5</span><br><span class="line"></span><br><span class="line">(10)354==(8)542</span><br><span class="line"></span><br><span class="line"><span class="comment">//转成10进制</span></span><br><span class="line">(8)542 </span><br><span class="line"><span class="header">= 5*(8*8)+4*(8)+2 </span></span><br><span class="line"><span class="header">= 320+32+2</span></span><br><span class="line"><span class="header">= 354</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="其它进制">其它进制</h2><p>上面只是按10进制来的,现在我们试试7进制的算法,当然我们得先列出7进制的加法,乘法表</p>
+<h3 id="加法表:">加法表:</h3><table>
+<thead>
+<tr>
+<th>7进制</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:left">10</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:left">11</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:left">12</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+<td style="text-align:left">13</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">13</td>
+<td style="text-align:left">14</td>
+</tr>
+<tr>
+<td>6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">14</td>
+<td style="text-align:left">15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="乘法表:">乘法表:</h3><table>
+<thead>
+<tr>
+<th>7进制</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6    </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+<td>6</td>
+<td>11</td>
+<td>13</td>
+<td>15</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3</td>
+<td>6</td>
+<td>12</td>
+<td>15</td>
+<td>21</td>
+<td>24</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>10</td>
+<td>15</td>
+<td>22</td>
+<td>26</td>
+<td>33</td>
+</tr>
+<tr>
+<td>5</td>
+<td>5</td>
+<td>13</td>
+<td>21</td>
+<td>26</td>
+<td>34</td>
+<td>42</td>
+</tr>
+<tr>
+<td>6</td>
+<td>6</td>
+<td>15</td>
+<td>24</td>
+<td>33</td>
+<td>42</td>
+<td>51</td>
+</tr>
+</tbody>
+</table>
+<p>我们用24*265来试试:<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">265</span></span><br><span class="line">     <span class="number">24</span></span><br><span class="line"><span class="comment">//-----</span></span><br><span class="line">   <span class="number">1456</span></span><br><span class="line">    <span class="number">563</span></span><br><span class="line"><span class="comment">//-----</span></span><br><span class="line">  <span class="number">10416</span></span><br></pre></td></tr></table></figure></p>
+<p>通过上面的加法和乘法表,我们可以得出如下的数.<br>转换成10进制:<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">10416</span><br><span class="line">=<span class="ruby"><span class="number">1</span>*(<span class="number">7</span>的<span class="number">4</span>次方)+<span class="number">0</span>*(<span class="number">7</span>的<span class="number">3</span>次方)+<span class="number">4</span>*(<span class="number">7</span>的<span class="number">2</span>次方)+<span class="number">1</span>*(<span class="number">7</span>的<span class="number">1</span>次方)+<span class="number">6</span></span><br><span class="line"></span>=<span class="ruby"><span class="number">2401</span>+<span class="number">0</span>+<span class="number">196</span>+<span class="number">7</span>+<span class="number">6</span></span><br><span class="line"></span>=<span class="ruby"><span class="number">2610</span></span></span><br></pre></td></tr></table></figure></p>
+<p>验证一下: </p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>进制:<span class="number">145</span>*<span class="number">18</span>=<span class="number">2610</span></span><br><span class="line"><span class="number">7</span>进制:<span class="number">265</span>*<span class="number">24</span>=<span class="number">10416</span></span><br><span class="line"><span class="comment">//-----------------</span></span><br><span class="line"><span class="comment">//145转成7进制</span></span><br><span class="line"><span class="number">145</span> / <span class="number">7</span> = <span class="number">20</span> 余 <span class="number">5</span></span><br><span class="line"><span class="number">20</span> / <span class="number">7</span>  = <span class="number">2</span> 余 <span class="number">6</span></span><br><span class="line"><span class="number">2</span> / <span class="number">7</span>   = <span class="number">0</span> 余 <span class="number">2</span></span><br><span class="line"><span class="comment">//-----------------</span></span><br><span class="line"><span class="comment">//18转成7进制</span></span><br><span class="line"><span class="number">18</span> / <span class="number">7</span> = <span class="number">2</span> 余 <span class="number">4</span></span><br><span class="line"><span class="number">2</span> / <span class="number">7</span>  = <span class="number">0</span> 余 <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/11/26/golang/reflect设计select/">
                 reflect设计select
               </a>
@@ -339,114 +561,6 @@
           
           
             
-              <a class="post-title-link" href="/2014/11/18/golang/unsafe简介/">
-                利用unsafe操作未导出变量
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/18/golang/unsafe简介/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/unsafe简介/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>unsafe.Pointer其实就是类似C的void *，在golang中是用于各种指针相互转换的桥梁。uintptr是golang的内置类型，是能存储指针的整型，uintptr的底层类型是int，它和unsafe.Pointer可相互转换。uintptr和unsafe.Pointer的区别就是：unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算；而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象，uintptr类型的目标会被回收。golang的unsafe包很强大，基本上很少会去用它。它可以像C一样去操作内存，但由于golang不支持直接进行指针运算，所以用起来稍显麻烦。</p>
-<p>切入正题。利用unsafe包，可操作私有变量(在golang中称为“未导出变量”，变量名以小写字母开始)，下面是具体例子。</p>
-<p>在$GOPATH/src下建立poit包，并在poit下建立子包p，目录结构如下：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$GOPATH/src</span><br><span class="line">-<span class="ruby">---poit</span><br><span class="line"></span>-<span class="ruby">-------p</span><br><span class="line"></span>-<span class="ruby">-----------v.go</span><br><span class="line"></span>-<span class="ruby">-------main.go</span></span><br></pre></td></tr></table></figure></p>
-<p>以下是v.go的代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> V <span class="keyword">struct</span> &#123;</span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutI() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"i=%d\n"</span>, this.i)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutJ() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"j=%d\n"</span>, this.j)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>意图很明显，我是想通过unsafe包来实现对V的成员i和j赋值，然后通过PutI()和PutJ()来打印观察输出结果。</p>
-<p>以下是main.go源代码：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"poit/p"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br><span class="line">    <span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br><span class="line">    *i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br><span class="line">    <span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br><span class="line">    *j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br><span class="line">    v.PutI()</span><br><span class="line">    v.PutJ()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当然会有些限制，比如需要知道结构体V的成员布局，要修改的成员大小以及成员的偏移量。我们的核心思想就是：结构体的成员在内存中的分配是一段连续的内存，结构体中第一个成员的地址就是这个结构体的地址，您也可以认为是相对于这个结构体偏移了0。相同的，这个结构体中的任一成员都可以相对于这个结构体的偏移来计算出它在内存中的绝对地址。</p>
-<p>具体来讲解下main方法的实现：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br></pre></td></tr></table></figure>
-<p>new是golang的内置方法，用来分配一段内存(会按类型的零值来清零)，并返回一个指针。所以v就是类型为p.V的一个指针。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br></pre></td></tr></table></figure>
-<p>将指针v转成通用指针，再转成int32指针。这里就看到了unsafe.Pointer的作用了，您不能直接将v转成int32类型的指针，那样将会panic。刚才说了v的地址其实就是它的第一个成员的地址，所以这个i就很显然指向了v的成员i，通过给i赋值就相当于给v.i赋值了，但是别忘了i只是个指针，要赋值得解引用。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br></pre></td></tr></table></figure>
-<p>现在已经成功的改变了v的私有成员i的值，好开心^_^</p>
-<p>但是对于v.j来说，怎么来得到它在内存中的地址呢？其实我们可以获取它相对于v的偏移量(unsafe.Sizeof可以为我们做这个事)，但我上面的代码并没有这样去实现。各位别急，一步步来。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br></pre></td></tr></table></figure>
-<p>其实我们已经知道v是有两个成员的，包括i和j，并且在定义中，i位于j的前面，而i是int32类型，也就是说i占4个字节。所以j是相对于v偏移了4个字节。您可以用uintptr(4)或uintptr(unsafe.Sizeof(int32(0)))来做这个事。unsafe.Sizeof方法用来得到一个值应该占用多少个字节空间。注意这里跟C的用法不一样，C是直接传入类型，而golang是传入值。之所以转成uintptr类型是因为需要做指针运算。v的地址加上j相对于v的偏移地址，也就得到了v.j在内存中的绝对地址，别忘了j的类型是int64，所以现在的j就是一个指向v.j的指针，接下来给它赋值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br></pre></td></tr></table></figure>
-<p>好吧，现在貌视一切就绪了，来打印下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v.PutI()</span><br><span class="line">v.PutJ()</span><br></pre></td></tr></table></figure>
-<p>如果您看到了正确的输出，那恭喜您，您做到了！</p>
-<p>但是，别忘了上面的代码其实是有一些问题的，您发现了吗？</p>
-<p>在p目录下新建w.go文件，代码如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> W <span class="keyword">struct</span> &#123;</span><br><span class="line">    b <span class="typename">byte</span></span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> init() &#123;</span><br><span class="line">    <span class="keyword">var</span> w *W = <span class="built_in">new</span>(W)</span><br><span class="line">    fmt.Printf(<span class="string">"size=%d\n"</span>, unsafe.Sizeof(*w))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>需要修改main.go的代码吗？不需要，我们只是来测试一下。w.go里定义了一个特殊方法init，它会在导入p包时自动执行，别忘了我们有在main.go里导入p包。每个包都可定义多个init方法，它们会在包被导入时自动执行(在执行main方法前被执行，通常用于初始化工作)，但是，最好在一个包中只定义一个init方法，否则您或许会很难预期它的行为)。我们来看下它的输出：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">size=<span class="number">16</span></span><br></pre></td></tr></table></figure>
-<p>等等，好像跟我们想像的不一致。来手动计算一下：b是byte类型，占1个字节；i是int32类型，占4个字节；j是int64类型，占8个字节，1+4+8=13。这是怎么回事呢？这是因为发生了对齐。在struct中，它的对齐值是它的成员中的最大对齐值。每个成员类型都有它的对齐值，可以用unsafe.Alignof方法来计算，比如unsafe.Alignof(w.b)就可以得到b在w中的对齐值。同理，我们可以计算出w.b的对齐值是1，w.i的对齐值是4，w.j的对齐值也是4。如果您认为w.j的对齐值是8那就错了，所以我们前面的代码能正确执行(试想一下，如果w.j的对齐值是8，那前面的赋值代码就有问题了。也就是说前面的赋值中，如果v.j的对齐值是8，那么v.i跟v.j之间应该有4个字节的填充。所以得到正确的对齐值是很重要的)。对齐值最小是1，这是因为存储单元是以字节为单位。所以b就在w的首地址，而i的对齐值是4，它的存储地址必须是4的倍数，因此，在b和i的中间有3个填充，同理j也需要对齐，但因为i和j之间不需要填充，所以w的Sizeof值应该是13+3=16。如果要通过unsafe来对w的三个私有成员赋值，b的赋值同前，而i的赋值则需要跳过3个字节，也就是计算偏移量的时候多跳过3个字节，同理j的偏移可以通过简单的数学运算就能得到。</p>
-<p>比如也可以通过unsafe来灵活取值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> b []<span class="typename">byte</span> = []<span class="typename">byte</span>&#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> c *<span class="typename">byte</span> = &amp;b[<span class="number">0</span>]</span><br><span class="line">    fmt.Println(*(*<span class="typename">byte</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(c)) + <span class="typename">uintptr</span>(<span class="number">1</span>))))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>关于填充，FastCGI协议就用到了。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2014/11/18/cpp/内存对齐基础/">
                 C++对象对齐基础
               </a>
@@ -541,6 +655,114 @@
 <p>gcc中：C相当于把所有成员i、c1、c2、c3当作是在一个class内部，(先继承后对齐)</p>
 <p>vs中：对于A，对齐后其大小是8；对于B，c2加上对齐后的A的大小是9，对齐后就是12；对于C，c3加上对齐后的B大小是13，再对齐就是16 (先对齐后继承)</p>
 <p>关于c++对象继承后的内存布局，更详细的分析可以《深度探索参考c++对象模型》第三章</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/18/golang/unsafe简介/">
+                利用unsafe操作未导出变量
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/18/golang/unsafe简介/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/golang/unsafe简介/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>unsafe.Pointer其实就是类似C的void *，在golang中是用于各种指针相互转换的桥梁。uintptr是golang的内置类型，是能存储指针的整型，uintptr的底层类型是int，它和unsafe.Pointer可相互转换。uintptr和unsafe.Pointer的区别就是：unsafe.Pointer只是单纯的通用指针类型，用于转换不同类型指针，它不可以参与指针运算；而uintptr是用于指针运算的，GC 不把 uintptr 当指针，也就是说 uintptr 无法持有对象，uintptr类型的目标会被回收。golang的unsafe包很强大，基本上很少会去用它。它可以像C一样去操作内存，但由于golang不支持直接进行指针运算，所以用起来稍显麻烦。</p>
+<p>切入正题。利用unsafe包，可操作私有变量(在golang中称为“未导出变量”，变量名以小写字母开始)，下面是具体例子。</p>
+<p>在$GOPATH/src下建立poit包，并在poit下建立子包p，目录结构如下：<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$GOPATH/src</span><br><span class="line">-<span class="ruby">---poit</span><br><span class="line"></span>-<span class="ruby">-------p</span><br><span class="line"></span>-<span class="ruby">-----------v.go</span><br><span class="line"></span>-<span class="ruby">-------main.go</span></span><br></pre></td></tr></table></figure></p>
+<p>以下是v.go的代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> V <span class="keyword">struct</span> &#123;</span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutI() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"i=%d\n"</span>, this.i)</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this V) PutJ() &#123;</span><br><span class="line">    fmt.Printf(<span class="string">"j=%d\n"</span>, this.j)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>意图很明显，我是想通过unsafe包来实现对V的成员i和j赋值，然后通过PutI()和PutJ()来打印观察输出结果。</p>
+<p>以下是main.go源代码：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"poit/p"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br><span class="line">    <span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br><span class="line">    *i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br><span class="line">    <span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br><span class="line">    *j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br><span class="line">    v.PutI()</span><br><span class="line">    v.PutJ()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然会有些限制，比如需要知道结构体V的成员布局，要修改的成员大小以及成员的偏移量。我们的核心思想就是：结构体的成员在内存中的分配是一段连续的内存，结构体中第一个成员的地址就是这个结构体的地址，您也可以认为是相对于这个结构体偏移了0。相同的，这个结构体中的任一成员都可以相对于这个结构体的偏移来计算出它在内存中的绝对地址。</p>
+<p>具体来讲解下main方法的实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> v *p.V = <span class="built_in">new</span>(p.V)</span><br></pre></td></tr></table></figure>
+<p>new是golang的内置方法，用来分配一段内存(会按类型的零值来清零)，并返回一个指针。所以v就是类型为p.V的一个指针。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> i *<span class="typename">int32</span> = (*<span class="typename">int32</span>)(unsafe.Pointer(v))</span><br></pre></td></tr></table></figure>
+<p>将指针v转成通用指针，再转成int32指针。这里就看到了unsafe.Pointer的作用了，您不能直接将v转成int32类型的指针，那样将会panic。刚才说了v的地址其实就是它的第一个成员的地址，所以这个i就很显然指向了v的成员i，通过给i赋值就相当于给v.i赋值了，但是别忘了i只是个指针，要赋值得解引用。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*i = <span class="typename">int32</span>(<span class="number">98</span>)</span><br></pre></td></tr></table></figure>
+<p>现在已经成功的改变了v的私有成员i的值，好开心^_^</p>
+<p>但是对于v.j来说，怎么来得到它在内存中的地址呢？其实我们可以获取它相对于v的偏移量(unsafe.Sizeof可以为我们做这个事)，但我上面的代码并没有这样去实现。各位别急，一步步来。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> j *<span class="typename">int64</span> = (*<span class="typename">int64</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(v)) + <span class="typename">uintptr</span>(unsafe.Sizeof(<span class="typename">int32</span>(<span class="number">0</span>)))))</span><br></pre></td></tr></table></figure>
+<p>其实我们已经知道v是有两个成员的，包括i和j，并且在定义中，i位于j的前面，而i是int32类型，也就是说i占4个字节。所以j是相对于v偏移了4个字节。您可以用uintptr(4)或uintptr(unsafe.Sizeof(int32(0)))来做这个事。unsafe.Sizeof方法用来得到一个值应该占用多少个字节空间。注意这里跟C的用法不一样，C是直接传入类型，而golang是传入值。之所以转成uintptr类型是因为需要做指针运算。v的地址加上j相对于v的偏移地址，也就得到了v.j在内存中的绝对地址，别忘了j的类型是int64，所以现在的j就是一个指向v.j的指针，接下来给它赋值：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*j = <span class="typename">int64</span>(<span class="number">763</span>)</span><br></pre></td></tr></table></figure>
+<p>好吧，现在貌视一切就绪了，来打印下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v.PutI()</span><br><span class="line">v.PutJ()</span><br></pre></td></tr></table></figure>
+<p>如果您看到了正确的输出，那恭喜您，您做到了！</p>
+<p>但是，别忘了上面的代码其实是有一些问题的，您发现了吗？</p>
+<p>在p目录下新建w.go文件，代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> p</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> W <span class="keyword">struct</span> &#123;</span><br><span class="line">    b <span class="typename">byte</span></span><br><span class="line">    i <span class="typename">int32</span></span><br><span class="line">    j <span class="typename">int64</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> init() &#123;</span><br><span class="line">    <span class="keyword">var</span> w *W = <span class="built_in">new</span>(W)</span><br><span class="line">    fmt.Printf(<span class="string">"size=%d\n"</span>, unsafe.Sizeof(*w))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>需要修改main.go的代码吗？不需要，我们只是来测试一下。w.go里定义了一个特殊方法init，它会在导入p包时自动执行，别忘了我们有在main.go里导入p包。每个包都可定义多个init方法，它们会在包被导入时自动执行(在执行main方法前被执行，通常用于初始化工作)，但是，最好在一个包中只定义一个init方法，否则您或许会很难预期它的行为)。我们来看下它的输出：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">size=<span class="number">16</span></span><br></pre></td></tr></table></figure>
+<p>等等，好像跟我们想像的不一致。来手动计算一下：b是byte类型，占1个字节；i是int32类型，占4个字节；j是int64类型，占8个字节，1+4+8=13。这是怎么回事呢？这是因为发生了对齐。在struct中，它的对齐值是它的成员中的最大对齐值。每个成员类型都有它的对齐值，可以用unsafe.Alignof方法来计算，比如unsafe.Alignof(w.b)就可以得到b在w中的对齐值。同理，我们可以计算出w.b的对齐值是1，w.i的对齐值是4，w.j的对齐值也是4。如果您认为w.j的对齐值是8那就错了，所以我们前面的代码能正确执行(试想一下，如果w.j的对齐值是8，那前面的赋值代码就有问题了。也就是说前面的赋值中，如果v.j的对齐值是8，那么v.i跟v.j之间应该有4个字节的填充。所以得到正确的对齐值是很重要的)。对齐值最小是1，这是因为存储单元是以字节为单位。所以b就在w的首地址，而i的对齐值是4，它的存储地址必须是4的倍数，因此，在b和i的中间有3个填充，同理j也需要对齐，但因为i和j之间不需要填充，所以w的Sizeof值应该是13+3=16。如果要通过unsafe来对w的三个私有成员赋值，b的赋值同前，而i的赋值则需要跳过3个字节，也就是计算偏移量的时候多跳过3个字节，同理j的偏移可以通过简单的数学运算就能得到。</p>
+<p>比如也可以通过unsafe来灵活取值：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> b []<span class="typename">byte</span> = []<span class="typename">byte</span>&#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> c *<span class="typename">byte</span> = &amp;b[<span class="number">0</span>]</span><br><span class="line">    fmt.Println(*(*<span class="typename">byte</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(c)) + <span class="typename">uintptr</span>(<span class="number">1</span>))))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于填充，FastCGI协议就用到了。</p>
 
         
       
@@ -1152,173 +1374,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/24/golang/反射规则/">
-                反射规则 the law of reflection
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-24
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/24/golang/反射规则/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/24/golang/反射规则/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="类型和接口(type_and_interfaces)">类型和接口(type and interfaces)</h2><p>因为接口是基于类型系统的（type system），所以首先看下一下go的类型</p>
-<p>go是静态类型的。每个变量都有一个静态的类型(static type)，也就是说一种类型在编译的时候被声明和确定了(one type known and fixed at complie time)。如果我们定义：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> i <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> j MyInt</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   i的类型是int，j的类型是MyInt，i和j的类型是不一样的。尽管他们有着相同的底层类型(?)(underlying type)，但是它们是不能在不转换的情况下互相赋值的。</p>
-</blockquote>
-<p>类型里面一个重要的分类是接口类型(interface types)，它表示一系列的固定方法。一个接口变量可以存储任何实现这个结构的实际变量(? concrete type)。<br>一个出名的例子就是io包里的io.Reader和io.Writer：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Reader is the interface that wraps the basic Read method.</span></span><br><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(p []<span class="typename">byte</span>) (n <span class="typename">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Writer is the interface that wraps the basic Write method.</span></span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Write(p []<span class="typename">byte</span>) (n <span class="typename">int</span>, err error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   任何类型以上面的特征(? with this signature)实现了Read（或者 Writer）方法，就可以说该类型实现了io.Read（或者io.Writer）。</p>
-</blockquote>
-<p>这就意味着接口io.Read类型的变量可以存放任何有Read方法的变量：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line"><span class="comment">// and so on</span></span><br></pre></td></tr></table></figure>
-<p>有一点要搞清楚，不管r里面存放的具体值是什么，r的类型一直都是io.Read：go是静态类型的语言，r的静态类型是io.Read。<br>一个关于接口的非常重要的例子就是空接口：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面代表一个空的方法集，可以存放任何数据类型。因为每个类型都有零个或者更多的方法。<br>有人说go的接口是动态类型(dynamically typed)，这是一种误导。他们其实是静态的类型：一个接口类型的变量一直都有同样的静态类型(static type)，虽然在运行的时候存放在接口类型变量里的值可能会变，但是那些值都会是实现过这个接口的。</p>
-<p>我们需要严谨对待上面这些概念，因为反射和接口是紧密相连的。</p>
-<h2 id="关于接口的说明（the_representation_of_an_interface）">关于接口的说明（the representation of an interface）</h2><p>一个接口类型的变量是成对存储的(stores a pair)：分配给变量的具体值(concrete value)和该值的类型描述(value’s type descriptor)。更准确说，这个值是实现了该接口的底层具体数据(? the underlaying concrete data item)，类型(type)描述表示这个数据的所有类型信息(the type describes the full type of that item)：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">tty, err := os.OpenFile(<span class="string">"/dev/tty"</span>, os.O_RDWR, <span class="number">0</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="constant">nil</span>, err</span><br><span class="line">&#125;</span><br><span class="line">r = tty</span><br></pre></td></tr></table></figure>
-<p>r包含了值对(the pair)，【value,type】，【tty,<em>os.File】。这里要注意类型</em>os.File继承了不止read一个方法。<br>尽管这里的接口类型只提供Read一种方法，但是值(value)里面带有这个关于这个数值的所有信息。这就是为什么我们这么做：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> w io.Writer</span><br><span class="line">w = r.(io.Writer)</span><br></pre></td></tr></table></figure>
-<p>这里的赋值表达式是一个类型声明(type assertion)。这个所声明里，r中的元素同时也继承了io.Writer，所以我们可以赋值给w。赋值以后，w就会存有值对(pair):【tty，*os.File】。和存放在r中的值对是一样的。接口的静态类型要求接口变量只能使用接口里所定义的方法，尽管接口变量中存放的值(value)可能拥有大量额方法。</p>
-<p>继续上面的例子，我们还可以这么做：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> empty <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">empty = w</span><br></pre></td></tr></table></figure></p>
-<p>这的空接口变量，empty，一样的包含有同上面相同的值对(pair)，【tty，*os.File】。也就是说一个空的接口能存放所有的变量，包含有关于这个变量我们所需要的所有信息。</p>
-<blockquote>
-<p>   我们这不需要一个类型声明，是因为我们都知道w是符合空接口的。在这个例子里，我们把Read转换成Writer，我们是需要特别的类型声明的，这是因为Writer的方法不是Reader方法的子集。</p>
-</blockquote>
-<p>注意一个重要的细节，存放在接口变量中的pai存放的类型一直都是【value,concrete type】，而不是【value,interface type】。接口中不保存接口变量。</p>
-<h2 id="反射的第一法则[从接口变量到反射对象的反射(reflection_goes_from_interface_value_to_reflection_object)]">反射的第一法则[从接口变量到反射对象的反射(reflection goes from interface value to reflection object)]</h2><p>简单的说，反射只是检查存放在一个接口变量里的类型和值对（type and value pair）的机制。要了解这些，我们需要知道reflect包里的两个类型：Type和Value。这个两个类型提供了访问结构变量里内容的途径，两个函数，reflect.TypeOf和reflect.ValueOf，可以获得从一个接口数据里面获取reflect.Type和reflect.Value。（当然从reflect.Value里面也能很很容易的获得reflect.Type，但是我们现在暂时把Value和Type的概念区分开）</p>
-<p>让我们先来看看TypeOf:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	 fmt.Println(<span class="string">"type:"</span>, reflect.TypeOf(x))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: type: float64</span></span><br></pre></td></tr></table></figure></p>
-<p>你可能会好奇，这里哪有接口？程序里里面我们传递给reflect.TypeOf的x变量时float64，而不是接口啊。但是跟据godoc里显示，reflect.TypeOf的声明里包含有一个空的接口：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TypeOf returns the reflection Type of the value in the interface&#123;&#125;.</span></span><br><span class="line"><span class="comment">// TypeOf(nil) returns nil.</span></span><br><span class="line"><span class="keyword">func</span> TypeOf(i <span class="keyword">interface</span>&#123;&#125;) Type &#123;</span><br><span class="line">	eface := *(*emptyInterface)(unsafe.Pointer(&amp;i))</span><br><span class="line">	<span class="keyword">return</span> toType(eface.typ)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当我们调用<code>reflect.TypeOf(x)</code>时，x首先被存放在一个空的接口中，然后被当成参数传递过去。reflect.Typeof拆开（unpacks）这个空的接口，获取类型的信息（type information）。</p>
-<p>那么reflect.ValueOf函数自然是用来获取值（value）的（这里我们忽略样板（? boilerplate），先关注可执行的代码）：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, reflect.ValueOf(x))</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: value: &lt;float64 Value&gt;</span></span><br></pre></td></tr></table></figure>
-<p>reflect.Type和reflect.ValueOf都拥有很多的方法供我们使用。一个非常重要的例子就是Value有一个Type的方法，这个方法可以从refelct.Value中获得Type。另外一个Type和Value都有的方法是Kind，这个方法可以返回一个常量说明（? a constant indicating(底层类型,例如:int,float)），类似：Uint和Float64等等。同时Value里面还有类似Int和Float的函数，能让我们获取其中获取的值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">fmt.Println(<span class="string">"type:"</span>, v.Type())</span><br><span class="line">fmt.Println(<span class="string">"kind is float64:"</span>, v.Kind() == reflect.Float64)</span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, v.Float())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: float64</span></span><br><span class="line"><span class="comment">//			kind is float64: true</span></span><br><span class="line"><span class="comment">//			value: 3.4</span></span><br></pre></td></tr></table></figure>
-<p>这里还有类似SetInt和SetFloat的方法，但是使用这些方法前我们需要了解settability（？）这个是下面第三部分才能谈到的，待会再讨论。</p>
-<p>反射库里面有两个属性需要特别指出来。第一，为了让api简单，Value的setter和getter方法都是基于可以用来保存数据的最大数据类型的：比如所有的有符号整形操作都是基于int64的。也就是说，Value的Int方法返回一个int64的数据，而SetInt的方法获取的是一个int64。用实际的例子里说明：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">uint8</span> = <span class="string">'x'</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">fmt.Println(<span class="string">"type:"</span>, v.Type())<span class="comment">// uint8.</span></span><br><span class="line">fmt.Println(<span class="string">"kind is uint8: "</span>, v.Kind() == reflect.Uint8) <span class="comment">// true.</span></span><br><span class="line">x = <span class="typename">uint8</span>(v.Uint())<span class="comment">// v.Uint returns a uint64.</span></span><br></pre></td></tr></table></figure>
-<p>第二是属性，反射对象的Kind方法描述的是底层类型（underlying type），不是静态类型。如果一个反射对象包含有一个用户自定义类型，如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> x MyInt = <span class="number">7</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br></pre></td></tr></table></figure>
-<p>v的Kind方法返回值依旧是reflect.Int，尽管x的静态类型是MyInt而不是int。也就是说，Kind方法不能识别基于int的MyInt类型，尽管Type是可以的。</p>
-<h2 id="反射的第二法则[从反射对象到接口变量的反射(reflection_goes_from_reflection_object_to_interface_value)]">反射的第二法则[从反射对象到接口变量的反射(reflection goes from reflection object to interface value)]</h2><p>就像物理世界中的反射，Go中的反射也有自己反转(inverse)。</p>
-<p>给我一个reflect.Value，我们就可以通过Interface这个方法重新得到一个接口。实际上，这个方法吧type和value信息打包成一个接口引用，并且返回：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Interface returns v's value as an interface&#123;&#125;.</span></span><br><span class="line"><span class="keyword">func</span> (v Value) Interface() <span class="keyword">interface</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>因此我们可以这么说：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y := v.Interface().(<span class="typename">float64</span>) <span class="comment">// y will have type float64.</span></span><br><span class="line">fmt.Println(y)	<span class="comment">//把有对象v所表示的float64的值答应出来了。</span></span><br></pre></td></tr></table></figure>
-<p>我们还可以加以改进。fmt.Println，fmt.Printf等等函数的参数都是以一个空的接口变量传递过去的，也就是说就像我们在之前的例子里一样，这个参数在fmt包里被解包（unpacked）了。所以只要给上面的函数直接传递Interface方法的返回值就能正确的输出内容：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(v.Interface())</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   （为什么不直接使用fmt.Println(v)？这是因为v其实是一个reflect.Value；我们需要的是里面保存的确定的值(? concrete value)）。</p>
-</blockquote>
-<p>既然我们的值的类型是float64，我们甚至可以使用浮点数类型：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(<span class="string">"value is %7.1e\n"</span>, v.Interface())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: 3.4e+00</span></span><br></pre></td></tr></table></figure>
-<p>再说一遍，我们不需要把v.Interface的结果类型转换（? type-assert）。这个空的接口值里面包含有具体数据的类型信息，Printf可以从中获取的到。</p>
-<p>简单的说，Interface是函数ValueOf的反转，只可惜的是它的结果都是静态类型interface{}</p>
-<p>小结：从接口反射到反射变量，然后又反射回来。</p>
-<h2 id="反射的第三法则[要想修改一个反射对象，值必须是可设置的(to_modify_a_reflection_object,the_value_must_be_settable)]">反射的第三法则[要想修改一个反射对象，值必须是可设置的(to modify a reflection object,the value must be settable)]</h2><p>第三条法则是很为微妙(subtle)和让人困惑的(confusing)，但是我们从第一法则(principles)来看的话的，也是很容搞懂的。</p>
-<p>下面这些代码无法运行，但是值得我们学习：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">v.SetFloat(<span class="number">7.1</span>) <span class="comment">// Error: will panic</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//output: panic: reflect.Value.SetFloat using unaddressable value</span></span><br></pre></td></tr></table></figure>
-<p>会触发panic，产生一段含混不清的提示，其实问题并不是常量7.1无法寻址，是因为v是不可设置的（not settable）。可设置(settableility)是反射Value的一个属性，但不是所有的反射Value都有这个属性。</p>
-<p>Value的CanSet方法可以判断Value可不可设置，如下面的例子：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">fmt.Println(<span class="string">"settability of v:"</span>, v.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: settability of v: false</span></span><br></pre></td></tr></table></figure>
-<p>对一个不可设置（non-settable）的Value使用set就会报错。那么什么是可设置性（settabiliy）？<br>可设置性有点像可寻址(addressability)，但是更加严格，它是表示一个反射对象可不可修改创建这个反射对象原始存储数据(storage)的属性</p>
-<p>可设置性取决于反射对象中保存的是不是原始的数据。当我们输入一下代码：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br></pre></td></tr></table></figure></p>
-<p>我们传递给reflection.ValueOf的是一个x的拷贝，所以作为reflect.ValueOf的参数用来反射对象的接口，其实x的拷贝，而不是x本身。因此如果下面的代码：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v.SetFloat(<span class="number">7.1</span>)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   理论上是允许运行成功的，只是不会去修改x的值，尽管看起来v是由x创建的一样。其实这样操作会更新x的拷贝在内存中的值，而x本身是不会受到影响的。这样的话会显得让人困惑，而且一点用的都没有。所以这种方法就被规定为非法的，可设置属性是不允许这么操作的。</p>
-</blockquote>
-<p>可能这些看起来有些怪异（bizarre），但其实是很简单的。这其实是一种很常见的情况，只是有个不同的外在而已。想想当我们把x传递给一个函数的时候：<code>f(x)</code><br>因为我们传递给函数的是x的拷贝而不是x的本身，所以我们知道f不能修改x的值。如果我们想f能修改x的值，那么我们就必须给这个函数传递x的的地址了（也就是x的指针）: <code>f(&amp;x)</code></p>
-<p>这样看起来就显得很简单很熟悉了，反射也是同样的运作方式的。如果我们也想让反射修改x的话，我们也必须给反射库(reflection library)一个我们想修改的值得指针。</p>
-<p>让我们这操作一下试试。首先我们像往常一样初始化x，然后创建一个指向x的反射变量p：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">p := reflect.ValueOf(&amp;x) <span class="comment">// <span class="doctag">Note</span>: take the address of x.</span></span><br><span class="line">fmt.Println(<span class="string">"type of p:"</span>, p.Type())</span><br><span class="line">fmt.Println(<span class="string">"settability of p:"</span>, p.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type of p: *float64</span></span><br><span class="line">			settability of p: <span class="constant">false</span></span><br></pre></td></tr></table></figure>
-<p>p这个反射是不可设置的，但是p也也不是我想设置的数据，我们要设置的实际是*p。想要得到p所指向的数据，我们使用Value的Elem方法。这个方法可以通过指针间接访问数据，并且保存在反射Value的变量v中：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v := p.Elem()</span><br><span class="line">fmt.Println(<span class="string">"settability of v:"</span>, v.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	settability of v: true</span></span><br></pre></td></tr></table></figure>
-<p>既然v代表的是x，我们终于可以使用v.SetFloat修改x的值了：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">v.SetFloat(<span class="number">7.1</span>)</span><br><span class="line">fmt.Println(v.Interface())</span><br><span class="line">fmt.Println(x)</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	7.1</span></span><br><span class="line">			<span class="number">7.1</span></span><br></pre></td></tr></table></figure></p>
-<p>尽管反射执行着语言的功能，通过反射中Type和Values可以掩盖住具体的细节，但是可能还是难以去理解。你只需要记住了，Values需要一个数据的地址才能修改反射所代表的数据。</p>
-<h2 id="结构体(Structs)">结构体(Structs)</h2><p>在我们之前的例子里，v并不是指针本身，它只是指针的派生而已。这种方法适用于用反射来修改结构体的域(field)。只要我们有这个结构体的体质，我们就能修改这个结构体的域。</p>
-<p>这里有一个简单额例子来分析一下一个结构体变量t。因为我们待会要修改这个结构体，所以我们先用结构体的指针创建反射对象。我们用typeOf保存它的类型，用直接的方法（? straightforward method calls）迭代出所有的域【参考反射包获取更多的细节】。注意我们这里导出了结构体域的名字，但是域本身还是reflect.Value对象的：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">    A <span class="typename">int</span></span><br><span class="line">    B <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line">t := T&#123;<span class="number">23</span>, <span class="string">"skidoo"</span>&#125;</span><br><span class="line">s := reflect.ValueOf(&amp;t).Elem()</span><br><span class="line">typeOfT := s.Type()</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; s.NumField(); i++ &#123;</span><br><span class="line">    f := s.Field(i)</span><br><span class="line">    fmt.Printf(<span class="string">"%d: %s %s = %v\n"</span>, i,</span><br><span class="line">        typeOfT.Field(i).Name, f.Type(), f.Interface())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	0: A int = 23</span></span><br><span class="line">			<span class="number">1</span>: B <span class="typename">string</span> = skidoo</span><br></pre></td></tr></table></figure>
-<p>需要注意的是我们这里使用的可设置性（? there’s one more point about settability introduced in passing here）：这里把T的域名（field name）导出来，是因为一个结构体只有导出的域才能设置。</p>
-<p>因为s中保存着一个可设置的反射对象，所以我们可以修改结构体的域：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s.Field(<span class="number">0</span>).SetInt(<span class="number">77</span>)</span><br><span class="line">s.Field(<span class="number">1</span>).SetString(<span class="string">"Sunset Strip"</span>)</span><br><span class="line">fmt.Println(<span class="string">"t is now"</span>, t)</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	is now &#123;77 Sunset Strip&#125;</span></span><br></pre></td></tr></table></figure></p>
-<p>如果你把程序改成s是由t创建的而不是&amp;t，那么在你调用SetInt和SetString时程序就报错，因为此时t的域是不可修改的。</p>
-<h2 id="小结（conclusion）">小结（conclusion）</h2><p>反射的规则：</p>
-<ol>
-<li>由接口到反射变量的反射</li>
-<li>由反射对象到接口的反射</li>
-<li>要修改一个反射对象，value必须是可设置的</li>
-</ol>
-<p>一旦说你了解了这些规则，尽管难以理解，但是Go会变的更容易使用。这是一个强大的工具，在使用的时候要注意，不是绝对必要的时候不要使用。</p>
-<p>关于反射我们还有很多没有涉及——在channels中的发送和接收、分配内存、使用slice和map、调用方法和函数——但是这篇文章内容已经足够多了。我们会在后面文章里涉及这些内容中的部分。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1357,7 +1412,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">68</span>
+              <span class="site-state-item-count">69</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
@@ -1371,7 +1426,7 @@
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

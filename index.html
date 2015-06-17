@@ -117,6 +117,186 @@
           
           
             
+              <a class="post-title-link" href="/2015/06/17/golang/gosublime配置/">
+                mac下sublime配置godef,goimport,gosublime
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-06-17
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/06/17/golang/gosublime配置/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/17/golang/gosublime配置/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="sublime配置golang开发环境">sublime配置golang开发环境</h1><p>由于liteide在mac下面运行比较慢,而且UI也没sublime漂亮,所以这里想办法用sublime text来达到lite相同的效果.<br><code>gosublime</code>这个插件就不用说了,大家都懂的.<br><code>goimports</code>这个主要是用来在保存时,格式化当前文件,导入相应的包.<br><code>godef</code>这个主要用来做代码跳转.</p>
+<blockquote>
+<p>注意godef目前只能在mac下,windows上还是乖乖用liteide,而且在windows下性能还是蛮高的.</p>
+</blockquote>
+<h2 id="基础要求">基础要求</h2><p>sublime text安装以及package都不需要我说了,大家去网上找就行了.</p>
+<p>brew安装好最新版的go,顺便设置好gopath</p>
+<p>直接package安装好godef,goimport,gosublime.</p>
+<p><img src="&quot;/img/goide/001.png&quot;" alt="安装插件"></p>
+<h3 id="配置gosublime">配置gosublime</h3><p><img src="&quot;/img/goide/002.png&quot;" alt="配置gosublime"></p>
+<p>PATH和GOPATH都不用我说,大家应该都懂,PATH是我直接从shell里面的环境变量里面弄出来的,最后的/Volumes/data/tools/bin里面会有我编译好的goimport,godef这两个文件,不然sublime不知道可执行文件在哪.<br>fmt_cmd配置好goimports,意思是说每次在保存的时候都会goimport一次,格式化你的文件,并且导入必要的包.<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "<span class="attribute">env</span>": <span class="value">&#123; </span><br><span class="line">        "<span class="attribute">PATH</span>": <span class="value"><span class="string">"/Users/zhulei/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Volumes/data/tools/bin"</span></span>, </span><br><span class="line">        "<span class="attribute">GOPATH</span>":<span class="value"><span class="string">"/Volumes/data/lang/go/package:/Volumes/data/lang/go/game_server:/Volumes/data/lang/go/web_server"</span></span><br><span class="line">    </span>&#125;</span>,</span><br><span class="line"></span><br><span class="line">    "<span class="attribute">fmt_cmd</span>": <span class="value">[<span class="string">"goimports"</span>]</span><br><span class="line"></span>&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="配置godef">配置godef</h3><p><img src="&quot;/img/goide/003.png&quot;" alt="配置godef"></p>
+<p>设置<code>Settings-Default</code><br>这里gopath设置好,godef在代码跳转的时候会搜索这些目录,跳转到指定的位置去<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Copy this file to Settings - User</span></span><br><span class="line">    <span class="comment">// Set your real GOPATH in user's Godef.sublime-settings</span></span><br><span class="line">    <span class="comment">// For example:</span></span><br><span class="line">    <span class="string">"gopath"</span>: <span class="string">"/Volumes/data/lang/go/package:/Volumes/data/lang/go/game_server:/Volumes/data/lang/go/web_server"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>配置<code>Key Bindings-Default</code><br>这里我配置的是<code>command+d</code>跳到光标指定的函数或变量位置.<br><code>command+j</code>和<code>command+k</code>是前一个位置,后一个位置<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    // &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"g"</span>,<span class="string">"d"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"godef"</span> </span>&#125;</span><br><span class="line">    &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"super+d"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"godef"</span> </span>&#125;,</span><br><span class="line">    &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"super+j"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"jump_forward"</span></span>&#125;,</span><br><span class="line">    &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"super+k"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"jump_back"</span></span>&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/06/12/self/shadowsocks的安装使用/">
+                shadowsocks的安装使用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-06-12
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/linux/">linux</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/06/12/self/shadowsocks的安装使用/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/12/self/shadowsocks的安装使用/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="shadowsocks的安装使用">shadowsocks的安装使用</h1><h2 id="安装">安装</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install python-setuptools &#38;&#38; easy_install pip&#10;pip install shadowsocks</span><br></pre></td></tr></table></figure>
+<h2 id="配置">配置</h2><p>编辑json文件<code>/etc/shadowsocks.json</code><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "server":"***.***.***.***",	//你的服务器ip地址</span><br><span class="line">    "server_port":8388,			//监听端口</span><br><span class="line">    "local_address": "127.0.0.1", //本地监听的 IP 地址</span><br><span class="line">    "local_port":1080, //本地端端口</span><br><span class="line">    "password":"password",//用来加密的密码</span><br><span class="line">    "timeout":300,//超时时间（秒）</span><br><span class="line">    "method":"aes-256-cfb",//加密方法，可选择 “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4″, 等等。默认是一种不安全的加密，推荐用 “aes-256-cfb”</span><br><span class="line">    "fast_open": false	//默认false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>开启:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d start</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>记得iptables开启8388</p>
+</blockquote>
+<h2 id="客户端配置">客户端配置</h2><p><a href="https://github.com/shadowsocks/shadowsocks-csharp" title="windows" target="_blank" rel="external">下载windows</a><br><a href="https://github.com/shadowsocks/shadowsocks-iOS/wiki/Shadowsocks-for-OSX-Help" title="mac" target="_blank" rel="external">下载mac</a></p>
+<p>安装设置好对应的密码和端口就可以了.</p>
+<p><img src="/img/shadowsocks/003.png" alt="设置端口 for windows"></p>
+<h2 id="chrome安装">chrome安装</h2><p><a href="https://github.com/FelisCatus/SwitchyOmega" target="_blank" rel="external">chrome插件</a><br><img src="/img/shadowsocks/002.jpg" alt="chrome商店"></p>
+<p>设置好情景模式中的代理服务器</p>
+<p><img src="/img/shadowsocks/001.png" alt="设置情景模式"></p>
+<p>设置好autoswitch的规则:<code>https://autoproxy-gfwlist.googlecode.com/svn/trunk/gfwlist.txt</code></p>
+<p><img src="/img/shadowsocks/004.png" alt="设置情景模式"></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/06/12/cpp/编译原理/">
                 编译原理简单概述
               </a>
@@ -274,97 +454,6 @@
 <h2 id="目标代码的生成与优化">目标代码的生成与优化</h2><p>这里包括”代码生成器”和”目标代码优化器”<br>让我们用x86的汇编来表示生成后的代码:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movl index, %ecx&#10;addl $4, %ecx&#10;mull $8, %ecx&#10;movl index, %eax&#10;movl %ecx, array(,eax,4)</span><br></pre></td></tr></table></figure></p>
 <p>然后会对目标代码进行优化,比如选择合适的寻址方式,使用位移来代替乘法运算,删除多余的指令等.<br>优化之后:</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movl index, %edx&#10;leal 32(,%edx,8), %eax&#10;movl %eax, array(,%edx,4)</span><br></pre></td></tr></table></figure>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/12/self/shadowsocks的安装使用/">
-                shadowsocks的安装使用
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-12
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/linux/">linux</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/12/self/shadowsocks的安装使用/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/12/self/shadowsocks的安装使用/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="shadowsocks的安装使用">shadowsocks的安装使用</h1><h2 id="安装">安装</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install python-setuptools &#38;&#38; easy_install pip&#10;pip install shadowsocks</span><br></pre></td></tr></table></figure>
-<h2 id="配置">配置</h2><p>编辑json文件<code>/etc/shadowsocks.json</code><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "server":"***.***.***.***",	//你的服务器ip地址</span><br><span class="line">    "server_port":8388,			//监听端口</span><br><span class="line">    "local_address": "127.0.0.1", //本地监听的 IP 地址</span><br><span class="line">    "local_port":1080, //本地端端口</span><br><span class="line">    "password":"password",//用来加密的密码</span><br><span class="line">    "timeout":300,//超时时间（秒）</span><br><span class="line">    "method":"aes-256-cfb",//加密方法，可选择 “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4″, 等等。默认是一种不安全的加密，推荐用 “aes-256-cfb”</span><br><span class="line">    "fast_open": false	//默认false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>开启:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d start</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>记得iptables开启8388</p>
-</blockquote>
-<h2 id="客户端配置">客户端配置</h2><p><a href="https://github.com/shadowsocks/shadowsocks-csharp" title="windows" target="_blank" rel="external">下载windows</a><br><a href="https://github.com/shadowsocks/shadowsocks-iOS/wiki/Shadowsocks-for-OSX-Help" title="mac" target="_blank" rel="external">下载mac</a></p>
-<p>安装设置好对应的密码和端口就可以了.</p>
-<p><img src="/img/shadowsocks/003.png" alt="设置端口 for windows"></p>
-<h2 id="chrome安装">chrome安装</h2><p><a href="https://github.com/FelisCatus/SwitchyOmega" target="_blank" rel="external">chrome插件</a><br><img src="/img/shadowsocks/002.jpg" alt="chrome商店"></p>
-<p>设置好情景模式中的代理服务器</p>
-<p><img src="/img/shadowsocks/001.png" alt="设置情景模式"></p>
-<p>设置好autoswitch的规则:<code>https://autoproxy-gfwlist.googlecode.com/svn/trunk/gfwlist.txt</code></p>
-<p><img src="/img/shadowsocks/004.png" alt="设置情景模式"></p>
 
         
       
@@ -983,119 +1072,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/04/20/graphical/opengl学习笔记/">
-                opengl学习笔记
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-04-20
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/04/20/graphical/opengl学习笔记/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/20/graphical/opengl学习笔记/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="opengl学习笔记">opengl学习笔记</h1><h2 id="glut">glut</h2><p>glut是opengl实用工具箱(Opengl utility toolkit),不要与glu(Opengl utility library)弄混了.而freeglut是一个免费开源的库,用来代替glut的</p>
-<h2 id="glew">glew</h2><p>glew是一个自动初始化所有新函数指针并且包含所需类型定义,常量和枚举值的扩展加载库,而且gltools就是依赖此库</p>
-<h2 id="gltools">gltools</h2><p>是蓝宝书的工具集,包含一个用于操作矩阵和向量的3D数学库,并且依靠glew获得opengl3.3中用来产生和渲染的一些简单3D对象的函数.</p>
-<h2 id="API函数笔记">API函数笔记</h2><ul>
-<li><code>Glenum glGetError(void);</code><br>返回错误,常见错误如下:<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="title">GL_INVALID_ENUM</span>         枚举参数超出范围</span><br><span class="line">GL_INVALID_VALUE        数值参数超出范围</span><br><span class="line">GL_INVALID_OPERATION    在当前状态中的操作非法</span><br><span class="line">GL_OUT_OF_MEMORY        没有足够的内存来执行这条命令</span><br><span class="line">GL_NO_ERROR             没有出现错误</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启关闭状态</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glEnable</span><span class="params">(GLenum capability)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glDisable</span><span class="params">(GLenum capability)</span></span>;</span><br><span class="line"></span><br><span class="line">GL_DEPTH_TEST <span class="comment">//开启深度测试</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//状态是否被打开</span></span><br><span class="line"><span class="function">GLboolean <span class="title">glIsenabled</span><span class="params">(GLenum capability)</span></span>;</span><br><span class="line"><span class="comment">//获取状态值</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetBooleanv</span><span class="params">(GLenum pname,GLboolean *params)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetDoublev</span><span class="params">(GLenum pname,GLdouble *params)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetFloatv</span><span class="params">(GLenum pname,GLfloat *params)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetIntegerv</span><span class="params">(GLenum pname,GLine *params)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">GL_DEPTH_TEST   <span class="comment">//深度测试状态</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置显示模式</span></span><br><span class="line"> <span class="function"><span class="keyword">void</span> <span class="title">glutInitDisplayMode</span><span class="params">( <span class="keyword">unsigned</span> <span class="keyword">int</span> displayMode )</span></span>;</span><br><span class="line"> GLUT_DOUBLE    <span class="comment">//双缓冲窗口</span></span><br><span class="line"> GLUT_RBGA  <span class="comment">//red,blue,green,alpha 颜色模式</span></span><br><span class="line"> GLUT_DEPTH <span class="comment">//深度缓冲区</span></span><br><span class="line"> GLUT_STENCIL   <span class="comment">//模板缓冲</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//清除一个或一组特定的缓冲区</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glClear</span> <span class="params">(GLbitfield mask)</span></span>;</span><br><span class="line"></span><br><span class="line">GL_COLOR_BUFFER_BIT <span class="comment">//颜色缓冲区</span></span><br><span class="line">GL_DEPTH_BUFFER_BIT <span class="comment">//深度缓冲区</span></span><br><span class="line">GL_STENCIL_BUFFER_BIT  <span class="comment">//模板缓冲区</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">glutSpecialFunc(SpecialKeys);<span class="comment">//按上,下,左右键时会触发的函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glutPostRedisplay</span><span class="params">()</span></span>;<span class="comment">//手动触发渲染事件</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//正交投影,一般用于2D游戏开发.这里不存在缩放</span></span><br><span class="line"><span class="comment">//这里设置最小值最大值,三个轴都要设置</span></span><br><span class="line"><span class="keyword">void</span> GLFrustum::SetOrthographic(GLfloat xMin, GLfloat xMax, GLfloat yMin, GLfloat yMax, GLfloat zMin, GLfloat zMax);</span><br><span class="line"></span><br><span class="line"><span class="comment">//透视投影</span></span><br><span class="line"><span class="comment">//fFov:锥体的顶与底的角度,fAspect:宽高比,fNear,fFar:近与远的距离</span></span><br><span class="line"><span class="keyword">void</span> GLFrustum::SetPerspective(<span class="keyword">float</span> fFov, <span class="keyword">float</span> fAspect, <span class="keyword">float</span> fNear, <span class="keyword">float</span> fFar);</span><br></pre></td></tr></table></figure>
-<h2 id="存储着色器">存储着色器</h2><h3 id="Uniform值">Uniform值</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置Uniform值</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLenum, ...);</span><br><span class="line"></span><br><span class="line"><span class="comment">//单位着色器,在所有片段都使用同一种颜色</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLT_ATTRIBUTE_VERTEX,GLfloat vColor[<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//平面着色器,应该是对向量进行矩阵变化,因为opengl是列向量,所以矩阵在左边</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLT_SHADER_FLAT,GLfloat mvp[<span class="number">16</span>],GLfloat vColor[<span class="number">4</span>]);</span><br><span class="line"></span><br><span class="line"><span class="comment">//上色着色器</span></span><br><span class="line">GLint GLShaderManager::UseStockShader(GLT_SHADER_SHADER,GLfloat mvp[<span class="number">16</span>]);</span><br></pre></td></tr></table></figure>
-<h2 id="点和线">点和线</h2><h3 id="GLBatch">GLBatch</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">primitive:</span><br><span class="line">GL_POINTS   <span class="comment">//每个顶点在屏幕上都是一个单独的点</span></span><br><span class="line">GL_LINES    <span class="comment">//每一对顶点定义了一个线段</span></span><br><span class="line">GL_LINE_STRIP   <span class="comment">//一个从第一个顶点依次经过每个后续顶点而绘制的线条</span></span><br><span class="line">GL_LINE_LOOP    <span class="comment">//和GL_LINE_STRIP相同,但最后一个顶点和第一个顶点连起来了</span></span><br><span class="line">GL_TRIANGLES    <span class="comment">//每三个顶点定义了一个新的三角形</span></span><br><span class="line">GL_TRIANGLE_STRIP   <span class="comment">//共用一条带上的顶点的一组三角形</span></span><br><span class="line">GL_TRIANGLE_FAN <span class="comment">//以一个圆点为中心呈扇形排列,共用相邻顶点的一组三角形 </span></span><br><span class="line">nVerts:顶点数量</span><br><span class="line"><span class="keyword">void</span> GLBatch::Begin(GLenum primitive, GLuint nVerts, GLuint nTextureUnits = <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//复制顶点数组,这里至少要3维</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyVertexData3f(GLfloat *vVerts);</span><br><span class="line"><span class="comment">//复制表面法线</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyNormalDataf(GLfloat *vNorms);</span><br><span class="line"><span class="comment">//复制颜色</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyColorData4f(GLfloat *vColors);</span><br><span class="line"><span class="comment">//复制纹理坐标</span></span><br><span class="line"><span class="keyword">void</span> GLBatch::CopyTextCoordData2f(GLfloat *vTexCoords,GLuint uiTextureLayer);</span><br></pre></td></tr></table></figure>
-<h3 id="点">点</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glPointSize</span><span class="params">(GLfloat size)</span></span>;<span class="comment">//设置点的大小</span></span><br><span class="line"></span><br><span class="line">GLfloat sizes[<span class="number">2</span>];   <span class="comment">//存储支持的点大小范围</span></span><br><span class="line">GLfloat step;   <span class="comment">//存储支持的点大小增量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取支持的点大小范围和步长(增量)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glGetFloatv</span><span class="params">(GL_POINT_SIZE_RANGE,sizes)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getGetFloatv</span><span class="params">(GL_POINT_SIZE_GRANULARITY,&amp;step)</span></span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当GLBathc::begin(GL_LINES)时</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glLineWidth</span><span class="params">(GLfloat width)</span></span>;<span class="comment">//设置线的宽度</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//三角形</span></span><br><span class="line">glFrontFace(GL_CW);<span class="comment">//绘制时让三角形以顺时针方式绘制</span></span><br><span class="line">glFrontFace(GL_CCW);<span class="comment">//绘制三角形时以默认逆时针方式绘制</span></span><br></pre></td></tr></table></figure>
-<h3 id="剔除表面">剔除表面</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启关闭剔除表面</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glEnable</span><span class="params">(GL_CULL_FACE)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glDisable</span><span class="params">(GL_CULL_FACE)</span></span>;</span><br><span class="line"><span class="comment">//可以修改剔除背面还是正面</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">CullFace</span><span class="params">(GL_BACK)</span></span>;<span class="comment">//可选参数为:GL_FRONT,GL_BACK,GL_FRONT_AND_BACK</span></span><br></pre></td></tr></table></figure>
-<h3 id="填充模式">填充模式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//设置显示模式</span></span><br><span class="line">face:剔除表面: GL_FRONT,GL_BACK,GL_FRONT_AND_BACK</span><br><span class="line">mode:GL_FILL(完全填充),GL_LINE(线的方式),GL_POINT(点的方式)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glpolygonMode</span><span class="params">(GLenum face,GLenum mode)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//片段深度值,用于在同一z轴情况下,填充不同的颜色,以达到花纹效果</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glPolygonOffset</span><span class="params">(GLfloat factor,GLfloat units)</span></span>;</span><br><span class="line"><span class="comment">//Depth Offset=(DZ*factor)+(r*units)</span></span><br></pre></td></tr></table></figure>
-<h3 id="裁剪">裁剪</h3><p>裁剪可以局部渲染,加速性能,在指定区域渲染<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//开启裁剪</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glEnable</span><span class="params">(GL_SCISSOR_TEST)</span></span>;</span><br><span class="line"><span class="comment">//设置裁剪范围,只在这个范围内渲染</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glScissor</span><span class="params">(GLint x,GLint y,GLsizei width,Glsizei height)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<h3 id="混合,抗锯齿">混合,抗锯齿</h3><p>默认公式:Cf=(Cs<em>S)+(Cd</em>D)<br>Cs: 源颜色,也就是当前渲染命令的结果进入颜色缓冲区的颜色<br>Cd: 目标颜色,已经存储在颜色缓冲区的颜色<br>S:  源混合因子<br>D:  目标混合因子<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_BLEND);<span class="comment">//开启颜色混合</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//例:接收源颜色,并将这个颜色(RGB值)与alpha相乘,然后把这个结果加上目标颜色乘以"1减源颜色的alpha值"</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glBlendFunc</span><span class="params">(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>Cd=(1.0f,0.0f,0.0f,0.0f)<br>Cs=(0.0f,0.0f,1.0f,0.5f)<br>S=0.6<br>D=1.0-0.6=0.4<br>Cf=(Bule<em>0.6)+(Red</em>0.4)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//更换颜色混合公式</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glBlendEquation</span><span class="params">(GLenum mode)</span></span>;</span><br><span class="line">GL_FUNC_ADD    Cf=(Cs*S)+(Cd*D)</span><br><span class="line">GL_FUNC_SUBTRACT Cf=(Cs*S)-(Cd*D)</span><br><span class="line">GL_FUNC_REVERSE_SUBTRACT    Cf=(Cd*D)-(Cs*S)</span><br><span class="line"><span class="function">GL_MIN <span class="title">min</span><span class="params">(Cs,Cd)</span></span><br><span class="line">GL_MAX <span class="title">max</span><span class="params">(Cs,Cd)</span></span></span><br></pre></td></tr></table></figure>
-<p>抗锯齿必须要开启混合<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_BLEND);</span><br><span class="line">glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHE);</span><br><span class="line"></span><br><span class="line"><span class="comment">//对点,直线,多边形进行抗锯齿</span></span><br><span class="line">glEnable(GL_POINT_SMOOTH);</span><br><span class="line">glEnable(GL_LINE_SMOOTH);</span><br><span class="line">glEnable(GL_POLYGON_SMOOTH);</span><br><span class="line"></span><br><span class="line"><span class="comment">//雾化效果</span></span><br><span class="line">target:指定所控制行为的符号常量.</span><br><span class="line">mod: 指定所采取行为的质量,GL_FASTEST(快速),GL_NICEST(高质量),GL_DONT_CARE(对选项不做考虑)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">glHint</span><span class="params">(GLenum target,GLenum mod)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<h2 id="gltools-1">gltools</h2><h3 id="创建形状">创建形状</h3><p>球体<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">sphereBatch:    是指批次</span><br><span class="line">fRadius:    半径大小</span><br><span class="line">iSlices:    是指多少对,意思就像是一个桔子是多少瓣</span><br><span class="line">iStacks:    指某个桔子这一瓣是三角形带的数量</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeSphere</span><span class="params">(GLTriangleBatch&amp; sphereBatch, GLfloat fRadius, GLint iSlices, GLint iStacks)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>这里是一个球体,iSlices=5,iStacks=6</p>
-<p><img src="/img/opengl_notes/gltools_球体.png" alt="/img/opengl_notes/gltools_球体.png"></p>
-<p>花托<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">torusBatch: 是指批次顶点</span><br><span class="line">majorRadius: 外半径</span><br><span class="line">minorRadius: 内半径</span><br><span class="line">numMajor: 跟球体的iSlices一样</span><br><span class="line">numMinor: 跟球体的iStacks一样</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeTorus</span><span class="params">(GLTriangleBatch&amp; torusBatch, GLfloat majorRadius, GLfloat minorRadius, GLint numMajor, GLint numMinor)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>这里一个花托,numMajor=15,numMinor=15</p>
-<p><img src="/img/opengl_notes/gltools_花托.png" alt="/img/opengl_notes/gltools_花托.png"></p>
-<p>圆椎体<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">cylinderBatch: 批次</span><br><span class="line">baseRadius: 底部半径</span><br><span class="line">topRadius:  顶部半径</span><br><span class="line">fLength:    长度</span><br><span class="line">numSlices:  跟球体的iSlices一样</span><br><span class="line">numStacks:  跟球体的iStacks一样</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeCylinder</span><span class="params">(GLTriangleBatch&amp; cylinderBatch, GLfloat baseRadius, GLfloat topRadius, GLfloat fLength, GLint numSlices, GLint numStacks)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>创建一个没有底的桶,底部跟顶部的半径都一样,长度为3,分为13瓣,每瓣2个三角形带<br><code>gltMakeCylinder(cylinderBatch, 2.0f, 2.0f, 3.0f, 13, 2);</code></p>
-<p><img src="/img/opengl_notes/gltools_cylinder.png" alt="/img/opengl_notes/gltools_cylinder.png"></p>
-<p>创建一个椎体,顶部半径为0<br><code>gltMakeCylinder(coneBatch, 2.0f, 0.0f, 3.0f, 13, 2);</code></p>
-<p><img src="/img/opengl_notes/gltools_cone.png" alt="/img/opengl_notes/gltools_cone.png"></p>
-<p>圆盘<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line">innerRadius:    内半径</span><br><span class="line">outerRadius:    外半径</span><br><span class="line">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">gltMakeDisk</span><span class="params">(GLTriangleBatch&amp; diskBatch, GLfloat innerRadius, GLfloat outerRadius:, GLint nSlices, GLint nStacks)</span></span>;</span><br></pre></td></tr></table></figure></p>
-<p>创建一个圆盘,内半径1.5,外半径2.0,分13瓣,三角形带为3<br>gltMakeDisk(diskBatch, 1.5f, 3.0f, 13, 3);</p>
-<p><img src="/img/opengl_notes/gltools_disk.png" alt="/img/opengl_notes/gltools_disk.png"></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1134,7 +1110,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">68</span>
+              <span class="site-state-item-count">69</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
@@ -1148,7 +1124,7 @@
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">48</span>
+              <span class="site-state-item-count">49</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
