@@ -117,8 +117,8 @@
           
           
             
-              <a class="post-title-link" href="/2014/09/01/arithmetic/三角型/">
-                三角型基础
+              <a class="post-title-link" href="/2014/09/04/cpp/function_bind_lambda/">
+                function, bind和lambda
               </a>
             
           
@@ -127,14 +127,14 @@
 
       <div class="post-meta">
         <span class="post-time">
-          發表於 2014-09-01
+          發表於 2014-09-04
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分類於
             
-              <a href="/categories/算法/">算法</a>
+              <a href="/categories/cpp/">cpp</a>
 
               
               
@@ -147,8 +147,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2014/09/01/arithmetic/三角型/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/arithmetic/三角型/"></span>
+            <a href="/2014/09/04/cpp/function_bind_lambda/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/04/cpp/function_bind_lambda/"></span>
             </a>
           </span>
           
@@ -163,52 +163,47 @@
 
       
         
-          <h1 id="基本三角型">基本三角型</h1><figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">对边	opposite</span><br><span class="line">斜边	hypotenuse</span><br><span class="line">邻边	adjacent</span><br><span class="line">角	<span class="built_in">triangle</span></span><br><span class="line">弧度 radian</span><br><span class="line">振幅 amplitude</span><br><span class="line">周期 period</span><br></pre></td></tr></table></figure>
-<ul>
-<li>正弦 sin(soh) = 对边 / 斜边</li>
-<li>余弦 cos(cah) = 邻边 / 斜边</li>
-<li>正切 tan(tao) = 对边 / 邻边</li>
-<li>1弧度=360/　2×pi　=180/pi</li>
-<li>1角度=　2×pi　/360=pi/180</li>
-</ul>
-<p>30度=30*pi/180=pi/6=0.523<br>90度=60*pi/180=pi/2=1.57</p>
-<p>1.57弧度=1.57*180/pi=1.57*57.3248 = 90<br>0.523弧度=0.523*180/pi=0.523*57.3248=30</p>
-<figure class="highlight rsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">θ的正弦是对边与斜边的比值：<span class="built_in">sin</span> θ = <span class="built_in">opposite</span>/hypotenuse</span><br><span class="line">θ的余弦是邻边与斜边的比值：<span class="built_in">cos</span> θ = adjacent/hypotenuse</span><br><span class="line">θ的正切是对边与邻边的比值：<span class="built_in">tan</span> θ = <span class="built_in">opposite</span>/adjacent</span><br><span class="line">θ的余切是邻边与对边的比值：cot θ = adjacent/<span class="built_in">opposite</span></span><br><span class="line">θ的正割是斜边与邻边的比值：sec θ = hypotenuse/adjacent</span><br><span class="line">θ的余割是斜边与对边的比值：csc θ = hypotenuse/<span class="built_in">opposite</span></span><br></pre></td></tr></table></figure>
-<h2 id="sin曲线表">sin曲线表</h2><table>
-<thead>
-<tr>
-<th>角a弧度</th>
-<th>sin(角a)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0</td>
-<td>0</td>
-</tr>
-<tr>
-<td>pi/2</td>
-<td>1</td>
-</tr>
-<tr>
-<td>pi</td>
-<td>0</td>
-</tr>
-<tr>
-<td>3*pi/2</td>
-<td>-1</td>
-</tr>
-<tr>
-<td>2/*pi</td>
-<td>0</td>
-</tr>
-</tbody>
-</table>
-<p>从如下可以判断曲线是正弦还是余弦<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">sin</span><span class="params">(<span class="number">0</span>)</span></span>=<span class="number">0</span></span><br><span class="line"><span class="function"><span class="title">cos</span><span class="params">(<span class="number">0</span>)</span></span>=<span class="number">1</span></span><br></pre></td></tr></table></figure></p>
-<p>求曲线函数 :<br><code>f(x)=amplitude \* sin((2\*pi/p)\*x)</code></p>
-<p>sin(x)^2 + cos(x)^2 =1</p>
-<p>sin(x)/cos(x)=tan(x)</p>
-<p>sec(x)=1/cos(x)</p>
+          <h2 id="本文是C++0x系列的第四篇，主要是内容是C++0x中新增的lambda表达式,_function对象和bind机制。之所以把这三块放在一起讲，是因为这三块之间有着非常密切的关系，通过对比学习，加深对这部分内容的理解。在开始之间，首先要讲一个概念，closure（闭包），这个概念是理解lambda的基础。下面我们来看看wikipedia上对于计算机领域的closure的定义：">本文是C++0x系列的第四篇，主要是内容是C++0x中新增的lambda表达式, function对象和bind机制。之所以把这三块放在一起讲，是因为这三块之间有着非常密切的关系，通过对比学习，加深对这部分内容的理解。在开始之间，首先要讲一个概念，closure（闭包），这个概念是理解lambda的基础。下面我们来看看wikipedia上对于计算机领域的closure的定义：</h2><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">A closure (also lexical closure, <span class="keyword">function</span> closure <span class="keyword">or</span> <span class="keyword">function</span> value) <span class="keyword">is</span> a <span class="keyword">function</span> together <span class="keyword">with</span></span><br><span class="line">a referencing environment <span class="keyword">for</span> the non-local variables <span class="keyword">of</span> <span class="literal">that</span> <span class="keyword">function</span>.</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>  上面的大义是说，closure是一个函数和它所引用的非本地变量的上下文环境的集合。从定义我们可以得知，closure可以访问在它定义范围之外的变量，也即上面提到的non-local vriables，这就大大增加了它的功力。关于closure的最重要的应用就是回调函数，这也是为什么这里把function, bind和lambda放在一起讲的主要原因，它们三者在使用回调函数的过程中各显神通。下面就为大家一步步接开这三者的神秘面纱。</p>
+</blockquote>
+<h3 id="function-">function.</h3><p>我们知道，在C++中，可调用实体主要包括函数，函数指针，函数引用，可以隐式转换为函数指定的对象，或者实现了opetator()的对象（即C++98中的functor)。C++0x中，新增加了一个std::function对象，std::function对象是对C++中现有的可调用实体的一种类型安全的包裹（我们知道像函数指针这类可调用实体，是类型不安全的）。我们来看几个关于function对象的例子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt; functional&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">std</span>::function&lt; <span class="keyword">size_t</span>(<span class="keyword">const</span> <span class="keyword">char</span>*)&gt; print_func;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// normal function -&gt; std::function object</span></span><br><span class="line"><span class="keyword">size_t</span> CPrint(<span class="keyword">const</span> <span class="keyword">char</span>*) &#123; ... &#125;</span><br><span class="line">print_func = CPrint;</span><br><span class="line">print_func(<span class="string">"hello world"</span>):</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// functor -&gt; std::function object</span></span><br><span class="line"><span class="keyword">class</span> CxxPrint</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">size_t</span> <span class="keyword">operator</span>()(<span class="keyword">const</span> <span class="keyword">char</span>*) &#123; ... &#125;</span><br><span class="line">&#125;;</span><br><span class="line">CxxPrint p;</span><br><span class="line">print_func = p;</span><br><span class="line">print_func(<span class="string">"hello world"</span>);</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>   在上面的例子中，我们把一个普通的函数和一个functor赋值给了一个std::function对象，然后我们通过该对象来调用。其它的C++中的可调用实体都可以像上面一样来使用。通过std::function的包裹，我们可以像传递普通的对象一样来传递可调用实体，这样就很好解决了类型安全的问题。了解了std::function的基本用法，下面我们来看一些使用过程中的注意事项：</p>
+</blockquote>
+<ol>
+<li>关于可调用实体转换为std::function对象需要遵守以下两条原则：<br>a. 转换后的std::function对象的参数能转换为可调用实体的参数<br>b. 可高用实体的返回值能转换为std::function对象的（这里注意一下，所有的可调用实体的返回值都与返回void的std::function对象的返回值兼容）。</li>
+<li>std::function对象可以refer to满足（1）中条件的任意可调用实体</li>
+<li>std::function object最大的用处就是在实现函数回调，使用者需要注意，它不能被用来检查相等或者不相等</li>
+</ol>
+<h3 id="bind">bind</h3><p>   bind是这样一种机制，它可以预先把指定可调用实体的某些参数绑定到已有的变量，产生一个新的可调用实体，这种机制在回调函数的使用过程中也颇为有用。C++98中，有两个函数bind1st和bind2nd，它们分别可以用来绑定functor的第一个和第二个参数，它们都是只可以绑定一个参数。各种限制，使得bind1st和bind2nd的可用性大大降低。C++0x中，提供了std::bind，它绑定的参数的个数不受限制，绑定的具体哪些参数也不受限制，由用户指定，这个bind才是真正意义上的绑定，有了它，bind1st和bind2nd就没啥用武之地了，因此C++0x中不推荐使用bind1st和bind2nd了，都是deprecated了。下面我们通过例子，来看看bind的用法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt; functional&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Func</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>;</span><br><span class="line"><span class="keyword">auto</span> bf1 = <span class="built_in">std</span>::bind(Func, <span class="number">10</span>, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line">bf1(<span class="number">20</span>); <span class="comment">///&lt; same as Func(10, 20)</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Func</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">A a;</span><br><span class="line"><span class="keyword">auto</span> bf2 = <span class="built_in">std</span>::bind(&amp;A::Func, a, <span class="built_in">std</span>::placeholders::_1, <span class="built_in">std</span>::placeholders::_2);</span><br><span class="line">bf2(<span class="number">10</span>, <span class="number">20</span>); <span class="comment">///&lt; same as a.Func(10, 20)</span></span><br><span class="line"> </span><br><span class="line"><span class="built_in">std</span>::function&lt; <span class="keyword">int</span>(<span class="keyword">int</span>)&gt; bf3 = <span class="built_in">std</span>::bind(&amp;A::Func, a, <span class="built_in">std</span>::placeholders::_1, <span class="number">100</span>);</span><br><span class="line">bf3(<span class="number">10</span>); <span class="comment">///&lt; same as a.Func(10, 100)</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>   上面的例子中，bf1是把一个两个参数普通函数的第一个参数绑定为10，生成了一个新的一个参数的可调用实体体; bf2是把一个类成员函数绑定了类对象，生成了一个像普通函数一样的新的可调用实体; bf3是把类成员函数绑定了类对象和第二个参数，生成了一个新的std::function对象。看懂了上面的例子，下面我们来说说使用bind需要注意的一些事项：</p>
+</blockquote>
+<ol>
+<li>bind预先绑定的参数需要传具体的变量或值进去，对于预先绑定的参数，是pass-by-value的</li>
+<li>对于不事先绑定的参数，需要传std::placeholders进去，从_1开始，依次递增。placeholder是pass-by-reference的</li>
+<li>bind的返回值是可调用实体，可以直接赋给std::function对象</li>
+<li>对于绑定的指针、引用类型的参数，使用者需要保证在可调用实体调用之前，这些参数是可用的</li>
+<li>类的this可以通过对象或者指针来绑定</li>
+</ol>
+<h3 id="lambda">lambda</h3><p> 讲完了function和bind, 下面我们来看lambda。有python基础的朋友，相信对于lambda不会陌生。看到这里的朋友，请再回忆一下前面讲的closure的概念，lambda就是用来实现closure的东东。它的最大用途也是在回调函数，它和前面讲的function和bind有着千丝万缕的关系。下面我们先通过例子来看看lambda的庐山真面目：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">vector</span>&lt; <span class="keyword">int</span>&gt; vec;</span><br><span class="line"><span class="comment">/// 1. simple lambda</span></span><br><span class="line"><span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(vec.begin(), vec.end(), [](<span class="keyword">int</span> i) &#123; <span class="keyword">return</span> i &gt; <span class="number">50</span>; &#125;);</span><br><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">operator</span><span class="params">(<span class="keyword">int</span> i)</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> i &gt; <span class="number">50</span>; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(vec.begin(), vec.end(), A());</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// 2. lambda return syntax</span></span><br><span class="line"><span class="built_in">std</span>::function&lt; <span class="keyword">int</span>(<span class="keyword">int</span>)&gt; square = [](<span class="keyword">int</span> i) -&gt; <span class="keyword">int</span> &#123; <span class="keyword">return</span> i * i; &#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// 3. lambda expr: capture of local variable</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">int</span> min_val = <span class="number">10</span>;</span><br><span class="line">    <span class="keyword">int</span> max_val = <span class="number">1000</span>;</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(vec.begin(), vec.end(), [=](<span class="keyword">int</span> i) &#123;</span><br><span class="line">        <span class="keyword">return</span> i &gt; min_val &amp;&amp; i &lt; max_val; </span><br><span class="line">        &#125;);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(vec.begin(), vec.end(), [&amp;](<span class="keyword">int</span> i) &#123;</span><br><span class="line">        <span class="keyword">return</span> i &gt; min_val &amp;&amp; i &lt; max_val;</span><br><span class="line">        &#125;);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(vec.begin(), vec.end(), [=, &amp;max_value](<span class="keyword">int</span> i) &#123;</span><br><span class="line">        <span class="keyword">return</span> i &gt; min_val &amp;&amp; i &lt; max_val;</span><br><span class="line">        &#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// 4. lambda expr: capture of class member</span></span><br><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">DoSomething</span><span class="params">()</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;  m_vec;</span><br><span class="line">    <span class="keyword">int</span>               m_min_val;</span><br><span class="line">    <span class="keyword">int</span>               m_max_va;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// 4.1 capture member by this</span></span><br><span class="line"><span class="keyword">void</span> A::DoSomething()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(m_vec.begin(), m_vec.end(), [<span class="keyword">this</span>](<span class="keyword">int</span> i)&#123;</span><br><span class="line">        <span class="keyword">return</span> i &gt; m_min_val &amp;&amp; i &lt; m_max_val; &#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// 4.2 capture member by default pass-by-value</span></span><br><span class="line"><span class="keyword">void</span> A::DoSomething()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(m_vec.begin(), m_vec.end(), [=](<span class="keyword">int</span> i)&#123;</span><br><span class="line">        <span class="keyword">return</span> i &gt; m_min_val &amp;&amp; i &lt; m_max_val; &#125;);</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="comment">/// 4.3 capture member by default pass-by-reference</span></span><br><span class="line"><span class="keyword">void</span> A::DoSomething()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find_if(m_vec.begin(), m_vec.end(), [&amp;](<span class="keyword">int</span> i)&#123;</span><br><span class="line">        <span class="keyword">return</span> i &gt; m_min_val &amp;&amp; i &lt; m_max_val; &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面的例子基本覆盖到了lambda表达的基本用法。我们一个个来分析每个例子（标号与上面代码注释中1，2，3，4一致）：</p>
+<ol>
+<li>这是最简单的lambda表达式，可以认为用了lambda表达式的find_if和下面使用了functor的find_if是等价的</li>
+<li>这个是有返回值的lambda表达式，返回值的语法如上面所示，通过-&gt;写在参数列表的括号后面。返回值在下面的情况下是可以省略的：<br>a. 返回值是void的时候<br>b. lambda表达式的body中有return expr，且expr的类型与返回值的一样</li>
+<li>这个是lambda表达式capture本地局部变量的例子，这里三个小例子，分别是capture时不同的语法，第一个小例子中=表示capture的变量pass-by-value, 第二个小拿出中&amp;表示capture的变量pass-by-reference，第三个小例子是说指定了default的pass-by-value, 但是max_value这个单独pass-by-reference</li>
+<li>这个是lambda表达式capture类成员变量的例子，这里也有三个小例子。第一个小例子是通过this指针来capture成员变量，第二、三个是通过缺省的方式，只不过第二个是通过pass-by-value的方式，第三个是通过pass-by-reference的</li>
+</ol>
+<p><strong>分析完了上面的例子，我们来总结一下关于lambda表达式使用时的一些注意事项：</strong></p>
+<ol>
+<li>lambda表达式要使用引用变量，需要遵守下面的原则：<br>a. 在调用上下文中的局部变量，只有capture了才可以引用（如上面的例子3所示）<br>b. 非本地局部变量可以直接引用</li>
+<li>使用者需要注意，closure（lambda表达式生成的可调用实体）引用的变量（主要是指针和引用），在closure调用完成之前，必须保证可用，这一点和上面bind绑定参数之后生成的可调用实体是一致的</li>
+<li>关于lambda的用处，就是用来生成closure，而closure也是一种可调用实体，所以可以通过std::function对象来保存生成的closure，也可以直接用auto</li>
+</ol>
 
         
       
@@ -239,8 +234,8 @@
           
           
             
-              <a class="post-title-link" href="/2014/09/01/arithmetic/协程/">
-                进程,线程,协程
+              <a class="post-title-link" href="/2014/09/02/cpp/cpp笔记API文档/">
+                C++常用函数
               </a>
             
           
@@ -249,14 +244,14 @@
 
       <div class="post-meta">
         <span class="post-time">
-          發表於 2014-09-01
+          發表於 2014-09-02
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分類於
             
-              <a href="/categories/算法/">算法</a>
+              <a href="/categories/cpp/">cpp</a>
 
               
               
@@ -269,8 +264,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2014/09/01/arithmetic/协程/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/arithmetic/协程/"></span>
+            <a href="/2014/09/02/cpp/cpp笔记API文档/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cpp/cpp笔记API文档/"></span>
             </a>
           </span>
           
@@ -285,48 +280,844 @@
 
       
         
-          <h1 id="进程,线程,协程">进程,线程,协程</h1><h2 id="进程">进程</h2><p>进程是操作系统中最重要的一个概念，基本上是说程序执行的实例，（以unix系统为例）它包括正在执行的程序代码以及其对应的数据，还包括了进程所占用的虚拟内存，信号量，文件目录，文件句柄等等。可以看出，创建一个进程代价是比较高的，所以操作系统中的进程数往往是有限的，不能无限制的增长，因为他要耗费太多的系统的资源。进程之间可以互相通信，通过这种方式，来完成进程之间的沟通与协作。进程间通信的主要有两种方式：第一种是信号量，通过向其他进程发送信号，内核接收到这个请求，然后通知接受信号的进程来处理；第二个种方式是通过管道，两个进程共享一个管道信息，一个进程往往管道的一段写数据，另外一个进程从管道的另外一端接受数据，从实现原理来看，更像是两个进程共享一段内存信息。在进程调度上，都是由操作系统内核进行调度，进程调度比较复杂，由专门的算法来实现进程调度，一般都有时间片的调度算法那，这里就不说了。正常情况下，一个进程有一定的执行时间，当发生以下几种情况的时候，进程会被迫让出时间片，腾出CPU给其他进程，包括：1 当期正在执行的进程陷入io，被阻塞 2线程被人为中断，例如给线程发送中断信号 3 进程用完时间片 4 有优先级更高的进程要执行，被抢占。 如果进程过多，调度就越频繁，由于进程一次调度，在系统上，需要做很多的工作，比如：保存当前进程的调用栈信息，cpu各个寄存器信息，虚拟内存交换，保护相关的资源等等，所以进行一次进程切换的代价是比较高的。</p>
-<p><strong>从上面的分析，我们从三个维度来总结以下进程相关的特性:</strong></p>
+          <h2 id="std::string_常用函数"><code>std::string</code> 常用函数</h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>s.empty()</code></td>
+<td>如果 s 为空串,则返回 true,否则返回 false。  </td>
+</tr>
+<tr>
+<td><code>s.size()</code></td>
+<td>返回 s 中字符的个数 </td>
+</tr>
+<tr>
+<td><code>s[n]</code></td>
+<td>返回 s 中位置为 n 的字符,位置从 0 开始计数</td>
+</tr>
+<tr>
+<td><code>s1 + s2</code></td>
+<td>把 s1 和 s2 连接成一个新字符串,返回新生成的字符串</td>
+</tr>
+<tr>
+<td><code>s1 = s2</code></td>
+<td>￼把 s1 内容替换为 s2 的副本</td>
+</tr>
+<tr>
+<td><code>v1 == v2</code></td>
+<td>比较 v1 与 v2 的内容,相等则返回 true,否则返 回 false</td>
+</tr>
+<tr>
+<td><code>!=,&lt;,&lt;=,&gt;,and&gt;=</code></td>
+<td>￼保持这些操作符惯有的含义</td>
+</tr>
+</tbody>
+</table>
+<h2 id="std::string_对象中字符的处理"><code>std::string</code> 对象中字符的处理</h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>isalnum(c)</code></td>
+<td>如果 c 是字母或数字,则为 True。</td>
+</tr>
+<tr>
+<td><code>isalpha(c)</code></td>
+<td>如果 c 是字母,则为 true。</td>
+</tr>
+<tr>
+<td><code>iscntrl(c)</code></td>
+<td>如果 c 是控制字符,则为 true</td>
+</tr>
+<tr>
+<td><code>isdigit(c)</code></td>
+<td>如果 c 是数字,则为 true。</td>
+</tr>
+<tr>
+<td><code>isgraph(c)</code></td>
+<td>如果 c 不是空格,但可打印,则为 true。</td>
+</tr>
+<tr>
+<td><code>islower(c)</code></td>
+<td>如果 c 是小写字母,则为 true。</td>
+</tr>
+<tr>
+<td><code>isprint(c)</code></td>
+<td>如果 c 是可打印的字符,则为 true。</td>
+</tr>
+<tr>
+<td><code>ispunct(c)</code></td>
+<td>如果 c 是标点符号,则 true。</td>
+</tr>
+<tr>
+<td><code>isspace(c)</code></td>
+<td>如果 c 是空白字符,则为 true。</td>
+</tr>
+<tr>
+<td><code>isupper(c)</code></td>
+<td>如果 c 是大写字母,则 true。</td>
+</tr>
+<tr>
+<td><code>isxdigit(c)</code></td>
+<td>如果是 c 十六进制数,则为 true。</td>
+</tr>
+<tr>
+<td><code>tolower(c)</code></td>
+<td>如果 c 大写字母,返回其小写字母形式,否则直接返回 c。</td>
+</tr>
+<tr>
+<td><code>toupper(c)</code></td>
+<td>如果 c 是小写字母,则返回其大写字母形式,否则直接返回 c。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="初始化_std::vector">初始化 <code>std::vector</code></h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vector&lt;T&gt; v1;</code></td>
+<td>vector 保存类型为 T 对象。</td>
+</tr>
+<tr>
+<td>￼</td>
+<td>默认构造函数 v1 为空。</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v2(v1);</code></td>
+<td>v2 是 v1 的一个副本。</td>
+</tr>
+<tr>
+<td>￼<code>vector&lt;T&gt; v3(n, i);</code></td>
+<td>v3 包含 n 个值为 i 的元素。</td>
+</tr>
+<tr>
+<td><code>vector&lt;T&gt; v4(n);</code></td>
+<td>￼v4 含有值初始化的元素的 n 个副本。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="std::vector_操作"><code>std::vector</code> 操作</h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v.empty()</code></td>
+<td>如果 v 为空,则返回 true,否则返回 false。</td>
+</tr>
+<tr>
+<td><code>￼￼￼￼￼v.size()</code></td>
+<td>返回 v 中元素的个数。</td>
+</tr>
+<tr>
+<td><code>￼v.empty()</code></td>
+<td>如果 v 为空,则返回 true,否则返回 false。</td>
+</tr>
+<tr>
+<td><code>￼v.push_back(t)</code></td>
+<td>在 v 的末尾增加一个值为 t 的元素。</td>
+</tr>
+<tr>
+<td><code>v[n]</code></td>
+<td>返回 v 中位置为 n 的元素。</td>
+</tr>
+<tr>
+<td>￼￼<code>v1 = v2</code></td>
+<td>把 v1 的元素替换为 v2 中元素的副本。</td>
+</tr>
+<tr>
+<td><code>v1 == v2</code></td>
+<td>如果 v1 与 v2 相等,则返回 true。￼￼</td>
+</tr>
+</tbody>
+</table>
+<h2 id="初始化std::bitset对象的方法">初始化<code>std::bitset</code>对象的方法</h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bitset&lt;n&gt; b;</code></td>
+<td>b 有 n 位,每位都0</td>
+</tr>
+<tr>
+<td><code>bitset&lt;n&gt; b(u);</code></td>
+<td>b 是 unsigned long 型 u 的一个副本</td>
+</tr>
+<tr>
+<td><code>bitset&lt;n&gt; b(s);</code></td>
+<td>b 是 string 对象 s 中含有的位串的副本</td>
+</tr>
+<tr>
+<td><code>bitset&lt;n&gt; b(s, pos, n);</code></td>
+<td>￼b 是 s 中从位置 pos 开始的n个位的副本</td>
+</tr>
+</tbody>
+</table>
+<h2 id="bitset_操作">bitset 操作</h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>b.any()</code></td>
+<td>b 中是否存在置为 1 的二进制位?</td>
+</tr>
+<tr>
+<td><code>￼b.none()</code></td>
+<td>b 中不存在置为 1 的二进制位吗?</td>
+</tr>
+<tr>
+<td><code>b.count()</code></td>
+<td>b 中置为 1 的二进制位的个数</td>
+</tr>
+<tr>
+<td><code>b.size()</code></td>
+<td>b 中二进制位的个数</td>
+</tr>
+<tr>
+<td><code>b[pos]</code></td>
+<td>访问 b 中在 pos 处二进制位</td>
+</tr>
+<tr>
+<td><code>b.test(pos)</code></td>
+<td>b 中在 pos 处的二进制位置为 1么?</td>
+</tr>
+<tr>
+<td><code>b.set()</code></td>
+<td>把 b 中所有二进制位都置为 1</td>
+</tr>
+<tr>
+<td>￼￼￼￼￼<code>b.set(pos)</code></td>
+<td>把 b 中在 pos 处的二进制位置为 1</td>
+</tr>
+<tr>
+<td><code>b.reset()</code></td>
+<td>把 b 中所有二进制位都置为 0</td>
+</tr>
+<tr>
+<td><code>b.reset(pos)</code></td>
+<td>把 b 中在 pos 处的二进制位置为 0</td>
+</tr>
+<tr>
+<td><code>b.flip()</code></td>
+<td>把 b 中所有二进制位逐位取反</td>
+</tr>
+<tr>
+<td><code>b.flip(pos)</code></td>
+<td>把 b 中在 pos 处的二进制位取反</td>
+</tr>
+<tr>
+<td><code>b.to_ulong()</code></td>
+<td>用 b 中同样的二进制位返回一个 unsigned long 值</td>
+</tr>
+<tr>
+<td><code>os &lt;&lt; b</code></td>
+<td>把 b 中的位集输出到 os 流</td>
+</tr>
+</tbody>
+</table>
+<p>￼</p>
+<h2 id="操纵_C_风格字符串的标准库函数">操纵 C 风格字符串的标准库函数</h2><table>
+<thead>
+<tr>
+<th>函数名</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>strlen(s)</code></td>
+<td>返回 s 的长度,不包括字符串结束符 null</td>
+</tr>
+<tr>
+<td><code>strcmp(s1, s2)</code></td>
+<td>比较两个字符串 s1 和 s2 是否相同。若 s1 与 s2 相等,返 回 0;若 s1 大于 s2,返回正数;若 s1 小于 s2,则返回负 数</td>
+</tr>
+<tr>
+<td><code>strcat(s1, s2)</code></td>
+<td>将字符串 s2 连接到 s1 后,并返回 s1</td>
+</tr>
+<tr>
+<td><code>strcpy(s1, s2)</code></td>
+<td>将 s2 复制给 s1,并返回 s1</td>
+</tr>
+<tr>
+<td><code>strncat(s1,s2,n)</code></td>
+<td>将 s2 的前 n 个字符连接到 s1 后面,并返回 s1</td>
+</tr>
+<tr>
+<td><code>strncpy(s1,s2, n)</code></td>
+<td>将 s2 的前 n 个字符复制给 s1,并返回 s1</td>
+</tr>
+</tbody>
+</table>
+<p>￼￼</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/02/cpp/c++杂记/">
+                C++杂记
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/02/cpp/c++杂记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cpp/c++杂记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="function">function</h2><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">memset(&amp;<span class="keyword">var</span>,<span class="number">0</span>,<span class="keyword">sizeof</span>(<span class="keyword">var</span>))</span><br><span class="line">参数<span class="number">1</span>：要释放的地址。</span><br><span class="line">参数<span class="number">2</span>：重置为什么值 <span class="number">0</span>｜<span class="number">1</span></span><br><span class="line">参数<span class="number">3</span>：空间大小</span><br></pre></td></tr></table></figure>
+<h2 id="define">define</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hexcolor">#def</span>ine <span class="function"><span class="title">A</span><span class="params">(x)</span></span> T_#<span class="id">#x</span></span><br><span class="line"><span class="hexcolor">#def</span>ine B（x) #@x</span><br><span class="line"><span class="hexcolor">#def</span>ine C（x) <span class="id">#x</span></span><br><span class="line">我们假设：x=<span class="number">1</span>，则有：</span><br><span class="line"><span class="function"><span class="title">A</span><span class="params">(<span class="number">1</span>)</span></span>------〉T_1</span><br><span class="line"><span class="function"><span class="title">B</span><span class="params">(<span class="number">1</span>)</span></span>------〉<span class="string">'1'</span></span><br><span class="line"><span class="function"><span class="title">C</span><span class="params">(<span class="number">1</span>)</span></span>------〉<span class="string">"1"</span></span><br></pre></td></tr></table></figure>
+<h2 id="友元函数">友元函数</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TestFriend.cpp</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> "stdafx.h"</span></span><br><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	A(<span class="keyword">int</span> _a):a(_a)&#123;&#125;;</span><br><span class="line">	<span class="function"><span class="keyword">friend</span> <span class="keyword">int</span> <span class="title">getA_a</span><span class="params">(A &amp;_classA)</span></span>;<span class="comment">//友元函数</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getA_a</span><span class="params">(A &amp;_classA)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> _classA.a;<span class="comment">//通过对象名访问私有变量</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">_t</span>main(<span class="keyword">int</span> argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	A _classA(<span class="number">3</span>);</span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span>&lt;&lt;getA_a(_classA);<span class="comment">//友元函数只是普通函数，可以在任意地方调用</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="友元类">友元类</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TestFriend.cpp</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> "stdafx.h"</span></span><br><span class="line"><span class="keyword">class</span> B</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	B(<span class="keyword">int</span> _b):b(_b)&#123;&#125;;</span><br><span class="line">	<span class="keyword">friend</span> <span class="keyword">class</span> C;<span class="comment">//声明友元类C</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">int</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> C<span class="comment">//实现友元类C</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">int</span> <span class="title">getB_b</span><span class="params">(B _classB)</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> _classB.b;<span class="comment">//访问友元类B的私有成员</span></span><br><span class="line">	&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">int</span> <span class="keyword">_t</span>main(<span class="keyword">int</span> argc, _TCHAR* argv[])</span><br><span class="line">&#123;</span><br><span class="line">	B _classB(<span class="number">3</span>);</span><br><span class="line">	C _classC;<span class="comment">//定义友元类实例</span></span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">cout</span>&lt;&lt;_classC.getB_b(_classB);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>copy construct过程</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">当用一个已初始化过了的自定义类类型对象去初始化另一个新构造的对象的时候，拷贝构造函数就会被自动调用。也就是说，当类的对象需要拷贝时，拷贝构造函数将会被调用。以下情况都会调用拷贝构造函数：</span><br><span class="line">一个对象以值传递的方式传入函数体 </span><br><span class="line">一个对象以值传递的方式从函数返回 </span><br><span class="line">一个对象需要通过另外一个对象进行初始化。</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/02/cocos2dx/自学笔记/">
+                cocos2d-x笔记
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cocos2dx/">cocos2dx</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/02/cocos2dx/自学笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cocos2dx/自学笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ul>
+<li>项目默认是由AppDelegate.cpp进入游戏</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span><br><span class="line">   @应用程序启动后将调用这个方法。默认的实现中已经包含了游戏启动后的必要 准备:</span><br><span class="line">   @return true    Initialize success, app continue.</span><br><span class="line">   @return false   Initialize failed, app terminate.</span><br><span class="line">   */</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">applicationDidFinishLaunching</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span><br><span class="line">   当应用程序将要进入后台时,会调用这个方法。</span><br><span class="line">   具体来说,当用户把程序切换 到后台,或手机接到电话或短信后程序被系统切换到后台时,会调用这个方法。</span><br><span class="line">   此时,应该暂停游戏中正在播放的音乐或 音效。</span><br><span class="line">   动作激烈的游戏通常也应该在此时进行暂停操作,以便玩家暂时离开游戏时不会遭受重大损失。</span><br><span class="line">   */</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">applicationDidEnterBackground</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">/**</span><br><span class="line">该方法与applicationDidEnterBackground()成对出现,在应用程序回到前台 时被调用。</span><br><span class="line">相对地,我们通常在这里继续播放刚才暂停的音乐,显示游戏暂停菜单等。</span><br><span class="line">   */</span></span><br><span class="line">   <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">applicationWillEnterForeground</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>CCDirector    游戏引擎控制器</li>
+<li>CCScene        游戏场景</li>
+<li>CCLayer        游戏图层</li>
+<li>CCSprite        精灵类</li>
+</ul>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//回调函数,SELECTOR为函数指针</span><br><span class="line">schedule_selector(SELECTOR) </span><br><span class="line">callfunc_selector(SELECTOR) </span><br><span class="line">callfuncN_selector(SELECTOR) </span><br><span class="line">callfuncND_selector(SELECTOR) </span><br><span class="line">callfunc_selector(SELECTOR) </span><br><span class="line">menu_selector(SELECTOR)event_selector(SELECTOR) compare_selector(SELECTOR)</span><br><span class="line">```<span class="comment">##定义宏</span><span class="keyword">*</span> <span class="keyword">*</span><span class="keyword">*</span>platform/CCPlatformMacros.h<span class="keyword">*</span><span class="keyword">*</span> 定义了大量的宏，以方便我们写<span class="keyword">*</span><span class="keyword">*</span>get<span class="keyword">*</span><span class="keyword">*</span>,<span class="keyword">*</span><span class="keyword">*</span>set<span class="keyword">*</span><span class="keyword">*</span>等代码</span><br></pre></td></tr></table></figure>
+<p>/*</p>
+<h1 id="define_CC_SYNTHESIZE(varType,_varName,_funName)\">define CC_SYNTHESIZE(varType, varName, funName)\</h1><p>protected: varType varName;\<br>public: virtual varType get##funName(void) const { return varName; }\<br>public: virtual void set##funName(varType var){ varName = var; }<br>*/<br>CC_SYNTHESIZE(int, tag, Tag)<br>//output :<br>protected: int tag;<br>public: virtual varType getTag(void) const { return tag; }<br>public: virtual void setTag(int var){ tag = var; }<br>```</p>
+<ul>
+<li>这些宏只要写在类的定义之中即可。每个宏都有3个参数,分别是:varType,属性类型,如果属性类型是对象,需要写成 指针的形式;varName,属性的私有字段名称;funName,属性的访问器名称,也就是紧接在 get 或 set 前缀后的部分。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>宏</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC_PROPERTY</td>
+<td>定义一个属性及其访问器,没有实现。 通常用于简单的值类型</td>
+</tr>
+<tr>
+<td>CC_PROPERTY_READONLY</td>
+<td>定义一个属性,只包含get访问器,没有实现</td>
+</tr>
+<tr>
+<td>CC_PROPERTY_PASS_BY_REF</td>
+<td>定义一个属性,访问器使用引用类型传.递参数,没有实现。通常用于结构体类型</td>
+</tr>
+<tr>
+<td>CC_PROPERTY_READONLY_PASS_BY_REF</td>
+<td>定义一个属性,只包含get访问器, 且使用引用类型传递参数,没有实现</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE</td>
+<td>同CC_PROPERTY,实现了访问器方法</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE_READONLY</td>
+<td>同CC_PROPERTY_READONLY,实现了访问器方法</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE_PASS_BY_REF</td>
+<td>同CC_PROPERTY_PASS_BY_REF, 实现了访问器方法</td>
+</tr>
+<tr>
+<td>CC_SYNTHESIZE_RETAIN</td>
+<td>同CC_PROPERTY,实现了访问器方法。 用于派生自CCObject的类型,访问器采取Cocos2d-x的内存管理机制自动维护,对象的引用计数</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>cocs2dx内存管理</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>宏</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CC_SAFE_DELETE(p)</td>
+<td>使用delete操作符删除一个C++对象p, 如果p为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_DELETE_ARRAY(p)</td>
+<td>使用delete[]操作符删除一个C++数组p, 如果p为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_FREE(p)</td>
+<td>使用free()函数删除p,如果p为NULL, 则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_RELEASE(p)</td>
+<td>使用release()方法释放Cocos2d-x对象p的一次引用,如果p为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_RELEASE_NULL(p)</td>
+<td>使用release()方法释放Cocos2d-x对象p的一次引用,再把p赋值为NULL。如果p已经为NULL,则不进行操作</td>
+</tr>
+<tr>
+<td>CC_SAFE_RETAIN(p)</td>
+<td>使用reatin()方法增加Cocos2d-x对象p的一次引用。如果p为NULL,则不进行操作</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>锚点配置</li>
+<li>节点类型  | 锚点位置 | 使用锚点?<br>—— | —— | ——<br>CCNode | (0, 0) | 是<br>CCScene及其子类 | (0.5, 0.5) | 否<br>CCLayer及其子类 | (0.5, 0.5) | 否<br>CCSprite及其子类 | (0.5, 0.5) | 是</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/02/cpp/c++虚函数/">
+                c++虚函数
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/02/cpp/c++虚函数/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cpp/c++虚函数/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ul>
+<li><strong>虚函数</strong>是动态多态性的基础，其调用的方式是动态联编（又称晚期联编，简单解释为只有在程序运行时才决定调用基类的还是子类的，系统会根据基类指针所指向的对象来决定要调用的函数）；</li>
+<li><strong>非虚函数</strong>与其相反，是静态联编（调用已经在编译时期就决定了；在编译时期，系统已经根据指针所属的类型确定了要调用的函数）。</li>
+</ul>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class <span class="built_in">shape</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">shape</span>()&#123;&#125;;</span><br><span class="line">    virtual <span class="keyword">void</span> <span class="title">draw</span>()　　　　<span class="comment">//注意这里设置为虚函数</span></span><br><span class="line">    &#123;</span><br><span class="line">　　　　　　　　<span class="comment">//画图形;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class rectangle : <span class="keyword">public</span> <span class="built_in">shape</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    rectangle()&#123;&#125;;</span><br><span class="line">    <span class="keyword">void</span> <span class="title">draw</span>()</span><br><span class="line">    &#123;</span><br><span class="line">　　　　　　　　<span class="comment">//画方形;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">class <span class="built_in">round</span> : <span class="keyword">public</span> <span class="built_in">shape</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">round</span>()&#123;&#125;;</span><br><span class="line">    <span class="keyword">void</span> <span class="title">draw</span>()</span><br><span class="line">    &#123;</span><br><span class="line">　　　　　　　　<span class="comment">//画圆形;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">shape</span> * s;</span><br><span class="line">    s = <span class="keyword">new</span> rectangle();</span><br><span class="line">    s-&gt;<span class="title">draw</span>();</span><br><span class="line">    s = <span class="keyword">new</span> <span class="built_in">round</span>();</span><br><span class="line">    s-&gt;<span class="title">draw</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关于虚函数，在多态当中，一定要将基类的<strong>析构函数</strong>设置为虚函数并将其实现，只有这样，才能够达到按对象构造的逆序来析构对象；否则，析构的时候，只会析构基类的那一部分，那么派生类那一部分就无法成功析构了。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> Base &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span></span>&#123;<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"base draw"</span> &lt;&lt;<span class="built_in">std</span>::endl;&#125;</span><br><span class="line">	<span class="keyword">virtual</span> ~Base()&#123;<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"base destruct run."</span> &lt;&lt; <span class="built_in">std</span>::endl;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Zhu:<span class="keyword">public</span> Base &#123;</span><br><span class="line">	<span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"zhu draw "</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">	&#125;</span><br><span class="line">	~Zhu()&#123;<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"zhu destruct run ."</span>&lt;&lt; <span class="built_in">std</span>::endl;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Lei:<span class="keyword">public</span> Base &#123;</span><br><span class="line">	<span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">draw</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"lei draw "</span> &lt;&lt; <span class="built_in">std</span>::endl;</span><br><span class="line">	&#125;</span><br><span class="line">	~Lei()&#123;<span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"lei destruct run ."</span>&lt;&lt; <span class="built_in">std</span>::endl;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span> <span class="params">()</span></span>&#123;</span><br><span class="line">	Base *obj=<span class="keyword">new</span> Zhu();</span><br><span class="line">	obj-&gt;draw();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">delete</span> obj;</span><br><span class="line">	obj=<span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">	obj=<span class="keyword">new</span> Lei();</span><br><span class="line">	obj-&gt;draw();</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">delete</span> obj;</span><br><span class="line">	obj=<span class="number">0</span>;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">output : </span><br><span class="line">	zhu draw </span><br><span class="line">	zhu destruct <span class="command">run</span> .</span><br><span class="line">	base destruct <span class="command">run</span>.</span><br><span class="line">	lei draw </span><br><span class="line">	lei destruct <span class="command">run</span> .</span><br><span class="line">	base destruct <span class="command">run</span>.</span><br></pre></td></tr></table></figure>
+<h1 id="纯虚函数">纯虚函数</h1><ul>
+<li>纯虚函数就像抽象类一样，基类不实现，留给子类实现</li>
+</ul>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">class <span class="built_in">shape</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">shape</span>()&#123;&#125;;</span><br><span class="line">    virtual <span class="keyword">void</span> <span class="title">draw</span>()=<span class="number">0</span>;　　　　<span class="comment">//纯虚函数</span></span><br><span class="line">&#125;;</span><br><span class="line">class rectangle : <span class="keyword">public</span> <span class="built_in">shape</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    rectangle()&#123;&#125;;</span><br><span class="line">    <span class="keyword">void</span> <span class="title">draw</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        画方形;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">class <span class="built_in">round</span> : <span class="keyword">public</span> <span class="built_in">shape</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">round</span>()&#123;&#125;;</span><br><span class="line">    <span class="keyword">void</span> <span class="title">draw</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        画圆形;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">void</span> main()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">shape</span> * s;</span><br><span class="line">    s = <span class="keyword">new</span> rectangle();</span><br><span class="line">    s-&gt;<span class="title">draw</span>();</span><br><span class="line">    s = <span class="keyword">new</span> <span class="built_in">round</span>();</span><br><span class="line">    s-&gt;<span class="title">draw</span>();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="多态实现详解">多态实现详解</h1><p><a href="http://www.cnblogs.com/daoluanxiaozi/archive/2013/04/25/3042732.html" target="_blank" rel="external">http://www.cnblogs.com/daoluanxiaozi/archive/2013/04/25/3042732.html</a></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/02/cpp/类型转换总结/">
+                类型转换总结
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/02/cpp/类型转换总结/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cpp/类型转换总结/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <ul>
+<li>const_cast，字面上理解就是去const属性。</li>
+<li>static_cast，命名上理解是静态类型转换。如int转换成char。</li>
+<li>dynamic_cast，命名上理解是动态类型转换。如子类和父类之间的多态类型转换。</li>
+<li>reinterpret_cast，仅仅重新解释类型，但没有进行二进制的转换。</li>
+<li>4种类型转换的格式，如：TYPE B = static_cast(TYPE)(a)。</li>
+</ul>
+<p><strong>const_cast</strong> 去掉类型的const或volatile属性。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> SA &#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> SA ra;</span><br><span class="line"><span class="comment">//ra.i = 10; //直接修改const类型，编译错误</span></span><br><span class="line">SA &amp;rb = <span class="keyword">const_cast</span>&lt;SA&amp;&gt;(ra);</span><br><span class="line">rb.i =<span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>static_cast</strong> 类似于C风格的强制转换。无条件转换，静态类型转换。用于：</p>
 <ol>
-<li><p>资源占用：比较多</p>
-</li>
-<li><p>进程通信：效率比较低</p>
-</li>
-<li><p>上下文切换：慢</p>
-</li>
+<li>基类和子类之间转换：其中子类指针转换成父类指针是安全的；但父类指针转换成子类指针是不安全的。(基类和子类之间的动态类型转换建议用dynamic_cast)</li>
+<li>基本数据类型转换。enum, struct, int, char, float等。static_cast不能进行无关类型（如非基类和子类）指针之间的转换。</li>
+<li>把空指针转换成目标类型的空指针。</li>
+<li>把任何类型的表达式转换成void类型。</li>
+<li>static_cast不能去掉类型的const、volitale属性(用const_cast)。</li>
 </ol>
-<h2 id="线程">线程</h2><p>由于创建进程的代价太高，所以在操作系统中，又出现了线程的概念，简单的说，就是一个进程可以拥有多个线程，每个线程都会共享进程所占用的资源信息，包括虚拟内存，文件资源等等。在这个方面，线程所占用的资源远远小于进程，系统中就可以创建相对数量较多的线程，这些线程共享一个进程所占有的所有资源。在unix操作系统中，线程也是用进程表示的，只不过这些进程可以共享了父进程相关的信息，这里成为轻量级进程。 在线程之间，不仅仅可以通过进程之间的通信方式：信号量，管道，还可以通过共享内存的方式进行通信，在java里面就表现的比较明显，例如两个线程之间可以通过一个实例变量（例如消息队列）进行通信，这种通信方式很高效，毕竟访问内存是非常快的。在调度层面，同一个线程组（共享一个进程）的切换相对比较高效，但是不同线程组之间的切换其实和进程切换效率差不多。</p>
-<p><strong>从上面的分析，也总结以下以下线程的特性</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n =<span class="number">6</span>;</span><br><span class="line"><span class="keyword">double</span> d = <span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>&gt;(n); <span class="comment">// 基本类型转换</span></span><br><span class="line"><span class="keyword">int</span>*pn =&amp;n;</span><br><span class="line"><span class="keyword">double</span>*d = <span class="keyword">static_cast</span>&lt;<span class="keyword">double</span>*&gt;(&amp;n) <span class="comment">//无关类型指针转换，编译错误</span></span><br><span class="line"><span class="keyword">void</span>*p = <span class="keyword">static_cast</span>&lt;<span class="keyword">void</span>*&gt;(pn); <span class="comment">//任意类型转换成void类型</span></span><br></pre></td></tr></table></figure>
+<p><strong>dynamic_cast</strong><br>有条件转换，动态类型转换，运行时类型安全检查(转换失败返回NULL)：</p>
 <ol>
-<li><p>资源占用：一般</p>
-</li>
-<li><p>线程通信：效率高</p>
-</li>
-<li><p>上下文切换：一般</p>
-</li>
+<li>安全的基类和子类之间转换。</li>
+<li>必须要有虚函数。</li>
+<li>相同基类不同子类之间的交叉转换。但结果是NULL。</li>
 </ol>
-<h2 id="协程">协程</h2><p>对于进程和线程来说，都是通过操作系统内核进行调度的，是抢占式的，也就是说，进程和线程还没有运行完成，是可以被其他进程或者线程进行抢占的，进程调度这么设计，是完全有道理的，避免由于一个进程无限运行，其他进程无法得到cpu的时间，导致整个系统死机。但是进程之间切换也是很耗时的，但可以考虑，如果保证业务处理会在有限的时间内完成，那么就没有必要采用抢占式调度的机制。同时如果任务永远不会被阻塞（系统必须支持非阻塞IO），那么就可能采取一种简单的调度策略，这种策略就是顺序执行将要处理的任务列表。</p>
-<p>假设采用这种调度方式，就是由一个线程循环处理所有的任务，要想提高性能，就必须满足以下几个条件：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> BaseClass &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">int</span> m_iNum;</span><br><span class="line">	<span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span></span>&#123;&#125;; <span class="comment">//基类必须有虚函数。保持多台特性才能使用dynamic_cast</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> DerivedClass: <span class="keyword">public</span> BaseClass &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="keyword">char</span>*m_szName[<span class="number">100</span>];</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">bar</span><span class="params">()</span></span>&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">BaseClass* pb =<span class="keyword">new</span> DerivedClass();</span><br><span class="line">DerivedClass *pd1 = <span class="keyword">static_cast</span>&lt;DerivedClass *&gt;(pb); <span class="comment">//子类-&gt;父类，静态类型转换，正确但不推荐</span></span><br><span class="line">DerivedClass *pd2 = <span class="keyword">dynamic_cast</span>&lt;DerivedClass *&gt;(pb); <span class="comment">//子类-&gt;父类，动态类型转换，正确</span></span><br><span class="line"></span><br><span class="line">BaseClass* pb2 =<span class="keyword">new</span> BaseClass();</span><br><span class="line">DerivedClass *pd21 = <span class="keyword">static_cast</span>&lt;DerivedClass *&gt;(pb2); <span class="comment">//父类-&gt;子类，静态类型转换，危险！访问子类m_szName成员越界</span></span><br><span class="line">DerivedClass *pd22 = <span class="keyword">dynamic_cast</span>&lt;DerivedClass *&gt;(pb2); <span class="comment">//父类-&gt;子类，动态类型转换，安全的。结果是NULL</span></span><br></pre></td></tr></table></figure>
+<p><strong>reinterpret_cast</strong> 仅仅重新解释类型，但没有进行二进制的转换：</p>
 <ol>
-<li><p><strong>任务执行的时间比较短</strong>.假设任务执行时间都比较长，远远高于线程切换的代价，那完全可以采用单独一个线程进行处理，没有必要采用这种复杂的方案</p>
-</li>
-<li><p><strong>任务所依赖的线程不能被阻塞</strong>.相当于执行任务的线程要被阻塞，相当于每个任务里面不能调用阻塞线程相关的操作，否则后续的任务就无法执行，整体的效率反而比多线程的效率低</p>
-</li>
-<li><p><strong>任务之间是没有依赖的</strong>.任务之间彼此独立，没有依赖关系，也就是说不会涉及到同步和互斥。</p>
-</li>
+<li>转换的类型必须是一个指针、引用、算术类型、函数指针或者成员指针。</li>
+<li>在比特位级别上进行转换。它可以把一个指针转换成一个整数，也可以把一个整数转换成一个指针（先把一个指针转换成一个整数，在把该整数转换成原类型的指针，还可以得到原先的指针值）。但不能将非32bit的实例转成指针。</li>
+<li>最普通的用途就是在函数指针类型之间进行转换。</li>
+<li>很难保证移植性。</li>
 </ol>
-<p>这里面会涉及到一个问题，就是这个执行的任务如果调用了非阻塞io，，需要等io完成了，才能进行后续的业务处理。为了解决这种情况，我们必须保存这个任务的上下文，然后跳过这个任务，调度程序会执行下一个任务，等操作系统io完成之后，通知执行线程，那么这个线程会找到当时没有执行完成的任务，继续执行。这里面其实也会涉及到任务的上下文切换，但是这种切换代价很低，完全可以在线程里面实现，不需要调用内核完成切换，避免性能开销。</p>
-<p>以上说的就是一个coroutine机制，这种机制的思路就是在用户层设计一个任务调度任务，这个任务名字就要做协程，比线程更轻量级，协程有很多限制。并不是所有的业务都适合用这种方式来实现。</p>
-<p><strong>可以看出协程的一些特性：</strong></p>
-<ol>
-<li><p>占用资源：很少</p>
-</li>
-<li><p>协程通信：不能同步通信，只能采取异步消息通信，效率高</p>
-</li>
-<li><p>上下文切换：很快</p>
-</li>
-</ol>
-<h2 id="关系图:">关系图:</h2><p><img src="/img/协程/xiecheng.png" alt="image"> </p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">doSomething</span><span class="params">()</span></span>&#123;return0;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span><span class="params">(*FuncPtr)</span><span class="params">()</span></span>; <span class="comment">//FuncPtr is 一个指向函数的指针，该函数没有参数，返回值类型为 void</span></span><br><span class="line">FuncPtr funcPtrArray[<span class="number">10</span>]; <span class="comment">//10个FuncPtrs指针的数组 让我们假设你希望（因为某些莫名其妙的原因）把一个指向下面函数的指针存入funcPtrArray数组：</span></span><br><span class="line">funcPtrArray[<span class="number">0</span>] =&amp;doSomething;<span class="comment">// 编译错误！类型不匹配，reinterpret_cast可以让编译器以你的方法去看待它们：funcPtrArray</span></span><br><span class="line">funcPtrArray[<span class="number">0</span>] = <span class="keyword">reinterpret_cast</span>&lt;FuncPtr&gt;(&amp;doSomething); <span class="comment">//不同函数指针类型之间进行转换</span></span><br></pre></td></tr></table></figure>
+<h2 id="总结"><strong>总结</strong></h2><ul>
+<li>去const属性用const_cast。</li>
+<li>基本类型转换用static_cast。</li>
+<li>多态类之间的类型转换用daynamic_cast。</li>
+<li>不同类型的指针类型转换用reinterpret_cast。</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/02/cpp/c++_变参详解/">
+                c++ 变参详解
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-02
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/02/cpp/c++_变参详解/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/02/cpp/c++_变参详解/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;stdarg.h&gt;</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span> n, ...)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	va_list arg_ptr = NULL;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>, nRes = <span class="number">0</span>;</span><br><span class="line">	va_start(arg_ptr, n);</span><br><span class="line">	<span class="keyword">for</span>(; i &lt; n; ++i)</span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">int</span> temp = va_arg(arg_ptr, <span class="keyword">int</span>);</span><br><span class="line">		nRes += temp;</span><br><span class="line">	&#125;</span><br><span class="line">	va_end(arg_ptr);</span><br><span class="line">	<span class="keyword">return</span> nRes;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">myPrintf</span><span class="params">(<span class="keyword">char</span> * strFormat, ...)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(NULL == strFormat)</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">char</span> strInfo[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">	va_list arg_ptr = NULL;</span><br><span class="line">	va_start(arg_ptr, strFormat);</span><br><span class="line">	<span class="built_in">vsprintf</span>(strInfo, strFormat, arg_ptr);</span><br><span class="line">	va_end(arg_ptr);</span><br><span class="line">	<span class="built_in">fputs</span>(strInfo, stdout);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	myPrintf(<span class="string">"%d\n"</span>, sum(<span class="number">3</span>, <span class="number">45</span>, <span class="number">15</span>, <span class="number">45</span>, <span class="number">100</span>)); </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
         
       
@@ -474,8 +1265,8 @@
           
           
             
-              <a class="post-title-link" href="/2014/08/11/cpp/struct_与_union_的区别/">
-                struct 与 union 的区别
+              <a class="post-title-link" href="/2014/09/01/arithmetic/最大公约数/">
+                最大公约数
               </a>
             
           
@@ -484,14 +1275,14 @@
 
       <div class="post-meta">
         <span class="post-time">
-          發表於 2014-08-11
+          發表於 2014-09-01
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分類於
             
-              <a href="/categories/cpp/">cpp</a>
+              <a href="/categories/算法/">算法</a>
 
               
               
@@ -504,8 +1295,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2014/08/11/cpp/struct_与_union_的区别/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/11/cpp/struct_与_union_的区别/"></span>
+            <a href="/2014/09/01/arithmetic/最大公约数/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/arithmetic/最大公约数/"></span>
             </a>
           </span>
           
@@ -520,302 +1311,16 @@
 
       
         
-          <h1 id="struct_与_union_的区别">struct 与 union 的区别</h1><p>在编程的时候，经常会遇到使用一个变量处理多种数据的情况，在这种情况下，如果我们不考虑使用类，那么就可以是struct（结构）和union（联合）来进行处理。那么，这两种结构之间到底有什么不同呢？</p>
-<p>可以先看下面的一个小例子。</p>
-<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"> <span class="number">1</span> <span class="preprocessor">#include  &lt; iostream &gt;</span></span><br><span class="line"> <span class="number">2</span> <span class="keyword">using</span>   <span class="keyword">namespace</span>  <span class="title">std</span>;</span><br><span class="line"> <span class="number">3</span></span><br><span class="line"> <span class="number">4</span> union U1 &#123;</span><br><span class="line"> <span class="number">5</span>      <span class="keyword">char</span>  c;</span><br><span class="line"> <span class="number">6</span>      <span class="keyword">int</span>  i;</span><br><span class="line"> <span class="number">7</span>      <span class="keyword">double</span>  d;</span><br><span class="line"> <span class="number">8</span>     &#125; ;</span><br><span class="line"> <span class="number">9</span> union U2 &#123;</span><br><span class="line"><span class="number">10</span>      <span class="keyword">char</span>  c;</span><br><span class="line"><span class="number">11</span>      <span class="comment">// int i;</span></span><br><span class="line"><span class="number">12</span>      <span class="comment">// double d;</span></span><br><span class="line"><span class="number">13</span>     &#125; ;</span><br><span class="line"><span class="number">14</span></span><br><span class="line"><span class="number">15</span> union U3 &#123;</span><br><span class="line"><span class="number">16</span>      <span class="keyword">char</span>  c;</span><br><span class="line"><span class="number">17</span>      <span class="keyword">int</span>  i;</span><br><span class="line"><span class="number">18</span>      <span class="comment">// double d;</span></span><br><span class="line"><span class="number">19</span>     &#125; ;</span><br><span class="line"><span class="number">20</span></span><br><span class="line"><span class="number">21</span> <span class="keyword">struct</span>  S1 &#123;</span><br><span class="line"><span class="number">22</span>      <span class="keyword">char</span>  c;</span><br><span class="line"><span class="number">23</span>      <span class="keyword">int</span>  i;</span><br><span class="line"><span class="number">24</span>      <span class="keyword">double</span>  d;</span><br><span class="line"><span class="number">25</span>     &#125; ;</span><br><span class="line"><span class="number">26</span></span><br><span class="line"><span class="number">27</span> <span class="keyword">struct</span>  S2 &#123;</span><br><span class="line"><span class="number">28</span>      <span class="keyword">char</span>  c;</span><br><span class="line"><span class="number">29</span>      <span class="keyword">int</span>  i;</span><br><span class="line"><span class="number">30</span>      <span class="comment">// double d;</span></span><br><span class="line"><span class="number">31</span>     &#125; ;</span><br><span class="line"><span class="number">32</span></span><br><span class="line"><span class="number">33</span> <span class="function"><span class="keyword">int</span>  <span class="title">main</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="number">34</span>     cout &lt;&lt; <span class="string">" U1's size = "</span> &lt;&lt; <span class="keyword">sizeof</span> (U1) &lt;&lt; endl;</span><br><span class="line"><span class="number">35</span>     cout &lt;&lt; <span class="string">" U2's size = "</span> &lt;&lt; <span class="keyword">sizeof</span> (U2) &lt;&lt; endl;</span><br><span class="line"><span class="number">36</span>     cout &lt;&lt; <span class="string">" U3's size = "</span> &lt;&lt; <span class="keyword">sizeof</span> (U3) &lt;&lt; endl;</span><br><span class="line"><span class="number">37</span>     cout &lt;&lt; endl;</span><br><span class="line"><span class="number">38</span>     cout &lt;&lt; <span class="string">" -------------------------------- "</span> &lt;&lt; endl;</span><br><span class="line"><span class="number">39</span>     cout &lt;&lt; <span class="string">" S1's size = "</span> &lt;&lt; <span class="keyword">sizeof</span> (S1) &lt;&lt; endl;</span><br><span class="line"><span class="number">40</span>     cout &lt;&lt; <span class="string">" 其中 "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">char</span> ) &lt;&lt; <span class="string">" + "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">int</span> ) &lt;&lt; <span class="string">" + "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">double</span> ) &lt;&lt; <span class="string">" = "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">char</span> ) + <span class="keyword">sizeof</span> ( <span class="keyword">int</span> ) + <span class="keyword">sizeof</span> ( <span class="keyword">double</span> ) &lt;&lt; endl;</span><br><span class="line"><span class="number">41</span>     cout &lt;&lt; <span class="string">" ---------- "</span> &lt;&lt; endl;</span><br><span class="line"><span class="number">42</span>     cout &lt;&lt; <span class="string">" S2's size = "</span> &lt;&lt; <span class="keyword">sizeof</span> (S2) &lt;&lt; endl;</span><br><span class="line"><span class="number">43</span>     cout &lt;&lt; <span class="string">" 其中 "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">char</span> ) &lt;&lt; <span class="string">" + "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">int</span> ) &lt;&lt; <span class="string">" = "</span> &lt;&lt; <span class="keyword">sizeof</span> ( <span class="keyword">char</span> ) + <span class="keyword">sizeof</span> ( <span class="keyword">int</span> ) &lt;&lt; endl;</span><br><span class="line"><span class="number">44</span>     cout &lt;&lt; <span class="string">" -------------------------------- "</span> &lt;&lt; endl;</span><br><span class="line"><span class="number">45</span>     S1 s;</span><br><span class="line"><span class="number">46</span>     s.c = <span class="string">' A '</span> ;</span><br><span class="line"><span class="number">47</span>         cout &lt;&lt; <span class="string">" 1 s.c =  "</span> &lt;&lt; s.c &lt;&lt; endl;</span><br><span class="line"><span class="number">48</span>     s.d = <span class="number">23.2132</span> ;</span><br><span class="line"><span class="number">49</span>         cout &lt;&lt; <span class="string">" 1 s.d =  "</span> &lt;&lt; s.d &lt;&lt; endl;</span><br><span class="line"><span class="number">50</span></span><br><span class="line"><span class="number">51</span>         cout &lt;&lt; <span class="string">" 2 s.c =  "</span> &lt;&lt; s.c &lt;&lt; endl;</span><br><span class="line"><span class="number">52</span>         cout &lt;&lt; <span class="string">" 2 s.d =  "</span> &lt;&lt; s.d &lt;&lt; endl;</span><br><span class="line"><span class="number">53</span>         cout &lt;&lt; <span class="string">" -----------------------  "</span> &lt;&lt; endl;</span><br><span class="line"><span class="number">54</span>     U1 u;</span><br><span class="line"><span class="number">55</span>         u.c = <span class="string">' A '</span> ;</span><br><span class="line"><span class="number">56</span>         cout &lt;&lt; <span class="string">" 1 u.c =  "</span> &lt;&lt; u.c &lt;&lt; endl;</span><br><span class="line"><span class="number">57</span>     </span><br><span class="line"><span class="number">58</span>         u.i = <span class="number">23322</span> ;</span><br><span class="line"><span class="number">59</span>         cout &lt;&lt; <span class="string">" 1 u.i =  "</span> &lt;&lt; u.i &lt;&lt; endl;</span><br><span class="line"><span class="number">60</span></span><br><span class="line"><span class="number">61</span>         u.d = <span class="number">23.2132</span> ;</span><br><span class="line"><span class="number">62</span>         cout &lt;&lt; <span class="string">" 1 u.d =  "</span> &lt;&lt; u.d &lt;&lt; endl;</span><br><span class="line"><span class="number">63</span>         cout &lt;&lt; <span class="string">" 2 u.c =  "</span> &lt;&lt; u.c &lt;&lt; endl;</span><br><span class="line"><span class="number">64</span>         cout &lt;&lt; <span class="string">" 2 u.i =  "</span> &lt;&lt; u.i &lt;&lt; endl;</span><br><span class="line"><span class="number">65</span>      <span class="keyword">return</span>   <span class="number">0</span> ;</span><br><span class="line"><span class="number">66</span> &#125;</span><br></pre></td></tr></table></figure>
-<p>输出结果为：</p>
-<p>U1’s size =8</p>
-<p>U2’s size =1</p>
-<p>U3’s size =4</p>
-<hr>
-<p>S1’s size =16</p>
-<p>其中 1+4+8=13</p>
-<hr>
-<p>S2’s size =8</p>
-<p>其中 1+4=5</p>
-<hr>
-<p>1 s.c = A</p>
-<p>1 s.d = 23.2132</p>
-<p>2 s.c = A</p>
-<p>2 s.d = 23.2132</p>
-<hr>
-<p>1 u.c = A</p>
-<p>1 u.i = 23322</p>
-<p>1 u.d = 23.2132</p>
-<p>2 u.c =</p>
-<p>2 u.i = 1181975000</p>
-<p>解释：</p>
-<p>struct 类型的内存分配是结合内部的所有变量大小和相关的，但不是简单的相加，从上面的例子就可以看出来， struct 类型的分配的内存大小是应该内部最大数据类型的整数倍，不足一倍的部分会自动补全成一倍大小,应该是编译器为了数据整齐，处理速度会快些把。 union 类型的内存分配，只是和联合体内的最大的一个数据类型的大小相关，而且 union 内的所有数据都在一个单独的内存空间里面。这些就是上面程序出现这样的结果的原因。</p>
-<p>   所以， u.c 的值是 A ，当给联合体内的其他变量赋值之后， u.c 的值就是一个无用的信息。同样， u.i 的值最初是 23322 ，当给 u.d 赋值 23.2132 之后， u.i 的值就变得无用了。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/08/08/object-c/ios-sdk笔记/">
-                ios sdk笔记
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-08-08
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/08/08/object-c/ios-sdk笔记/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/08/object-c/ios-sdk笔记/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="AppDelegate">AppDelegate</h2><ul>
-<li><code>- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions NS_AVAILABLE_IOS(3_0);</code>. 当应用程序启动完成时调用此方法</li>
-<li><code>- (void)applicationWillResignActive:(UIApplication *)application</code>. 应用程序中断时调用此方法，例如电话之类的.</li>
-<li><code>- (void)applicationDidEnterBackground:(UIApplication *)application</code>.应用程序转入后台时调用此方法.</li>
-<li><code>- (void)applicationWillEnterForeground:(UIApplication *)application</code>.应用程序转向前台时调用此方法</li>
-<li><code>- (void)applicationDidBecomeActive:(UIApplication *)application</code>.应用程序暂停,或是重新启动,会调用此方法</li>
-<li><code>- (void)applicationWillTerminate:(UIApplication *)application</code>.应用程序终于时,调用此方法,例如保存一下数据什么的.</li>
+          <h1 id="最大公约数">最大公约数</h1><h2 id="辗除法的数学原理分析">辗除法的数学原理分析</h2><ul>
+<li>辗转相除法使用到的原理很聪明也很简单，假设用f（x, y）表示x，y的最大公约数，取k = x/y，b = x%y，则x = ky + b，如果一个数能够同时整除x和y，则必能同时整除b和y；而能够同时整除b和y的数也必能同时整除x和y，即x和y的公约数与b和y的公约数是相同的，其最大公约数也是相同的，则有f（x, y）= f（y, x%y）（y &gt; 0），如此便可把原问题转化为求两个更小数的最大公约数，直到其中一个数为0，剩下的另外一个数就是两者最大的公约数。</li>
+<li>例如，12和30的公约数有：1、2、3、6，其中6就是12和30的最大公约数。</li>
+<li>辗转相除法是古希腊求两个正整数的最大公约数的，也叫欧几里德算法，其方法是用较大的数除以较小的数，上面较小的除数和得出的余数构成新的一对数，继续做上面的除法，直到出现能够整除的两个数，其中较小的数（即除数）就是最大公约数。以求288和123的最大公约数为例，操作如下：</li>
 </ul>
-<h2 id="UIImageView">UIImageView</h2><ul>
-<li><code>UIImageView userInteractionEnabled</code> : 是否与当前对象交互.</li>
-<li><code>UIImageView multipleTouchEnabled</code> : 是否支持多点触控.</li>
-</ul>
-<h2 id="View面板">View面板</h2><ul>
-<li>View面板 <strong>Drawing.Opaque</strong> : 告诉opengl当前对象的背后没有需要绘制的内容,尽可能的选中它,加速性能,如果Alpha通道为1.0,还是要选中的原因是图片是png,本身会有一些洞.</li>
-<li>View面板 <strong>Drawing.Clear Graphics Context</strong> : 如果选中了这个表示在绘制图片之前,先在这个对象区域内绘制一片黑色的区域,考虑到性能问题,一般不要选中这一项.</li>
-<li>View面板 <strong>Drawing.Clip SubView</strong> : 如果选中了,那么子对象在父对象上面显示不完全的地方就不绘制,理论上来说选中应该是性能会更高一些,但是从数学角度出发,裁剪不显示的区域是比较费时的,而且一般不会出现子对象显示不全的情况,所以一般不要选中这一项.</li>
-<li>View面板 <strong>Drawing.Autoresize Subviews</strong> : 表示当前对象改变大小的话,子对象也会改变大小.</li>
-<li>View面板 <strong>Stretching</strong> : 忽略,暂不深入理解</li>
-</ul>
-<h2 id="text_Field面板">text Field面板</h2><ul>
-<li><strong>Clean Button</strong> : 意思是在什么情况下出现带X的清除按钮.</li>
-<li><strong>Clean when editing begins</strong> : 表示用户触模此字段时是事清除已有的文本</li>
-<li><strong>Adjust to Fit</strong> : 表示显示文本是否应随文本字段尺寸的减小而减小,如果选中,那么整个文本在视图都是可见的.</li>
-<li><strong>Capitalization</strong> : 输入字符串的格式化,例如”word”的意思是说将单词的首字母大写.</li>
-<li><strong>Return Key</strong> : 键盘右下方键那个要完成的名称</li>
-<li><strong>Auto-enable Return Key</strong> : 当选中此选项时,如果text字符串为空,将禁止return.</li>
-<li><strong>Secure</strong> : 如果是密码字段,可以选上此选项</li>
-</ul>
-<h2 id="控件的四种状态-_以下四种状态,可以直接替换图片,便可以修改默认ui样式">控件的四种状态. 以下四种状态,可以直接替换图片,便可以修改默认ui样式</h2><ul>
-<li>普通(Normal)</li>
-<li>突出显示(Highlighted)</li>
-<li>禁用(Disabled)</li>
-<li>选中(Selected)</li>
-</ul>
-<h2 id="TabBarItem">TabBarItem</h2><ul>
-<li><strong>badge</strong> : 意思是按钮上面会有一个红色的东西，一般用于提醒消息数.</li>
-</ul>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/08/02/cpp/typedef用法小结/">
-                typedef用法小结
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-08-02
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/08/02/cpp/typedef用法小结/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/08/02/cpp/typedef用法小结/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="typedef用法小结">typedef用法小结</h1><h2 id="第一、四个用途">第一、四个用途</h2><ul>
-<li><strong>用途一</strong>：定义一种类型的别名，而不只是简单的宏替换。可以用作同时声明指针型的多个对象。比如：</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">	<span class="keyword">char</span>* pa, pb; <span class="comment">// 这多数不符合我们的意图，它只声明了一个指向字符变量的指针，和一个字符变量；</span></span><br><span class="line">	<span class="comment">//以下则可行：</span></span><br><span class="line">	<span class="keyword">typedef</span> <span class="keyword">char</span>* PCHAR; <span class="comment">// 一般用大写</span></span><br><span class="line">	PCHAR pa, pb; <span class="comment">// 可行，同时声明了两个指向字符变量的指针</span></span><br><span class="line">```	</span><br><span class="line">* **用途二**：用在旧的C的代码中（具体多旧没有查），帮助<span class="keyword">struct</span>。以前的代码中，声明<span class="keyword">struct</span>新对象时，必须要带上<span class="keyword">struct</span>，即形式为： <span class="keyword">struct</span> 结构名 对象名，如：</span><br></pre></td></tr></table></figure>
-<pre><code><span class="keyword">struct</span> tagPOINT1
-{
-    <span class="keyword">int</span> x;
-    <span class="keyword">int</span> y;
-};
-<span class="keyword">struct</span> tagPOINT1 p1;
-<span class="comment">//而在C++中，则可以直接写：结构名 对象名，即：tagPOINT1 p1;</span>
-<span class="comment">//估计某人觉得经常多写一个struct太麻烦了，于是就发明了：</span>
-<span class="keyword">typedef</span> <span class="keyword">struct</span> tagPOINT
-{
-    <span class="keyword">int</span> x;
-    <span class="keyword">int</span> y;
-}POINT;
-POINT p1; <span class="comment">// 这样就比原来的方式少写了一个struct，比较省事，尤其在大量使用的时</span>
-<span class="comment">//或许，在C++中，typedef的这种用途二不是很大，但是理解了它，对掌握以前的旧代码还是有帮助的，毕竟我们在项目中有可能会遇到较早些年代遗留下来的代码。</span>
-</code></pre><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">* **用途三**：</span><br><span class="line">-<span class="ruby"> 用typedef来定义与平台无关的类型。</span><br><span class="line"></span>-<span class="ruby"> 比如定义一个叫 <span class="constant">REAL</span> 的浮点类型，在目标平台一上，让它表示最高精度的类型为：</span><br><span class="line"></span>-<span class="ruby"> typedef long double <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 在不支持 long double 的平台二上，改为：</span><br><span class="line"></span>-<span class="ruby"> typedef double <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 在连 double 都不支持的平台三上，改为：</span><br><span class="line"></span>-<span class="ruby"> typedef float <span class="constant">REAL</span>; </span><br><span class="line"></span>-<span class="ruby"> 也就是说，当跨平台时，只要改下 typedef 本身就行，不用对其他源码做任何修改。</span><br><span class="line"></span>-<span class="ruby"> 标准库就广泛使用了这个技巧，比如size_t。</span><br><span class="line"></span>-<span class="ruby"> 另外，因为typedef是定义了一种类型的新别名，不是简单的字符串替换，所以它比宏来得稳健（虽然用宏有时也可以完成以上的用途）。</span><br><span class="line"></span></span><br><span class="line">* **用途四**：为复杂的声明定义一个新的简单的别名。方法是：在原来的声明里逐步用别名替换一部分复杂声明，如此循环，把带变量名的部分留到最后替换，得到的就是原声明的最简化版。举例：</span><br></pre></td></tr></table></figure>
-<pre><code><span class="comment">//1. 原声明：int *(*a[5])(int, char*);</span>
-<span class="comment">//变量名为a，直接用一个新别名pFun替换a就可以了：</span>
-typedef int *<span class="comment">(*pFun)(int, char*)</span>; 
-<span class="comment">//原声明的最简化版：</span>
-pFun a[<span class="number">5</span>];
-</code></pre><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">```</span><br><span class="line">	<span class="comment">//2. 原声明：void (*b[10]) (void (*)());</span></span><br><span class="line">	<span class="comment">//变量名为b，先替换右边部分括号里的，pFunParam为别名一：</span></span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*pFunParam)</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">//再替换左边的变量b，pFunx为别名二：</span></span><br><span class="line">	<span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*pFunx)</span><span class="params">(pFunParam)</span></span>;</span><br><span class="line">	<span class="comment">//原声明的最简化版：</span></span><br><span class="line">	pFunx b[<span class="number">10</span>];</span><br></pre></td></tr></table></figure>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//3. 原声明：doube(*)() (*e)[9]; </span></span><br><span class="line"><span class="comment">//变量名为e，先替换左边部分，pFuny为别名一：</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">double</span><span class="params">(*pFuny)</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">//再替换右边的变量e，pFunParamy为别名二</span></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">pFuny</span> <span class="params">(*pFunParamy)</span>[9]</span>;</span><br><span class="line"><span class="comment">//原声明的最简化版：</span></span><br><span class="line">pFunParamy e;</span><br></pre></td></tr></table></figure>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">理解复杂声明可用的“右左法则”：</span><br><span class="line">从变量名看起，先往右，再往左，碰到一个圆括号就调转阅读的方向；括号内分析完就跳出括号，还是按先右后左的顺序，如此循环，直到整个声明分析完。举例：</span><br><span class="line"><span class="typename">int</span> (*<span class="keyword">func</span>)(<span class="typename">int</span> *p);</span><br><span class="line">首先找到变量名<span class="keyword">func</span>，外面有一对圆括号，而且左边是一个*号，这说明<span class="keyword">func</span>是一个指针；然后跳出这个圆括号，先看右边，又遇到圆括号，这说明(*<span class="keyword">func</span>)是一个函数，所以<span class="keyword">func</span>是一个指向这类函数的指针，即函数指针，这类函数具有<span class="typename">int</span>*类型的形参，返回值类型是<span class="typename">int</span>。</span><br><span class="line"><span class="typename">int</span> (*<span class="keyword">func</span>[<span class="number">5</span>])(<span class="typename">int</span> *);</span><br><span class="line"><span class="keyword">func</span>右边是一个[]运算符，说明<span class="keyword">func</span>是具有<span class="number">5</span>个元素的数组；<span class="keyword">func</span>的左边有一个*，说明<span class="keyword">func</span>的元素是指针（注意这里的*不是修饰<span class="keyword">func</span>，而是修饰<span class="keyword">func</span>[<span class="number">5</span>]的，原因是[]运算符优先级比*高，<span class="keyword">func</span>先跟[]结合）。跳出这个括号，看右边，又遇到圆括号，说明<span class="keyword">func</span>数组的元素是函数类型的指针，它指向的函数具有<span class="typename">int</span>*类型的形参，返回值类型为<span class="typename">int</span>。</span><br></pre></td></tr></table></figure>
-<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">也可以记住<span class="number">2</span>个模式：</span><br><span class="line"><span class="keyword">type</span> <span class="comment">(*)(....)`函数指针</span><br><span class="line">`type (*)</span>[]`数组指针</span><br></pre></td></tr></table></figure>
-<h2 id="第二、两大陷阱">第二、两大陷阱</h2><ul>
-<li><strong>陷阱一：</strong> </li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//记住，typedef是定义了一种类型的新别名，不同于宏，它不是简单的字符串替换。比如：</span></span><br><span class="line"><span class="comment">//先定义：</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span>* PSTR;</span><br><span class="line"><span class="comment">//然后：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(<span class="keyword">const</span> PSTR, <span class="keyword">const</span> PSTR)</span></span>;</span><br><span class="line"><span class="keyword">const</span> PSTR实际上相当于<span class="keyword">const</span> <span class="keyword">char</span>*吗？不是的，它实际上相当于<span class="keyword">char</span>* <span class="keyword">const</span>。</span><br><span class="line"><span class="comment">//原因在于const给予了整个指针本身以常量性，也就是形成了常量指针char* const。</span></span><br><span class="line"><span class="comment">//简单来说，记住当const和typedef一起出现时，typedef不会是简单的字符串替换就行。</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">288÷123=2</span>余42</span><br><span class="line"><span class="number">123÷42=2余39</span></span><br><span class="line"><span class="number">42÷39=1余3</span></span><br><span class="line">39÷3=13</span><br><span class="line">所以3就是<span class="number">288和123</span>的最大公约数。</span><br><span class="line">因为x == k*y＋ｂ；</span><br><span class="line">如果同时对量边做除法，注意都是整数，若同整除ｍ，则有x/m == k * (y/m) + b/m</span><br><span class="line">由此可见可以将其转化为两个更小的数的最大公约数。</span><br></pre></td></tr></table></figure>
 <ul>
-<li><strong>陷阱二：</strong></li>
+<li>代码如下：</li>
 </ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span>在语法上是一个存储类的关键字（如<span class="keyword">auto</span>、<span class="keyword">extern</span>、<span class="keyword">mutable</span>、<span class="keyword">static</span>、<span class="keyword">register</span>等一样），虽然它并不真正影响对象的存储特性，如：</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">static</span> <span class="keyword">int</span> INT2; <span class="comment">//不可行</span></span><br><span class="line">编译将失败，会提示“指定了一个以上的存储类”。</span><br></pre></td></tr></table></figure>
-<h2 id="第三、typedef_与_#define的区别">第三、typedef 与 #define的区别</h2><ul>
-<li>案例一：</li>
-</ul>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//通常讲，typedef要比<span class="label">#define</span>要好，特别是在有指针的场合。请看例子：</span><br><span class="line"><span class="label">typedef</span> char *pStr1<span class="comment">;</span></span><br><span class="line"><span class="label">#define</span> pStr2 char *<span class="comment">;</span></span><br><span class="line"><span class="label">pStr1</span> <span class="literal">s1</span>, <span class="literal">s2</span><span class="comment">;</span></span><br><span class="line"><span class="label">pStr2</span> <span class="literal">s3</span>, <span class="literal">s4</span><span class="comment">;</span></span><br><span class="line">//在上述的变量定义中，<span class="literal">s1</span>、<span class="literal">s2</span>、<span class="literal">s3</span>都被定义为char *，而<span class="literal">s4</span>则定义成了char，不是我们所预期的指针变量，根本原因就在于<span class="label">#define</span>只是简单的字符串替换而typedef则是为一个类型起新名字。</span><br></pre></td></tr></table></figure>
-<ul>
-<li>案例二：</li>
-</ul>
-<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">//下面的代码中编译器会报一个错误，你知道是哪个语句错了吗？</span><br><span class="line"><span class="label">typedef</span> char * pStr<span class="comment">;</span></span><br><span class="line"><span class="label">char</span> <span class="keyword">string[4] </span>= <span class="string">"abc"</span><span class="comment">;</span></span><br><span class="line"><span class="label">const</span> char *<span class="literal">p1</span> = <span class="keyword">string;</span><br><span class="line"></span><span class="label">const</span> pStr <span class="literal">p2</span> = <span class="keyword">string;</span><br><span class="line"></span><span class="label">p1</span>++<span class="comment">;</span></span><br><span class="line"><span class="label">p2</span>++<span class="comment">;</span></span><br><span class="line">//是<span class="literal">p2</span>++出错了。这个问题再一次提醒我们：typedef和<span class="label">#define</span>不同，它不是简单的文本替换。上述代码中const pStr <span class="literal">p2</span>并不等于const char * <span class="literal">p2</span>。const pStr <span class="literal">p2</span>和const long x本质上没有区别，都是对变量进行只读限制，只不过此处变量<span class="literal">p2</span>的数据类型是我们自己定义的而不是系统固有类型而已。因此，const pStr <span class="literal">p2</span>的含义是：限定数据类型为char *的变量<span class="literal">p2</span>为只读，因此<span class="literal">p2</span>++错误。</span><br></pre></td></tr></table></figure>
-<h2 id="第四部分资料：使用_typedef_抑制劣质代码">第四部分资料：使用 typedef 抑制劣质代码</h2><p>typedef 声明，简称 typedef，为现有类型创建一个新的名字。比如人们常常使用 typedef 来编写更美观和可读的代码。所谓美观，意指 typedef 能隐藏笨拙的语法构造以及平台相关的数据类型，从而增强可移植性和以及未来的可维护性。本文下面将竭尽全力来揭示 typedef 强大功能以及如何避免一些常见的陷阱。</p>
-<p>Q：如何创建平台无关的数据类型，隐藏笨拙且难以理解的语法?</p>
-<p>A： 使用 typedefs 为现有类型创建同义字。</p>
-<p><strong>定义易于记忆的类型名</strong></p>
-<p>typedef 使用最多的地方是创建易于记忆的类型名，用它来归档程序员的意图。类型出现在所声明的变量名字中，位于 “”typedef”” 关键字右边。例如：</p>
-<p><code>typedef int size;</code></p>
-<p>此声明定义了一个 int 的同义字，名字为 size。注意 typedef 并不创建新的类型。它仅仅为现有类型添加一个同义字。你可以在任何需要 int 的上下文中使用 size：</p>
-<p><code>void measure(size * psz); size array[4];size len = file.getlength();std::vector &lt;size&gt; vs;</code></p>
-<p>typedef 还可以掩饰符合类型，如指针和数组。例如，你不用象下面这样重复定义有 81 个字符元素的数组：</p>
-<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="value">char</span> <span class="value">line</span><span class="attr_selector">[81]</span>;<span class="value">char</span> <span class="value">text</span><span class="attr_selector">[81]</span>;</span><br><span class="line"><span class="comment">//定义一个 typedef，每当要用到相同类型和大小的数组时，可以这样：</span></span><br><span class="line">typedef <span class="value">char</span> <span class="value">Line</span><span class="attr_selector">[81]</span>; <span class="value">Line</span> <span class="value">text</span>, secondline;<span class="function">getline</span>(<span class="value">text</span>);</span><br></pre></td></tr></table></figure>
-<p>同样，可以象下面这样隐藏指针语法：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> * pstr;<span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(pstr, pstr)</span></span>;</span><br><span class="line"><span class="comment">//这里将带我们到达第一个 typedef 陷阱。标准函数 strcmp()有两个‘const char *’类型的参数。因此，它可能会误导人们象下面这样声明 mystrcmp()：</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(<span class="keyword">const</span> pstr, <span class="keyword">const</span> pstr)</span></span>; </span><br><span class="line"><span class="comment">//这是错误的，按照顺序，‘const pstr’被解释为‘char * const’（一个指向 char 的常量指针），而不是‘const char *’（指向常量 char 的指针）。这个问题很容易解决：</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">const</span> <span class="keyword">char</span> * cpstr; <span class="function"><span class="keyword">int</span> <span class="title">mystrcmp</span><span class="params">(cpstr, cpstr)</span></span>; <span class="comment">// 现在是正确的</span></span><br></pre></td></tr></table></figure>
-<p><strong>记住</strong>：不管什么时候，只要为指针声明 typedef，那么都要在最终的 typedef 名称中加一个 const，以使得该指针本身是常量，而不是对象。</p>
-<p><strong>代码简化</strong></p>
-<p>　　上面讨论的 typedef 行为有点像 #define 宏，用其实际类型替代同义字。不同点是 typedef 在编译时被解释，因此让编译器来应付超越预处理器能力的文本替换。例如：</p>
-<p><code>typedef int (*PF) (const char *, const char *);</code></p>
-<p>这个声明引入了 PF 类型作为函数指针的同义字，该函数有两个 const char * 类型的参数以及一个 int 类型的返回值。如果要使用下列形式的函数声明，那么上述这个 typedef 是不可或缺的：</p>
-<p><code>PF Register(PF pf);</code></p>
-<p>Register() 的参数是一个 PF 类型的回调函数，返回某个函数的地址，其署名与先前注册的名字相同。做一次深呼吸。下面我展示一下如果不用 typedef，我们是如何实现这个声明的：</p>
-<p><code>int (*Register (int (*pf)(const char *, const char *))) (const char *, const char *);</code></p>
-<p>很少有程序员理解它是什么意思，更不用说这种费解的代码所带来的出错风险了。显然，这里使用 typedef 不是一种特权，而是一种必需。持怀疑态度的人可能会问：“OK，有人还会写这样的代码吗？”，快速浏览一下揭示 signal()函数的头文件 <csinal>，一个有同样接口的函数。</csinal></p>
-<p><strong>typedef 和存储类关键字（storage class specifier）</strong></p>
-<p>种说法是不是有点令人惊讶，typedef 就像 auto，extern，mutable，static，和 register 一样，是一个存储类关键字。这并是说 typedef 会真正影响对象的存储特性；它只是说在语句构成上，typedef 声明看起来象 static，extern 等类型的变量声明。下面将带到第二个陷阱：</p>
-<p><code>typedef register int FAST_COUNTER; // 错误</code></p>
-<p>编译通不过。问题出在你不能在声明中有多个存储类关键字。因为符号 typedef 已经占据了存储类关键字的位置，在 typedef 声明中不能用 register（或任何其它存储类关键字）。</p>
-<p><strong>促进跨平台开发</strong></p>
-<p>typedef 有另外一个重要的用途，那就是定义机器无关的类型，例如，你可以定义一个叫 REAL 的浮点类型，在目标机器上它可以i获得最高的精度：</p>
-<p><code>typedef long double REAL;</code></p>
-<p>在不支持 long double 的机器上，该 typedef 看起来会是下面这样：</p>
-<p><code>typedef double REAL;</code></p>
-<p>并且，在连 double 都不支持的机器上，该 typedef 看起来会是这样： </p>
-<p><code>typedef float REAL;</code></p>
-<p>你不用对源代码做任何修改，便可以在每一种平台上编译这个使用 REAL 类型的应用程序。唯一要改的是 typedef 本身。在大多数情况下，甚至这个微小的变动完全都可以通过奇妙的条件编译来自动实现。不是吗? 标准库广泛地使用 typedef 来创建这样的平台无关类型：size_t，ptrdiff 和 fpos_t 就是其中的例子。此外，象 std::string 和 std::ofstream 这样的 typedef 还隐藏了长长的，难以理解的模板特化语法，例如：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">basic_string&lt;<span class="keyword">char</span>, <span class="keyword">char_t</span>raits&lt;<span class="keyword">char</span>&gt;，allocator&lt;<span class="keyword">char</span>&gt;&gt; </span><br><span class="line">basic_ofstream&lt;<span class="keyword">char</span>, <span class="keyword">char_t</span>raits&lt;<span class="keyword">char</span>&gt;&gt;</span><br></pre></td></tr></table></figure>
-
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp;</span><br><span class="line">    <span class="keyword">if</span>(a&lt;b)&#123;<span class="comment">/*交换两个数，使大数放在a上*/</span></span><br><span class="line">        temp=a;</span><br><span class="line">        a=b;</span><br><span class="line">        b=temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(b!=<span class="number">0</span>)&#123;<span class="comment">/*利用辗除法，直到b为0为止*/</span></span><br><span class="line">        temp=a%b;</span><br><span class="line">        a=b;</span><br><span class="line">        b=temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
         
       
     </div>
@@ -845,8 +1350,8 @@ pFun a[<span class="number">5</span>];
           
           
             
-              <a class="post-title-link" href="/2014/07/25/object-c/object-c_学习笔记/">
-                object-c 学习笔记
+              <a class="post-title-link" href="/2014/09/01/arithmetic/协程/">
+                进程,线程,协程
               </a>
             
           
@@ -855,14 +1360,14 @@ pFun a[<span class="number">5</span>];
 
       <div class="post-meta">
         <span class="post-time">
-          發表於 2014-07-25
+          發表於 2014-09-01
         </span>
 
         
           <span class="post-category">
             &nbsp; | &nbsp; 分類於
             
-              <a href="/categories/ios/">ios</a>
+              <a href="/categories/算法/">算法</a>
 
               
               
@@ -875,8 +1380,8 @@ pFun a[<span class="number">5</span>];
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2014/07/25/object-c/object-c_学习笔记/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/07/25/object-c/object-c_学习笔记/"></span>
+            <a href="/2014/09/01/arithmetic/协程/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/arithmetic/协程/"></span>
             </a>
           </span>
           
@@ -891,326 +1396,48 @@ pFun a[<span class="number">5</span>];
 
       
         
-          <ol>
-<li>id 为动态指针,可以指向任何对象,大致与c++中的void指针一样.</li>
-<li><strong>反射</strong></li>
+          <h1 id="进程,线程,协程">进程,线程,协程</h1><h2 id="进程">进程</h2><p>进程是操作系统中最重要的一个概念，基本上是说程序执行的实例，（以unix系统为例）它包括正在执行的程序代码以及其对应的数据，还包括了进程所占用的虚拟内存，信号量，文件目录，文件句柄等等。可以看出，创建一个进程代价是比较高的，所以操作系统中的进程数往往是有限的，不能无限制的增长，因为他要耗费太多的系统的资源。进程之间可以互相通信，通过这种方式，来完成进程之间的沟通与协作。进程间通信的主要有两种方式：第一种是信号量，通过向其他进程发送信号，内核接收到这个请求，然后通知接受信号的进程来处理；第二个种方式是通过管道，两个进程共享一个管道信息，一个进程往往管道的一段写数据，另外一个进程从管道的另外一端接受数据，从实现原理来看，更像是两个进程共享一段内存信息。在进程调度上，都是由操作系统内核进行调度，进程调度比较复杂，由专门的算法来实现进程调度，一般都有时间片的调度算法那，这里就不说了。正常情况下，一个进程有一定的执行时间，当发生以下几种情况的时候，进程会被迫让出时间片，腾出CPU给其他进程，包括：1 当期正在执行的进程陷入io，被阻塞 2线程被人为中断，例如给线程发送中断信号 3 进程用完时间片 4 有优先级更高的进程要执行，被抢占。 如果进程过多，调度就越频繁，由于进程一次调度，在系统上，需要做很多的工作，比如：保存当前进程的调用栈信息，cpu各个寄存器信息，虚拟内存交换，保护相关的资源等等，所以进行一次进程切换的代价是比较高的。</p>
+<p><strong>从上面的分析，我们从三个维度来总结以下进程相关的特性:</strong></p>
+<ol>
+<li><p>资源占用：比较多</p>
+</li>
+<li><p>进程通信：效率比较低</p>
+</li>
+<li><p>上下文切换：慢</p>
+</li>
 </ol>
-<blockquote>
-<p><strong>NSObject</strong> 下的方法名列表</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>-(BOOL) isMemberOfClass: (Class) clazz</code></td>
-<td>用于判断对象是否是 clazz 类型的实例,但 不包子类的实例。</td>
-</tr>
-<tr>
-<td><code>-(BOOL) isKindOfClass: (Class) clazz</code></td>
-<td>用于判断对象是否是 clazz 类型的实例或 者 clazz 的子类的实例。</td>
-</tr>
-<tr>
-<td><code>-(BOOL) respondsToSelector: (SEL) selector</code></td>
-<td>用于判断类型或者对象是否能够回应某个 方法,这个方法使用选择器表示。</td>
-</tr>
-<tr>
-<td><code>+(BOOL) instancesRespondToSelector: (SEL) selector</code></td>
-<td>用于判断类型所产生的实例是否能够回应某个方法,这个方法使用选择器表示。</td>
-</tr>
-<tr>
-<td><code>-(id) performSelector: (SEL) selector</code></td>
-<td>用于动态调用类型或者对象上的一个方法。这里的SEL等于C++里的函数指针</td>
-</tr>
-<tr>
-<td><code>-(BOOL) conformsToProtocol: (Protocol*) prot</code></td>
-<td>用于判断对象是否遵从某 个 protocol。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="指令集">指令集</h2><ul>
-<li><strong>异常</strong> : <code>@try,@catch,@finally</code>.</li>
-<li><strong>内存自动管理</strong> : <code>@autoreleasepool</code>.</li>
-<li><strong>get,set生成器</strong> : <code>@property,@synthesize</code>.</li>
-<li><strong>类的操作</strong> : <code>@interface,@implementation</code>.</li>
-<li><strong>协议</strong> : <code>@protocol</code></li>
-<li><code>@class</code> 为了减少依赖关系，让编译速度更快，使用此关键字，可以使编译速度加快</li>
-<li><code>@assign</code>：指定setter方法用简单的赋值，这是默认操作。你可以对标量类型（如int）使用这个属性。你可以想象一个float，它不是一个对象，所以它不能retain、copy。</li>
-<li><code>@retain</code>：指定retain应该在后面的对象上调用，前一个值发送一条release消息。你可以想象一个NSString实例，它是一个对象，而且你可能想要retain它。</li>
-<li><code>@copy</code>：指定应该使用对象的副本（深度复制），前一个值发送一条release消息。基本上像retain，但是没有增加引用计数，是分配一块新的内存来放置它。</li>
-<li><code>@readonly</code>：将只生成getter方法而不生成setter方法（getter方法没有get前缀）。</li>
-<li><code>@readwrite</code>：默认属性，将生成不带额外参数的getter和setter方法（setter方法只有一个参数）。</li>
-<li><code>@atomic</code>：对于对象的默认属性，就是setter/getter生成的方法是一个原子操作。如果有多个线程同时调用setter的话，不会出现某一个线程执行setter全部语句之前，另一个线程开始执行setter的情况，相关于方法头尾加了锁一样。</li>
-<li><code>@nonatomic</code>：不保证setter/getter的原子性，多线程情况下数据可能会有问题。</li>
-</ul>
-<h2 id="类别Category">类别Category</h2><ul>
-<li>大致意思就是为了不修改源代码可以扩充类的功能,这样可以更有利的去修改他人的定的架构<blockquote>
-<p><strong>类别的缺点</strong> : 类不可以声明新的成员变量,而且一旦你定义的方 法与原始类中的方法名称相同,那么原始方法将被隐藏起来,因为不是继承结构,你不能在 类中的方法使用 super 激活原始类的同名方法</p>
-</blockquote>
+<h2 id="线程">线程</h2><p>由于创建进程的代价太高，所以在操作系统中，又出现了线程的概念，简单的说，就是一个进程可以拥有多个线程，每个线程都会共享进程所占用的资源信息，包括虚拟内存，文件资源等等。在这个方面，线程所占用的资源远远小于进程，系统中就可以创建相对数量较多的线程，这些线程共享一个进程所占有的所有资源。在unix操作系统中，线程也是用进程表示的，只不过这些进程可以共享了父进程相关的信息，这里成为轻量级进程。 在线程之间，不仅仅可以通过进程之间的通信方式：信号量，管道，还可以通过共享内存的方式进行通信，在java里面就表现的比较明显，例如两个线程之间可以通过一个实例变量（例如消息队列）进行通信，这种通信方式很高效，毕竟访问内存是非常快的。在调度层面，同一个线程组（共享一个进程）的切换相对比较高效，但是不同线程组之间的切换其实和进程切换效率差不多。</p>
+<p><strong>从上面的分析，也总结以下以下线程的特性</strong></p>
+<ol>
+<li><p>资源占用：一般</p>
 </li>
-</ul>
-<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#import <span class="string">"FrNum.h"</span></span><br><span class="line">@interface FrNum (FrNumExt)</span><br><span class="line">-(void) talk: (NSString*) <span class="keyword">say</span>;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#import <span class="string">"FrNum+FrNumExt.h"</span></span><br><span class="line">@implementation FrNum (FrNumExt)</span><br><span class="line">-(void)talk:(NSString *)<span class="keyword">say</span></span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@<span class="string">" %s say : %s "</span>,<span class="comment">[<span class="comment">[self name]</span> cString]</span>,<span class="comment">[say cString]</span>);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/07/21/object-c/ios_universal_framework安装/">
-                安装iOS-Universal-Framework
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-07-21
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/07/21/object-c/ios_universal_framework安装/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/07/21/object-c/ios_universal_framework安装/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <blockquote>
-<p>iOS-Universal-Framework是一个静态库模板,可以方便的生成静态库</p>
-</blockquote>
-<h2 id="首先下载:_iOS-Universal-Framework">首先下载: <a href="https://github.com/kstenerud/iOS-Universal-Framework" target="_blank" rel="external">iOS-Universal-Framework</a></h2><ul>
-<li><p>找到Real Framework/install.sh安装</p>
+<li><p>线程通信：效率高</p>
 </li>
-<li><p>重启xcode创建静态库</p>
+<li><p>上下文切换：一般</p>
 </li>
-</ul>
-<h3 id="解决:_target_specifies_product_type_‘com-apple-product-type-framework-static’,_but_there’s_no_such_product_type_for_the_‘iphonesimulator’_platform">解决: <strong>target specifies product type ‘com.apple.product-type.framework.static’, but there’s no such product type for the ‘iphonesimulator’ platform</strong></h3><blockquote>
-<p>如果已经安装iOS Universal Framework到Xcode，编译Real Framework时仍然报以上错误，可以按以下办法解决：</p>
-</blockquote>
-<ul>
-<li>方案1：</li>
-</ul>
-<p>拷贝UFW-iOSStaticFramework.xcspec到下面两个目录，覆盖文件</p>
-<p>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/Library/Xcode/Specifications<br>/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Xcode/Specifications</p>
-<ul>
-<li>方案2：</li>
-</ul>
-<p>打开方案1所列的两个目录，给其中的UFW-iOSStaticFramework.xcspec文件添加当前用户的读写权限。<br>上面两个方案，方案1更简单一些。另外，这个问题的本质，就是两个UFW-iOSStaticFramework.xcspec文件的读写权限问题。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/07/15/object-c/api整理/">
-                api整理
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-07-15
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/07/15/object-c/api整理/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/07/15/object-c/api整理/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="NSString">NSString</h2><table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>+(NSString*) stringWithFormat: @””,...</code></td>
-<td>与 NSLog 一样,使用格式化模版格式化字符串。</td>
-</tr>
-<tr>
-<td><code>-(BOOL) isEqualToString: (NSString*) s</code></td>
-<td>比较两个字符串是否相等,与 JAVA 一致的地方是==比较指针,比较对象是否相同要用到 equal 方法。</td>
-</tr>
-<tr>
-<td><code>-(NSComparisonResult) compare: (NSString*) s options: (NSStringCompareOptions) options</code></td>
-<td>这个方法用于详细的比较两个字符串是否相等,譬如:是否忽略大小写等。返回值 NSComparisonResult 为 C 语言的 enum 类型,常用的枚举值为 NSOrderedSame,表示 比较结果相等。第二个参数 NSStringCompareOptions 也是个 enum 类型,常用的枚举值为 NSCaseInsensitiveSearch、NSNumericSearch,分表示忽略大小写、字数是否相等。由于 NSStringCompareOptions 的枚举值都是 2 的指数,所以你可以使用位或运算表示同时具备两 个条件,例如:NSCaseInsensitiveSearch</td>
-<td>NSNumericSearch 表示忽略大小写并且字数相同。</td>
-</tr>
-<tr>
-<td><code>-(BOOL) hasPrefix: (NSString) s</code></td>
-<td>表示字符串是否以参数 s 作为前缀,当然也有 hasSufix 犯法判断后缀。</td>
-</tr>
-<tr>
-<td><code>-(NSRange) rangeOfString: (NSString*) s</code></td>
-<td>判断是否包参数 s,这里返回前面提到过的结构体 NSRange。如果包字符串 s,则 NSRange 的 location 为包的字符串 s 所在的起始位置,length 为长度。如果不包括字符串 s,则 location 为 NSNotFound,length 为 0。</td>
-</tr>
-<tr>
-<td><code>- (NSArray *)componentsSeparatedByString:(NSString *)separator;</code></td>
-<td>将字符串以separator分割,返回数组</td>
-</tr>
-</tbody>
-</table>
-<h3 id="NSMutableString">NSMutableString</h3><blockquote>
-<p>NSString 是长度不可变的字符串,NSMutableString 继承自 NSString,实现了可变字符串。 NSMutableString 一般使用类方法</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>+(NSMutableString*) stringWithCapacity: (int) capacity</code></td>
-<td>进行创建,capacity 指定预先分配的字符串长度</td>
-</tr>
-<tr>
-<td><code>-(NSMutableString*) appendString: (NSString*) s</code></td>
-<td>这与 JAVA 的 StringBuffer 的 append 没什么区别。</td>
-</tr>
-<tr>
-<td><code>-(void) deleteCharactersInRange: (NSRange) range</code></td>
-<td>这个方法删除指定范围的字符串,常与 rangeOfString 方法联用。</td>
-</tr>
-</tbody>
-</table>
-<h2 id="NSArray">NSArray</h2><blockquote>
-<p>Cocoa 使用 NSArray 表示数组,但是它不能存储基本数据类型、enum、struct、nil,只能存 储 Objective-C 的对象。</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>方法名</th>
-<th>解释</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>- (NSString *)componentsJoinedByString:(NSString *)separator;</code></td>
-<td>将数组以separator组合在一起，返回NSString</td>
-</tr>
-</tbody>
-</table>
-<h3 id="NSMutableArray">NSMutableArray</h3><blockquote>
-<p>为可变长数组，相当于Java的list</p>
-</blockquote>
-<h2 id="NSDictionary">NSDictionary</h2><blockquote>
-<p>用于存储key/value的数组，等于java中的map</p>
-</blockquote>
+</ol>
+<h2 id="协程">协程</h2><p>对于进程和线程来说，都是通过操作系统内核进行调度的，是抢占式的，也就是说，进程和线程还没有运行完成，是可以被其他进程或者线程进行抢占的，进程调度这么设计，是完全有道理的，避免由于一个进程无限运行，其他进程无法得到cpu的时间，导致整个系统死机。但是进程之间切换也是很耗时的，但可以考虑，如果保证业务处理会在有限的时间内完成，那么就没有必要采用抢占式调度的机制。同时如果任务永远不会被阻塞（系统必须支持非阻塞IO），那么就可能采取一种简单的调度策略，这种策略就是顺序执行将要处理的任务列表。</p>
+<p>假设采用这种调度方式，就是由一个线程循环处理所有的任务，要想提高性能，就必须满足以下几个条件：</p>
+<ol>
+<li><p><strong>任务执行的时间比较短</strong>.假设任务执行时间都比较长，远远高于线程切换的代价，那完全可以采用单独一个线程进行处理，没有必要采用这种复杂的方案</p>
+</li>
+<li><p><strong>任务所依赖的线程不能被阻塞</strong>.相当于执行任务的线程要被阻塞，相当于每个任务里面不能调用阻塞线程相关的操作，否则后续的任务就无法执行，整体的效率反而比多线程的效率低</p>
+</li>
+<li><p><strong>任务之间是没有依赖的</strong>.任务之间彼此独立，没有依赖关系，也就是说不会涉及到同步和互斥。</p>
+</li>
+</ol>
+<p>这里面会涉及到一个问题，就是这个执行的任务如果调用了非阻塞io，，需要等io完成了，才能进行后续的业务处理。为了解决这种情况，我们必须保存这个任务的上下文，然后跳过这个任务，调度程序会执行下一个任务，等操作系统io完成之后，通知执行线程，那么这个线程会找到当时没有执行完成的任务，继续执行。这里面其实也会涉及到任务的上下文切换，但是这种切换代价很低，完全可以在线程里面实现，不需要调用内核完成切换，避免性能开销。</p>
+<p>以上说的就是一个coroutine机制，这种机制的思路就是在用户层设计一个任务调度任务，这个任务名字就要做协程，比线程更轻量级，协程有很多限制。并不是所有的业务都适合用这种方式来实现。</p>
+<p><strong>可以看出协程的一些特性：</strong></p>
+<ol>
+<li><p>占用资源：很少</p>
+</li>
+<li><p>协程通信：不能同步通信，只能采取异步消息通信，效率高</p>
+</li>
+<li><p>上下文切换：很快</p>
+</li>
+</ol>
+<h2 id="关系图:">关系图:</h2><p><img src="/img/协程/xiecheng.png" alt="image"> </p>
 
         
       
@@ -1234,7 +1461,7 @@ pFun a[<span class="number">5</span>];
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span>
+    <a class="extend prev" rel="prev" href="/page/6/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/8/">&raquo;</a>
   </div>
 
 
@@ -1268,21 +1495,21 @@ pFun a[<span class="number">5</span>];
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">69</span>
+              <span class="site-state-item-count">77</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">52</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

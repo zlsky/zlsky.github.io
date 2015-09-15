@@ -117,6 +117,737 @@
           
           
             
+              <a class="post-title-link" href="/2015/08/24/hadoop/storm常用配置详解/">
+                storm常用配置详解
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-24
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/hadoop/">hadoop</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/24/hadoop/storm常用配置详解/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/24/hadoop/storm常用配置详解/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="storm常见配置">storm常见配置</h1><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#zookeeper</span>服务器列表</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.server</span></span><br><span class="line"></span><br><span class="line"><span class="id">#zookeeper</span>端口</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#storm</span>使用的本地系统目录,存储少量状态信息</span><br><span class="line"><span class="tag">storm</span><span class="class">.local</span><span class="class">.dir</span></span><br><span class="line"></span><br><span class="line">#集群运行模式 <span class="attr_selector">[distributed|local]</span></span><br><span class="line"><span class="tag">storm</span><span class="class">.cluster</span><span class="class">.mode</span> </span><br><span class="line"></span><br><span class="line">#客户端连接<span class="tag">zookeeper</span>超时时间</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.session</span><span class="class">.timeout</span></span><br><span class="line"></span><br><span class="line"><span class="id">#nimbus</span>的服务器地址</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.host</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">task</span>存活的心跳超时时间</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.task</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">supervisor</span>是否存活的心跳超时,如果超时将转移到其它节点上运行</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.supervisor</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#启动时的一个特殊超时设置,由于第一次启动<span class="tag">task</span>需要较长时间,所以第一次会用这个超时时间</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.task</span><span class="class">.launch</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#监控<span class="tag">UI</span>的服务端口</span><br><span class="line"><span class="tag">ui</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#drpc</span>服务器列表,以便<span class="tag">drpcspout</span>知道和谁通讯</span><br><span class="line"><span class="tag">drpc</span><span class="class">.servers</span></span><br><span class="line"></span><br><span class="line"><span class="id">#drpc</span>的端口</span><br><span class="line"><span class="tag">drpc</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#supervisor</span>上能够运行的<span class="tag">workers</span>端口列表</span><br><span class="line"><span class="tag">supervisor</span><span class="class">.slots</span><span class="class">.ports</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">worker</span>是否存活的心跳超时时间,超时了就会重启这个<span class="tag">worker</span>的<span class="tag">jvm</span></span><br><span class="line"><span class="tag">supervisor</span><span class="class">.worker</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#也是第一次启动的心跳超时</span><br><span class="line"><span class="tag">supervisor</span><span class="class">.worker</span><span class="class">.start</span><span class="class">.timeout</span><span class="class">.secs</span></span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/24/hadoop/zookeeper配置/">
+                zookeeper配置详解
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-24
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/hadoop/">hadoop</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/24/hadoop/zookeeper配置/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/24/hadoop/zookeeper配置/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="zookeeper配置详解">zookeeper配置详解</h1><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#  cs通信心跳数. 表示flower和leader,client与follower&amp;leader的心跳检测间隔</span></span><br><span class="line">tickTime=<span class="number">2000</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># lf初始通信时限. 表示初始时 follower与leader同步数据的时间限制.</span></span><br><span class="line">initLimit=<span class="number">10</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># lf同步通信时限.</span></span><br><span class="line">syncLimit=<span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 数据保存目录</span></span><br><span class="line">dataDir=/data/zookeeper</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 日志目录</span></span><br><span class="line">dataLogDir=/data/log/zookeeper</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 客户端连接端口</span></span><br><span class="line">clientPort=<span class="number">2181</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 客户端单IP连接并发数,也就是说一个IP能有多少连接,设置0表示不限制</span></span><br><span class="line">maxClientCnxns=<span class="number">60</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 最大请求堆积数,意思就是请求满了,还能堆多少请求在这上面.</span></span><br><span class="line">globalOutstandingLimit=<span class="number">1000</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 日志预分配的大小,如果每次生成快照的频率过高,这个值不用配置过高.</span></span><br><span class="line"><span class="preprocessor"># 如果把日志放在其它挂载盘上,就默认就好了.</span></span><br><span class="line">perAllocSize=<span class="number">64</span>MB</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 每进行nsapCount次事务日志输出后,触发一次快照,在dataDir下生成文件</span></span><br><span class="line"><span class="preprocessor"># 一般分布式的zookeeper需要随机错开这个值,保证zookeeper不会在同一时间去生成快照</span></span><br><span class="line">snapCount=<span class="number">100000</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 是否提交事务时实时同步到磁盘</span></span><br><span class="line">forceSync=<span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 是否禁止leader读功能,意思就是leader只负责写,不读取,这样会提高性能</span></span><br><span class="line">leaderServes=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 是否记录所有请求的logo,在调试时有用</span></span><br><span class="line">traceFile=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#这个参数指定了清理频率，单位是小时，需要填写一个1或更大的整数，默认是0，表示不开启自己清理功能。</span></span><br><span class="line">autopurge.purgeInterval=<span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#这个参数和上面的参数搭配使用，这个参数指定了需要保留的文件数目。默认是保留3个。</span></span><br><span class="line">autopurge.snapRetainCount=<span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#分布式配置</span></span><br><span class="line">server.1=master:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server.2=node1:<span class="number">2888</span>:<span class="number">3888</span></span><br><span class="line">server.3=node2:<span class="number">2888</span>:<span class="number">3888</span></span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/21/java/java资料收集/">
+                java资料收集
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-21
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/java/">java</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/21/java/java资料收集/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/21/java/java资料收集/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="java资料收集">java资料收集</h1><h2 id="构建工具">构建工具</h2><h3 id="Gradle">Gradle</h3><p><a href="http://benweizhu.github.io/blog/2015/01/31/deep-into-gradle-in-action-1/" target="_blank" rel="external">Gradle深入与实战</a></p>
+<h3 id="mvn仓库">mvn仓库</h3><p><a href="http://mvnrepository.com/" target="_blank" rel="external">http://mvnrepository.com/</a><br><a href="http://search.maven.org/" target="_blank" rel="external">http://search.maven.org/</a></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/20/linux/linux常用命令/">
+                linux常用命令
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-20
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/linux/">linux</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/20/linux/linux常用命令/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/20/linux/linux常用命令/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="linux常用命令">linux常用命令</h1><h3 id="查看当前服务器开了哪些端口">查看当前服务器开了哪些端口</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@master web]# netstat -tunlp&#10;Active Internet connections (only servers)&#10;Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name   &#10;tcp        0      0 127.0.0.1:9000              0.0.0.0:*                   LISTEN      1078/php-fpm        &#10;tcp        0      0 127.0.0.1:9001              0.0.0.0:*                   LISTEN      1082/php-fpm        &#10;tcp        0      0 0.0.0.0:80                  0.0.0.0:*                   LISTEN      1086/nginx          &#10;tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      957/sshd            &#10;tcp        0      0 127.0.0.1:25                0.0.0.0:*                   LISTEN      1047/master         &#10;[root@master web]#</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/19/linux/fastdfs配置/">
+                fastdfs配置及原理
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-19
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/linux/">linux</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/19/linux/fastdfs配置/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/19/linux/fastdfs配置/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="fastdfs配置及原理">fastdfs配置及原理</h1><p>fastdfs是由国人开发,地址: <code>https://github.com/happyfish100/fastdfs</code></p>
+<h2 id="安装及使用">安装及使用</h2><h3 id="2-x安装及使用">2.x安装及使用</h3><p><a href="http://soartju.iteye.com/blog/803477" target="_blank" rel="external">FastDFS安装使用实战一（安装篇）</a><br><a href="http://soartju.iteye.com/blog/803524" target="_blank" rel="external">FastDFS安装使用实战二（配置篇）</a><br><a href="http://soartju.iteye.com/blog/803548" target="_blank" rel="external">FastDFS安装使用实战三（使用篇）</a></p>
+<h3 id="5-x安装及使用">5.x安装及使用</h3><p><a href="http://joelhy.github.io/2015/01/27/FastDFS-v5-06-deploy/" target="_blank" rel="external">fastdfs部署</a></p>
+<h2 id="原理及使用经验">原理及使用经验</h2><p><a href="http://tech.uc.cn/?p=221" target="_blank" rel="external">分布式文件系统FastDFS原理介绍</a><br><a href="http://tech.uc.cn/?p=2579" target="_blank" rel="external">FastDFS使用经验分享</a><br><a href="http://bbs.chinaunix.net/thread-1941456-1-1.html" target="_blank" rel="external">配置文件详解</a><br><a href="http://blog.csdn.net/freewebsys/article/details/45150941" target="_blank" rel="external">安装BUG集合</a></p>
+<h2 id="实际安装中的几个坑">实际安装中的几个坑</h2><ul>
+<li><p>IP段只能用<code>192.168.x.x</code>或是<code>10.x.x.x</code>,不能用<code>172.16?.x.x</code>不然就是尼玛各种问题.</p>
+</li>
+<li><p>记得将源代码中的<code>conf/http.conf</code>和<code>conf/mime.types</code>拷到<code>/etc/fdfs</code>目录下,不然nginx各种假死</p>
+</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/18/hadoop/hadoop权威指南笔记/">
+                hadoop权威指南笔记
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/hadoop/">hadoop</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/18/hadoop/hadoop权威指南笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/18/hadoop/hadoop权威指南笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="hadoop权威指南笔记">hadoop权威指南笔记</h1><h3 id="distcp">distcp</h3><p><code>hadoop distcp hdfs://site1/foo hdfs://site2/bar</code></p>
+<p>site2的hdfs://site2/bar/foo会与hdfs://site1/foo一样.<br>这里是用的map来完成的,并没有reduce</p>
+<p>通过 -m属性来确定有多少个map任务.</p>
+<p>如果两个版本不一样的hdfs复制的话会出现问题,只能用ftp的方式流入文件<br><code>hadoop distcp hftp://site1:50070/foo hdfs://site2/bar</code></p>
+<p>这里的端口由配置<code>dfs.http.address</code>指定</p>
+<p>默认每个节点20个map任务.</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/18/hadoop/hadoop安装/">
+                hadoop安装
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-08-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/hadoop/">hadoop</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/08/18/hadoop/hadoop安装/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/18/hadoop/hadoop安装/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="hadoop安装教程">hadoop安装教程</h1><p><a href="http://blog.csdn.net/andie_guo/article/details/44055613" title="hadoop服务器基础" target="_blank" rel="external">hadoop服务器基础</a></p>
+<p><a href="http://blog.csdn.net/andie_guo/article/details/44055701" title="hadoop单机模式" target="_blank" rel="external">Hadoop之单机模式搭建</a></p>
+<p><a href="http://blog.csdn.net/andie_guo/article/details/44055731" title="Hadoop之伪分布式环境搭建" target="_blank" rel="external">Hadoop之伪分布式环境搭建</a></p>
+<p><a href="http://blog.csdn.net/andie_guo/article/details/44055761" title="Hadoop之完全分布式环境搭建" target="_blank" rel="external">Hadoop之完全分布式环境搭建</a></p>
+<h2 id="hadoop安装的几个坑">hadoop安装的几个坑</h2><h3 id="FileUtil类修改(在windows下会有BUG)">FileUtil类修改(在windows下会有BUG)</h3><p>注释掉以下代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">checkReturnValue</span><span class="params">(<span class="keyword">boolean</span> rv, File p, </span><br><span class="line">                                     FsPermission permission</span><br><span class="line">                                     )</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"> <span class="comment">/*</span><br><span class="line">  if (!rv) &#123;</span><br><span class="line">    throw new IOException("Failed to set permissions of path: " + p + </span><br><span class="line">                          " to " + </span><br><span class="line">                          String.format("%04o", permission.toShort()));</span><br><span class="line">  &#125;*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="关闭hdfs-site-xml里的dfs-permissions">关闭hdfs-site.xml里的dfs.permissions</h3><p>这里是权限检测,ecplise提交作业时会用不同的用户名提交.</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.permissions<span class="tag">&lt;/<span class="title">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">value</span>&gt;</span>false<span class="tag">&lt;/<span class="title">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">description</span>&gt;</span></span><br><span class="line">	If "true", enable permission checking in HDFS.</span><br><span class="line">	If "false", permission checking is turned off,</span><br><span class="line">	but all other behavior is unchanged.</span><br><span class="line">	Switching from one parameter value to the other does not change the mode,</span><br><span class="line">	owner or group of files or directories.</span><br><span class="line">	<span class="tag">&lt;/<span class="title">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="复制配置文件至ecplise里的src下">复制配置文件至ecplise里的src下</h3><p>复制 <code>core-site.xml</code>,<code>hdfs-site.xml</code>,<code>log4j.properties</code></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/06/26/object-c/xcode常用插件/">
+                xcode常用插件
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-06-26
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/ios/">ios</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/06/26/object-c/xcode常用插件/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/26/object-c/xcode常用插件/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="xcode常用插件">xcode常用插件</h1><h2 id="Cocoapods">Cocoapods</h2><h2 id="FuzzyAutocomplete">FuzzyAutocomplete</h2><h2 id="KSimageNamed">KSimageNamed</h2><h2 id="VVDocumenter-Xocde">VVDocumenter-Xocde</h2><h2 id="XcodeColors">XcodeColors</h2><h2 id="RTImageAssets">RTImageAssets</h2>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/06/19/self/项目规划/">
+                未命名
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-06-19
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/06/19/self/项目规划/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/19/self/项目规划/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="项目策划案">项目策划案</h1><h2 id="项目经理应该具备哪些品质">项目经理应该具备哪些品质</h2><h3 id="目标驱动">目标驱动</h3><p>有了目标才有最基本的目标管理和时间管理<br>项目的成功涉及到过程，人和方法工具技术<br>这些目标的过程中总结过去的成功经验和和实践过程<br>时刻明确项目的目标,项目当前状态和自我达成目标的差距.</p>
+<h3 id="与人沟通并协调达成最佳的能力">与人沟通并协调达成最佳的能力</h3><p>知道每个职位的工作职责<br>使用合适的工具连接职位的沟通</p>
+<h3 id="风险意识">风险意识</h3><p>在项目执行过程中以成熟的经验提前预知各种将要发生的问题.<br>成熟的经验让项目前紧后松.</p>
+<h3 id="数据量化">数据量化</h3><p>用数据说话的分析思维.<br>以数据说话让我们从全凭主观经验转变到对事物的客观数据分析上.<br>可以解决在项目决策中一些特殊原因而造成的波动.</p>
+<h3 id="个人看法">个人看法</h3><p>利用有限的时间、资源和人员完成项目.<br>完成一个项目比把一个项目做得完美就重要的多.<br>项目验收的能力要比其它能力都要重要.<br>擅长学习、记录、思考、总结和分享.</p>
+<h3 id="我能回答的问题">我能回答的问题</h3><p>项目的由来，为什么要建立这么一个项目？<br>项目的架构设计，采用什么技术、实现方式、逻辑架构？<br>怎样责任到人？<br>要测试了，有详细的计划吗？<br>测试出的问题，怎么跟踪呢？<br>代码、配置文件、数据库的表结构、数据有清单吗?<br>上线内容是什么？<br>出问题怎么查？有指导手册吗？</p>
+<h2 id="立项初期">立项初期</h2><p>拼着对游戏的热情开发是不行的,因为你不知道市场需要什么,没有对这个产业有一个分析.只知道我要做什么,但是不知道我要做成什么.</p>
+<h3 id="游戏特性分析">游戏特性分析</h3><p>游戏操作性<br>男女用户比例<br>用户群体<br>消费习惯<br>交互方式<br>手机流量</p>
+<h3 id="了解这些游戏的生命周期">了解这些游戏的生命周期</h3><p>导入期<br>发展期<br>稳定期<br>衰退期</p>
+<h3 id="完整的体验完这款游戏">完整的体验完这款游戏</h3><h3 id="定位一种游戏类型">定位一种游戏类型</h3><h2 id="开发">开发</h2><h3 id="按着立项的最终结果定位游戏类型">按着立项的最终结果定位游戏类型</h3><ul>
+<li>对游戏类型所需要的算法做一定的了解</li>
+</ul>
+<h3 id="定位架构">定位架构</h3><ul>
+<li>3D游戏是如何做出来的,从2D的角度去分析然后转成3d.</li>
+<li>现有的美术团队有多少是用maya,3dmax,无鏠的与unity3d做连接,保证对接的流畅.</li>
+<li>在策划上面,其实2d转3d对策划来说并没有什么大的改变,但策划得知道3D的表现形式的优点,善于利用这些优点.</li>
+<li>服务器的tcp服务器,保证服务器的在线稳定性,开服,合服的便携性.</li>
+<li>单元测试</li>
+<li>数值,剧情,玩法等配置文件的定位,无鏠的保证策划</li>
+<li>游戏包的压缩</li>
+</ul>
+<h3 id="删档测试">删档测试</h3><ul>
+<li>测试流程</li>
+<li>数据分析<br>通过统计图表来分析用户,在这里可以看到很多流失,留存等.</li>
+<li>数据调整<br>将数据图表里面流失的点都拿出来对应到游戏里面去,试图去修改这些流失点.继续观察图表,优化出好的成绩</li>
+</ul>
+<h3 id="不删档测试">不删档测试</h3><ul>
+<li>有留存了,就要试图加上付费点</li>
+<li>优化arpu值</li>
+</ul>
+<h3 id="人员的分配">人员的分配</h3>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/06/17/golang/gosublime配置/">
                 mac下sublime配置godef,goimport,gosublime
               </a>
@@ -197,888 +928,11 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/12/self/shadowsocks的安装使用/">
-                shadowsocks的安装使用
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-12
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/linux/">linux</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/12/self/shadowsocks的安装使用/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/12/self/shadowsocks的安装使用/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="shadowsocks的安装使用">shadowsocks的安装使用</h1><h2 id="安装">安装</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install python-setuptools &#38;&#38; easy_install pip&#10;pip install shadowsocks</span><br></pre></td></tr></table></figure>
-<h2 id="配置">配置</h2><p>编辑json文件<code>/etc/shadowsocks.json</code><br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "server":"***.***.***.***",	//你的服务器ip地址</span><br><span class="line">    "server_port":8388,			//监听端口</span><br><span class="line">    "local_address": "127.0.0.1", //本地监听的 IP 地址</span><br><span class="line">    "local_port":1080, //本地端端口</span><br><span class="line">    "password":"password",//用来加密的密码</span><br><span class="line">    "timeout":300,//超时时间（秒）</span><br><span class="line">    "method":"aes-256-cfb",//加密方法，可选择 “bf-cfb”, “aes-256-cfb”, “des-cfb”, “rc4″, 等等。默认是一种不安全的加密，推荐用 “aes-256-cfb”</span><br><span class="line">    "fast_open": false	//默认false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>开启:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssserver -c /etc/shadowsocks.json -d start</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>记得iptables开启8388</p>
-</blockquote>
-<h2 id="客户端配置">客户端配置</h2><p><a href="https://github.com/shadowsocks/shadowsocks-csharp" title="windows" target="_blank" rel="external">下载windows</a><br><a href="https://github.com/shadowsocks/shadowsocks-iOS/wiki/Shadowsocks-for-OSX-Help" title="mac" target="_blank" rel="external">下载mac</a></p>
-<p>安装设置好对应的密码和端口就可以了.</p>
-<p><img src="/img/shadowsocks/003.png" alt="设置端口 for windows"></p>
-<h2 id="chrome安装">chrome安装</h2><p><a href="https://github.com/FelisCatus/SwitchyOmega" target="_blank" rel="external">chrome插件</a><br><img src="/img/shadowsocks/002.jpg" alt="chrome商店"></p>
-<p>设置好情景模式中的代理服务器</p>
-<p><img src="/img/shadowsocks/001.png" alt="设置情景模式"></p>
-<p>设置好autoswitch的规则:<code>https://autoproxy-gfwlist.googlecode.com/svn/trunk/gfwlist.txt</code></p>
-<p><img src="/img/shadowsocks/004.png" alt="设置情景模式"></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/12/cpp/编译原理/">
-                编译原理简单概述
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-12
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/12/cpp/编译原理/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/12/cpp/编译原理/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="编译原理简单概述">编译原理简单概述</h1><h2 id="hello_world">hello world</h2><p>我们先从一个最简单的hello world开始吧.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;stdio.h&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"hello world\n"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们在linux上<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">shell&#62; gcc hello.c&#10;shell&#62; ./a.out&#10;&#10;output: Hello World</span><br></pre></td></tr></table></figure></p>
-<p>事实上这个过程可以分解为4个步骤,分别是预处理(Prepressing),编译(Compilation),汇编(Assembly)和链接.</p>
-<h2 id="预编译">预编译</h2><p>在预编译过程中主要是处理预处理指令,包括以下:</p>
-<ul>
-<li>将所有的”#define”删除,并且展开所有的宏定义.</li>
-<li>处理所有的条件预编译指令,比如”#if”,”#elif”,”#else”,”#endif”.</li>
-<li>处理”#include”预编译指令,将被包含的文件插入到该预编译指令的位置,这是一个递归过程,因为include一个文件里面可以再引入另一个文件.</li>
-<li>删除所有的注释,”//“,和”/**/“.</li>
-<li>添加行号文件名标识,比如#2”hello.c”2,以便于编译时编译器产生调试用的行号及其它信息.</li>
-<li>保留所有的#pragma编译器指令,因为编译器需要使用它们.</li>
-</ul>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -E hello.c -o hello.i</span><br></pre></td></tr></table></figure>
-<p>结果如下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br><span class="line">637</span><br><span class="line">638</span><br><span class="line">639</span><br><span class="line">640</span><br><span class="line">641</span><br><span class="line">642</span><br><span class="line">643</span><br><span class="line">644</span><br><span class="line">645</span><br><span class="line">646</span><br><span class="line">647</span><br><span class="line">648</span><br><span class="line">649</span><br><span class="line">650</span><br><span class="line">651</span><br><span class="line">652</span><br><span class="line">653</span><br><span class="line">654</span><br><span class="line">655</span><br><span class="line">656</span><br><span class="line">657</span><br><span class="line">658</span><br><span class="line">659</span><br><span class="line">660</span><br><span class="line">661</span><br><span class="line">662</span><br><span class="line">663</span><br><span class="line">664</span><br><span class="line">665</span><br><span class="line">666</span><br><span class="line">667</span><br><span class="line">668</span><br><span class="line">669</span><br><span class="line">670</span><br><span class="line">671</span><br><span class="line">672</span><br><span class="line">673</span><br><span class="line">674</span><br><span class="line">675</span><br><span class="line">676</span><br><span class="line">677</span><br><span class="line">678</span><br><span class="line">679</span><br><span class="line">680</span><br><span class="line">681</span><br><span class="line">682</span><br><span class="line">683</span><br><span class="line">684</span><br><span class="line">685</span><br><span class="line">686</span><br><span class="line">687</span><br><span class="line">688</span><br><span class="line">689</span><br><span class="line">690</span><br><span class="line">691</span><br><span class="line">692</span><br><span class="line">693</span><br><span class="line">694</span><br><span class="line">695</span><br><span class="line">696</span><br><span class="line">697</span><br><span class="line">698</span><br><span class="line">699</span><br><span class="line">700</span><br><span class="line">701</span><br><span class="line">702</span><br><span class="line">703</span><br><span class="line">704</span><br><span class="line">705</span><br><span class="line">706</span><br><span class="line">707</span><br><span class="line">708</span><br><span class="line">709</span><br><span class="line">710</span><br><span class="line">711</span><br><span class="line">712</span><br><span class="line">713</span><br><span class="line">714</span><br><span class="line">715</span><br><span class="line">716</span><br><span class="line">717</span><br><span class="line">718</span><br><span class="line">719</span><br><span class="line">720</span><br><span class="line">721</span><br><span class="line">722</span><br><span class="line">723</span><br><span class="line">724</span><br><span class="line">725</span><br><span class="line">726</span><br><span class="line">727</span><br><span class="line">728</span><br><span class="line">729</span><br><span class="line">730</span><br><span class="line">731</span><br><span class="line">732</span><br><span class="line">733</span><br><span class="line">734</span><br><span class="line">735</span><br><span class="line">736</span><br><span class="line">737</span><br><span class="line">738</span><br><span class="line">739</span><br><span class="line">740</span><br><span class="line">741</span><br><span class="line">742</span><br><span class="line">743</span><br><span class="line">744</span><br><span class="line">745</span><br><span class="line">746</span><br><span class="line">747</span><br><span class="line">748</span><br><span class="line">749</span><br><span class="line">750</span><br><span class="line">751</span><br><span class="line">752</span><br><span class="line">753</span><br><span class="line">754</span><br><span class="line">755</span><br><span class="line">756</span><br><span class="line">757</span><br><span class="line">758</span><br><span class="line">759</span><br><span class="line">760</span><br><span class="line">761</span><br><span class="line">762</span><br><span class="line">763</span><br><span class="line">764</span><br><span class="line">765</span><br><span class="line">766</span><br><span class="line">767</span><br><span class="line">768</span><br><span class="line">769</span><br><span class="line">770</span><br><span class="line">771</span><br><span class="line">772</span><br><span class="line">773</span><br><span class="line">774</span><br><span class="line">775</span><br><span class="line">776</span><br><span class="line">777</span><br><span class="line">778</span><br><span class="line">779</span><br><span class="line">780</span><br><span class="line">781</span><br><span class="line">782</span><br><span class="line">783</span><br><span class="line">784</span><br><span class="line">785</span><br><span class="line">786</span><br><span class="line">787</span><br><span class="line">788</span><br><span class="line">789</span><br><span class="line">790</span><br><span class="line">791</span><br><span class="line">792</span><br><span class="line">793</span><br><span class="line">794</span><br><span class="line">795</span><br><span class="line">796</span><br><span class="line">797</span><br><span class="line">798</span><br><span class="line">799</span><br><span class="line">800</span><br><span class="line">801</span><br><span class="line">802</span><br><span class="line">803</span><br><span class="line">804</span><br><span class="line">805</span><br><span class="line">806</span><br><span class="line">807</span><br><span class="line">808</span><br><span class="line">809</span><br><span class="line">810</span><br><span class="line">811</span><br><span class="line">812</span><br><span class="line">813</span><br><span class="line">814</span><br><span class="line">815</span><br><span class="line">816</span><br><span class="line">817</span><br><span class="line">818</span><br><span class="line">819</span><br><span class="line">820</span><br><span class="line">821</span><br><span class="line">822</span><br><span class="line">823</span><br><span class="line">824</span><br><span class="line">825</span><br><span class="line">826</span><br><span class="line">827</span><br><span class="line">828</span><br><span class="line">829</span><br><span class="line">830</span><br><span class="line">831</span><br><span class="line">832</span><br><span class="line">833</span><br><span class="line">834</span><br><span class="line">835</span><br><span class="line">836</span><br><span class="line">837</span><br><span class="line">838</span><br><span class="line">839</span><br><span class="line">840</span><br><span class="line">841</span><br><span class="line">842</span><br><span class="line">843</span><br><span class="line">844</span><br><span class="line">845</span><br><span class="line">846</span><br><span class="line">847</span><br><span class="line">848</span><br><span class="line">849</span><br><span class="line">850</span><br><span class="line">851</span><br><span class="line">852</span><br><span class="line">853</span><br><span class="line">854</span><br><span class="line">855</span><br><span class="line">856</span><br><span class="line">857</span><br><span class="line">858</span><br><span class="line">859</span><br><span class="line">860</span><br><span class="line">861</span><br><span class="line">862</span><br><span class="line">863</span><br><span class="line">864</span><br><span class="line">865</span><br><span class="line">866</span><br><span class="line">867</span><br><span class="line">868</span><br><span class="line">869</span><br><span class="line">870</span><br><span class="line">871</span><br><span class="line">872</span><br><span class="line">873</span><br><span class="line">874</span><br><span class="line">875</span><br><span class="line">876</span><br><span class="line">877</span><br><span class="line">878</span><br><span class="line">879</span><br><span class="line">880</span><br><span class="line">881</span><br><span class="line">882</span><br><span class="line">883</span><br><span class="line">884</span><br><span class="line">885</span><br><span class="line">886</span><br><span class="line">887</span><br><span class="line">888</span><br><span class="line">889</span><br><span class="line">890</span><br><span class="line">891</span><br><span class="line">892</span><br><span class="line">893</span><br><span class="line">894</span><br><span class="line">895</span><br><span class="line">896</span><br><span class="line">897</span><br><span class="line">898</span><br><span class="line">899</span><br><span class="line">900</span><br><span class="line">901</span><br><span class="line">902</span><br><span class="line">903</span><br><span class="line">904</span><br><span class="line">905</span><br><span class="line">906</span><br><span class="line">907</span><br><span class="line">908</span><br><span class="line">909</span><br><span class="line">910</span><br><span class="line">911</span><br><span class="line">912</span><br><span class="line">913</span><br><span class="line">914</span><br><span class="line">915</span><br><span class="line">916</span><br><span class="line">917</span><br><span class="line">918</span><br><span class="line">919</span><br><span class="line">920</span><br><span class="line">921</span><br><span class="line">922</span><br><span class="line">923</span><br><span class="line">924</span><br><span class="line">925</span><br><span class="line">926</span><br><span class="line">927</span><br><span class="line">928</span><br><span class="line">929</span><br><span class="line">930</span><br><span class="line">931</span><br><span class="line">932</span><br><span class="line">933</span><br><span class="line">934</span><br><span class="line">935</span><br><span class="line">936</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor"># 1 "main.c"</span></span><br><span class="line"><span class="preprocessor"># 1 "&lt;built-in&gt;"</span></span><br><span class="line"><span class="preprocessor"># 1 "&lt;command <span class="keyword">line</span>&gt;"</span></span><br><span class="line"><span class="preprocessor"># 1 "main.c"</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/stdio.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 28 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/features.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 329 "/usr/include/features.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/sys/cdefs.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 313 "/usr/include/sys/cdefs.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/wordsize.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 314 "/usr/include/sys/cdefs.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 330 "/usr/include/features.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 352 "/usr/include/features.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/gnu/stubs.h" 1 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/wordsize.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 5 "/usr/include/gnu/stubs.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/gnu/stubs-64.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 10 "/usr/include/gnu/stubs.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 353 "/usr/include/features.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 29 "/usr/include/stdio.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 214 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</span><br><span class="line"><span class="preprocessor"># 35 "/usr/include/stdio.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/types.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 28 "/usr/include/bits/types.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/wordsize.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 29 "/usr/include/bits/types.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 32 "/usr/include/bits/types.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> __u_char;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">short</span> <span class="keyword">int</span> __u_short;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> __u_int;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> __u_long;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">char</span> <span class="keyword">__int8_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">char</span> <span class="keyword">__uint8_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">short</span> <span class="keyword">int</span> <span class="keyword">__int16_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">short</span> <span class="keyword">int</span> <span class="keyword">__uint16_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">int</span> <span class="keyword">__int32_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__uint32_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__int64_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__uint64_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__quad_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__u_quad_t</span>;</span><br><span class="line"><span class="preprocessor"># 134 "/usr/include/bits/types.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/typesizes.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 135 "/usr/include/bits/types.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__dev_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__uid_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__gid_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__ino_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__ino64_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__mode_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__nlink_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__off_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__off64_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> <span class="keyword">__pid_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123; <span class="keyword">int</span> __val[<span class="number">2</span>]; &#125; <span class="keyword">__fsid_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__clock_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__rlim_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__rlim64_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__id_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__time_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__useconds_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__suseconds_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> <span class="keyword">__daddr_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__swblk_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> <span class="keyword">__key_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> <span class="keyword">__clockid_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> * <span class="keyword">__timer_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__blksize_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__blkcnt_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__blkcnt64_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__fsblkcnt_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__fsblkcnt64_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__fsfilcnt_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__fsfilcnt64_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__ssize_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">__off64_t</span> <span class="keyword">__loff_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">__quad_t</span> *<span class="keyword">__qaddr_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">char</span> *<span class="keyword">__caddr_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="keyword">__intptr_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">__socklen_t</span>;</span><br><span class="line"><span class="preprocessor"># 37 "/usr/include/stdio.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _IO_FILE FILE;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 62 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _IO_FILE __FILE;</span><br><span class="line"><span class="preprocessor"># 72 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/libio.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 32 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/_G_config.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 14 "/usr/include/_G_config.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 326 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> <span class="keyword">wchar_t</span>;</span><br><span class="line"><span class="preprocessor"># 355 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">wint_t</span>;</span><br><span class="line"><span class="preprocessor"># 15 "/usr/include/_G_config.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 24 "/usr/include/_G_config.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/wchar.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 48 "/usr/include/wchar.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 49 "/usr/include/wchar.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/wchar.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 51 "/usr/include/wchar.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 76 "/usr/include/wchar.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">int</span> __count;</span><br><span class="line">  <span class="keyword">union</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">wint_t</span> __wch;</span><br><span class="line">    <span class="keyword">char</span> __wchb[<span class="number">4</span>];</span><br><span class="line">  &#125; __value;</span><br><span class="line">&#125; <span class="keyword">__mbstate_t</span>;</span><br><span class="line"><span class="preprocessor"># 25 "/usr/include/_G_config.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">__off_t</span> __pos;</span><br><span class="line">  <span class="keyword">__mbstate_t</span> __state;</span><br><span class="line">&#125; _G<span class="keyword">_fpos_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">__off64_t</span> __pos;</span><br><span class="line">  <span class="keyword">__mbstate_t</span> __state;</span><br><span class="line">&#125; _G<span class="keyword">_fpos64_t</span>;</span><br><span class="line"><span class="preprocessor"># 44 "/usr/include/_G_config.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/gconv.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 28 "/usr/include/gconv.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/wchar.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 48 "/usr/include/wchar.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 49 "/usr/include/wchar.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 29 "/usr/include/gconv.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stddef.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 32 "/usr/include/gconv.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span></span><br><span class="line">&#123;</span><br><span class="line">  __GCONV_OK = <span class="number">0</span>,</span><br><span class="line">  __GCONV_NOCONV,</span><br><span class="line">  __GCONV_NODB,</span><br><span class="line">  __GCONV_NOMEM,</span><br><span class="line"></span><br><span class="line">  __GCONV_EMPTY_INPUT,</span><br><span class="line">  __GCONV_FULL_OUTPUT,</span><br><span class="line">  __GCONV_ILLEGAL_INPUT,</span><br><span class="line">  __GCONV_INCOMPLETE_INPUT,</span><br><span class="line"></span><br><span class="line">  __GCONV_ILLEGAL_DESCRIPTOR,</span><br><span class="line">  __GCONV_INTERNAL_ERROR</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span></span><br><span class="line">&#123;</span><br><span class="line">  __GCONV_IS_LAST = <span class="number">0x0001</span>,</span><br><span class="line">  __GCONV_IGNORE_ERRORS = <span class="number">0x0002</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __gconv_step;</span><br><span class="line"><span class="keyword">struct</span> __gconv_step_data;</span><br><span class="line"><span class="keyword">struct</span> __gconv_loaded_object;</span><br><span class="line"><span class="keyword">struct</span> <span class="keyword">__gconv_t</span>rans_data;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*__gconv_fct)</span> <span class="params">(<span class="keyword">struct</span> __gconv_step *, <span class="keyword">struct</span> __gconv_step_data *,</span><br><span class="line">       __const <span class="keyword">unsigned</span> <span class="keyword">char</span> **, __const <span class="keyword">unsigned</span> <span class="keyword">char</span> *,</span><br><span class="line">       <span class="keyword">unsigned</span> <span class="keyword">char</span> **, size_t *, <span class="keyword">int</span>, <span class="keyword">int</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">wint_t</span> <span class="params">(*__gconv_btowc_fct)</span> <span class="params">(<span class="keyword">struct</span> __gconv_step *, <span class="keyword">unsigned</span> <span class="keyword">char</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*__gconv_init_fct)</span> <span class="params">(<span class="keyword">struct</span> __gconv_step *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*__gconv_end_fct)</span> <span class="params">(<span class="keyword">struct</span> __gconv_step *)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*__gconv_trans_fct)</span> <span class="params">(<span class="keyword">struct</span> __gconv_step *,</span><br><span class="line">      <span class="keyword">struct</span> __gconv_step_data *, <span class="keyword">void</span> *,</span><br><span class="line">      __const <span class="keyword">unsigned</span> <span class="keyword">char</span> *,</span><br><span class="line">      __const <span class="keyword">unsigned</span> <span class="keyword">char</span> **,</span><br><span class="line">      __const <span class="keyword">unsigned</span> <span class="keyword">char</span> *, <span class="keyword">unsigned</span> <span class="keyword">char</span> **,</span><br><span class="line">      size_t *)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*__gconv_trans_context_fct)</span> <span class="params">(<span class="keyword">void</span> *, __const <span class="keyword">unsigned</span> <span class="keyword">char</span> *,</span><br><span class="line">       __const <span class="keyword">unsigned</span> <span class="keyword">char</span> *,</span><br><span class="line">       <span class="keyword">unsigned</span> <span class="keyword">char</span> *, <span class="keyword">unsigned</span> <span class="keyword">char</span> *)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*__gconv_trans_query_fct)</span> <span class="params">(__const <span class="keyword">char</span> *, __const <span class="keyword">char</span> ***,</span><br><span class="line">     size_t *)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">int</span> <span class="params">(*__gconv_trans_init_fct)</span> <span class="params">(<span class="keyword">void</span> **, <span class="keyword">const</span> <span class="keyword">char</span> *)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">void</span> <span class="params">(*__gconv_trans_end_fct)</span> <span class="params">(<span class="keyword">void</span> *)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> <span class="keyword">__gconv_t</span>rans_data</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">__gconv_t</span>rans_fct <span class="keyword">__t</span>rans_fct;</span><br><span class="line">  <span class="keyword">__gconv_t</span>rans_context_fct <span class="keyword">__t</span>rans_context_fct;</span><br><span class="line">  <span class="keyword">__gconv_t</span>rans_end_fct <span class="keyword">__t</span>rans_end_fct;</span><br><span class="line">  <span class="keyword">void</span> *__data;</span><br><span class="line">  <span class="keyword">struct</span> <span class="keyword">__gconv_t</span>rans_data *__next;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __gconv_step</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">struct</span> __gconv_loaded_object *__shlib_handle;</span><br><span class="line">  __const <span class="keyword">char</span> *__modname;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> __counter;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">char</span> *__from_name;</span><br><span class="line">  <span class="keyword">char</span> *<span class="keyword">__t</span>o_name;</span><br><span class="line"></span><br><span class="line">  __gconv_fct __fct;</span><br><span class="line">  __gconv_btowc_fct __btowc_fct;</span><br><span class="line">  __gconv_init_fct __init_fct;</span><br><span class="line">  __gconv_end_fct __end_fct;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> __min_needed_from;</span><br><span class="line">  <span class="keyword">int</span> __max_needed_from;</span><br><span class="line">  <span class="keyword">int</span> <span class="keyword">__min_needed_t</span>o;</span><br><span class="line">  <span class="keyword">int</span> <span class="keyword">__max_needed_t</span>o;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> __stateful;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> *__data;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> __gconv_step_data</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> *__outbuf;</span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">char</span> *__outbufend;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> __flags;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> __invocation_counter;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> __internal_use;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">__mbstate_t</span> *__statep;</span><br><span class="line">  <span class="keyword">__mbstate_t</span> __state;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">struct</span> <span class="keyword">__gconv_t</span>rans_data *<span class="keyword">__t</span>rans;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> __gconv_info</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">size_t</span> __nsteps;</span><br><span class="line">  <span class="keyword">struct</span> __gconv_step *__steps;</span><br><span class="line">  __extension__ <span class="keyword">struct</span> __gconv_step_data __data [];</span><br><span class="line">&#125; *<span class="keyword">__gconv_t</span>;</span><br><span class="line"><span class="preprocessor"># 45 "/usr/include/_G_config.h" 2 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">union</span></span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">struct</span> __gconv_info __cd;</span><br><span class="line">  <span class="keyword">struct</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">struct</span> __gconv_info __cd;</span><br><span class="line">    <span class="keyword">struct</span> __gconv_step_data __data;</span><br><span class="line">  &#125; __combined;</span><br><span class="line">&#125; _G<span class="keyword">_iconv_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> _G<span class="keyword">_int16_t</span> __attribute__ ((__mode__ (__HI__)));</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> _G<span class="keyword">_int32_t</span> __attribute__ ((__mode__ (__SI__)));</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> _G<span class="keyword">_uint16_t</span> __attribute__ ((__mode__ (__HI__)));</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> _G<span class="keyword">_uint32_t</span> __attribute__ ((__mode__ (__SI__)));</span><br><span class="line"><span class="preprocessor"># 33 "/usr/include/libio.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 53 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 43 "/usr/lib/gcc/x86_64-redhat-linux/4.1.2/include/stdarg.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> __builtin_va_list __gnuc_va_list;</span><br><span class="line"><span class="preprocessor"># 54 "/usr/include/libio.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 167 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">struct</span> _IO<span class="keyword">_jump_t</span>; <span class="keyword">struct</span> _IO_FILE;</span><br><span class="line"><span class="preprocessor"># 177 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> _IO<span class="keyword">_lock_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> _IO_marker &#123;</span><br><span class="line">  <span class="keyword">struct</span> _IO_marker *_next;</span><br><span class="line">  <span class="keyword">struct</span> _IO_FILE *_sbuf;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> _pos;</span><br><span class="line"><span class="preprocessor"># 200 "/usr/include/libio.h" 3 4</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> __codecvt_result</span><br><span class="line">&#123;</span><br><span class="line">  __codecvt_ok,</span><br><span class="line">  __codecvt_partial,</span><br><span class="line">  __codecvt_error,</span><br><span class="line">  __codecvt_noconv</span><br><span class="line">&#125;;</span><br><span class="line"><span class="preprocessor"># 268 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">struct</span> _IO_FILE &#123;</span><br><span class="line">  <span class="keyword">int</span> _flags;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">char</span>* _IO_read_ptr;</span><br><span class="line">  <span class="keyword">char</span>* _IO_read_end;</span><br><span class="line">  <span class="keyword">char</span>* _IO_read_base;</span><br><span class="line">  <span class="keyword">char</span>* _IO_write_base;</span><br><span class="line">  <span class="keyword">char</span>* _IO_write_ptr;</span><br><span class="line">  <span class="keyword">char</span>* _IO_write_end;</span><br><span class="line">  <span class="keyword">char</span>* _IO_buf_base;</span><br><span class="line">  <span class="keyword">char</span>* _IO_buf_end;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">char</span> *_IO_save_base;</span><br><span class="line">  <span class="keyword">char</span> *_IO_backup_base;</span><br><span class="line">  <span class="keyword">char</span> *_IO_save_end;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">struct</span> _IO_marker *_markers;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">struct</span> _IO_FILE *_chain;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> _fileno;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> _flags2;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">__off_t</span> _old_offset;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="keyword">unsigned</span> <span class="keyword">short</span> _cur_column;</span><br><span class="line">  <span class="keyword">signed</span> <span class="keyword">char</span> _vtable_offset;</span><br><span class="line">  <span class="keyword">char</span> _shortbuf[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  _IO<span class="keyword">_lock_t</span> *_lock;</span><br><span class="line"><span class="preprocessor"># 316 "/usr/include/libio.h" 3 4</span></span><br><span class="line">  <span class="keyword">__off64_t</span> _offset;</span><br><span class="line"><span class="preprocessor"># 325 "/usr/include/libio.h" 3 4</span></span><br><span class="line">  <span class="keyword">void</span> *__pad1;</span><br><span class="line">  <span class="keyword">void</span> *__pad2;</span><br><span class="line">  <span class="keyword">void</span> *__pad3;</span><br><span class="line">  <span class="keyword">void</span> *__pad4;</span><br><span class="line">  <span class="keyword">size_t</span> __pad5;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> _mode;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">char</span> _unused2[<span class="number">15</span> * <span class="keyword">sizeof</span> (<span class="keyword">int</span>) - <span class="number">4</span> * <span class="keyword">sizeof</span> (<span class="keyword">void</span> *) - <span class="keyword">sizeof</span> (<span class="keyword">size_t</span>)];</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _IO_FILE _IO_FILE;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> _IO_FILE_plus;</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> _IO_FILE_plus _IO_2_1_stdin_;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> _IO_FILE_plus _IO_2_1_stdout_;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> _IO_FILE_plus _IO_2_1_stderr_;</span><br><span class="line"><span class="preprocessor"># 361 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">__ssize_t</span> __io_read_fn (<span class="keyword">void</span> *__cookie, <span class="keyword">char</span> *__buf, <span class="keyword">size_t</span> __nbytes);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">__ssize_t</span> __io_write_fn (<span class="keyword">void</span> *__cookie, __const <span class="keyword">char</span> *__buf,</span><br><span class="line">     <span class="keyword">size_t</span> __n);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> __io_seek_fn (<span class="keyword">void</span> *__cookie, <span class="keyword">__off64_t</span> *__pos, <span class="keyword">int</span> __w);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> __io_close_fn (<span class="keyword">void</span> *__cookie);</span><br><span class="line"><span class="preprocessor"># 413 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> __underflow (_IO_FILE *);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> __uflow (_IO_FILE *);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> __overflow (_IO_FILE *, <span class="keyword">int</span>);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">wint_t</span> __wunderflow (_IO_FILE *);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">wint_t</span> __wuflow (_IO_FILE *);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">wint_t</span> __woverflow (_IO_FILE *, <span class="keyword">wint_t</span>);</span><br><span class="line"><span class="preprocessor"># 451 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_getc (_IO_FILE *__fp);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_putc (<span class="keyword">int</span> __c, _IO_FILE *__fp);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_feof (_IO_FILE *__fp) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_ferror (_IO_FILE *__fp) __attribute__ ((__nothrow__));</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_peekc_locked (_IO_FILE *__fp);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">void</span> _IO_flockfile (_IO_FILE *) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">void</span> _IO_funlockfile (_IO_FILE *) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_ftrylockfile (_IO_FILE *) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="preprocessor"># 481 "/usr/include/libio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_vfscanf (_IO_FILE * __restrict, <span class="keyword">const</span> <span class="keyword">char</span> * __restrict,</span><br><span class="line">   __gnuc_va_list, <span class="keyword">int</span> *__restrict);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> _IO_vfprintf (_IO_FILE *__restrict, <span class="keyword">const</span> <span class="keyword">char</span> *__restrict,</span><br><span class="line">    __gnuc_va_list);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">__ssize_t</span> _IO_padn (_IO_FILE *, <span class="keyword">int</span>, <span class="keyword">__ssize_t</span>);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">size_t</span> _IO_sgetn (_IO_FILE *, <span class="keyword">void</span> *, <span class="keyword">size_t</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">__off64_t</span> _IO_seekoff (_IO_FILE *, <span class="keyword">__off64_t</span>, <span class="keyword">int</span>, <span class="keyword">int</span>);</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">__off64_t</span> _IO_seekpos (_IO_FILE *, <span class="keyword">__off64_t</span>, <span class="keyword">int</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">void</span> _IO_free_backup_area (_IO_FILE *) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="preprocessor"># 73 "/usr/include/stdio.h" 2 3 4</span></span><br><span class="line"><span class="preprocessor"># 86 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> _G<span class="keyword">_fpos_t</span> <span class="keyword">fpos_t</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 138 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/stdio_lim.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 139 "/usr/include/stdio.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> _IO_FILE *stdin;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> _IO_FILE *stdout;</span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">struct</span> _IO_FILE *stderr;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">remove</span> <span class="params">(__const <span class="keyword">char</span> *__filename)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">rename</span> <span class="params">(__const <span class="keyword">char</span> *__old, __const <span class="keyword">char</span> *__new)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> FILE *tmpfile (<span class="keyword">void</span>);</span><br><span class="line"><span class="preprocessor"># 185 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *tmpnam (<span class="keyword">char</span> *__s) __attribute__ ((__nothrow__));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *tmpnam_r (<span class="keyword">char</span> *__s) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="preprocessor"># 203 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *tempnam (__const <span class="keyword">char</span> *__dir, __const <span class="keyword">char</span> *__pfx)</span><br><span class="line">     __attribute__ ((__nothrow__)) __attribute__ ((__malloc__));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fclose</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fflush</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 228 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fflush_unlocked</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"><span class="preprocessor"># 242 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> FILE *fopen (__const <span class="keyword">char</span> *__restrict __filename,</span><br><span class="line">      __const <span class="keyword">char</span> *__restrict __modes);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> FILE *freopen (__const <span class="keyword">char</span> *__restrict __filename,</span><br><span class="line">        __const <span class="keyword">char</span> *__restrict __modes,</span><br><span class="line">        FILE *__restrict __stream);</span><br><span class="line"><span class="preprocessor"># 269 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 280 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> FILE *fdopen (<span class="keyword">int</span> __fd, __const <span class="keyword">char</span> *__modes) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="preprocessor"># 300 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">setbuf</span> <span class="params">(FILE *__restrict __stream, <span class="keyword">char</span> *__restrict __buf)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">setvbuf</span> <span class="params">(FILE *__restrict __stream, <span class="keyword">char</span> *__restrict __buf,</span><br><span class="line">      <span class="keyword">int</span> __modes, size_t __n)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">setbuffer</span> <span class="params">(FILE *__restrict __stream, <span class="keyword">char</span> *__restrict __buf,</span><br><span class="line">         size_t __size)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">setlinebuf</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fprintf</span> <span class="params">(FILE *__restrict __stream,</span><br><span class="line">      __const <span class="keyword">char</span> *__restrict __format, ...)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">printf</span> <span class="params">(__const <span class="keyword">char</span> *__restrict __format, ...)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">sprintf</span> <span class="params">(<span class="keyword">char</span> *__restrict __s,</span><br><span class="line">      __const <span class="keyword">char</span> *__restrict __format, ...)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">vfprintf</span> <span class="params">(FILE *__restrict __s, __const <span class="keyword">char</span> *__restrict __format,</span><br><span class="line">       __gnuc_va_list __arg)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">vprintf</span> <span class="params">(__const <span class="keyword">char</span> *__restrict __format, __gnuc_va_list __arg)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">vsprintf</span> <span class="params">(<span class="keyword">char</span> *__restrict __s, __const <span class="keyword">char</span> *__restrict __format,</span><br><span class="line">       __gnuc_va_list __arg)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">snprintf</span> <span class="params">(<span class="keyword">char</span> *__restrict __s, size_t __maxlen,</span><br><span class="line">       __const <span class="keyword">char</span> *__restrict __format, ...)</span></span><br><span class="line">     __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) __<span class="title">attribute__</span> <span class="params">((__format__ (__printf__, 3, 4)</span>))</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">vsnprintf</span> <span class="params">(<span class="keyword">char</span> *__restrict __s, size_t __maxlen,</span><br><span class="line">        __const <span class="keyword">char</span> *__restrict __format, __gnuc_va_list __arg)</span></span><br><span class="line">     __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) __<span class="title">attribute__</span> <span class="params">((__format__ (__printf__, 3, 0)</span>))</span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 394 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fscanf</span> <span class="params">(FILE *__restrict __stream,</span><br><span class="line">     __const <span class="keyword">char</span> *__restrict __format, ...)</span> </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">scanf</span> <span class="params">(__const <span class="keyword">char</span> *__restrict __format, ...)</span> </span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">sscanf</span> <span class="params">(__const <span class="keyword">char</span> *__restrict __s,</span><br><span class="line">     __const <span class="keyword">char</span> *__restrict __format, ...)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 436 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fgetc</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">getc</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">getchar</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 460 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">getc_unlocked</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">getchar_unlocked</span> <span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"><span class="preprocessor"># 471 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fgetc_unlocked</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fputc</span> <span class="params">(<span class="keyword">int</span> __c, FILE *__stream)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">putc</span> <span class="params">(<span class="keyword">int</span> __c, FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">putchar</span> <span class="params">(<span class="keyword">int</span> __c)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 504 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fputc_unlocked</span> <span class="params">(<span class="keyword">int</span> __c, FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">putc_unlocked</span> <span class="params">(<span class="keyword">int</span> __c, FILE *__stream)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">putchar_unlocked</span> <span class="params">(<span class="keyword">int</span> __c)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">getw</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">putw</span> <span class="params">(<span class="keyword">int</span> __w, FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *fgets (<span class="keyword">char</span> *__restrict __s, <span class="keyword">int</span> __n, FILE *__restrict __stream)</span><br><span class="line">     ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *gets (<span class="keyword">char</span> *__s) ;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 585 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fputs</span> <span class="params">(__const <span class="keyword">char</span> *__restrict __s, FILE *__restrict __stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">puts</span> <span class="params">(__const <span class="keyword">char</span> *__s)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">ungetc</span> <span class="params">(<span class="keyword">int</span> __c, FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">fread</span> <span class="params">(<span class="keyword">void</span> *__restrict __ptr, size_t __size,</span><br><span class="line">       size_t __n, FILE *__restrict __stream)</span> </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">fwrite</span> <span class="params">(__const <span class="keyword">void</span> *__restrict __ptr, size_t __size,</span><br><span class="line">        size_t __n, FILE *__restrict __s)</span> </span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 638 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">fread_unlocked</span> <span class="params">(<span class="keyword">void</span> *__restrict __ptr, size_t __size,</span><br><span class="line">         size_t __n, FILE *__restrict __stream)</span> </span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> size_t <span class="title">fwrite_unlocked</span> <span class="params">(__const <span class="keyword">void</span> *__restrict __ptr, size_t __size,</span><br><span class="line">          size_t __n, FILE *__restrict __stream)</span> </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fseek</span> <span class="params">(FILE *__stream, <span class="keyword">long</span> <span class="keyword">int</span> __off, <span class="keyword">int</span> __whence)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">long</span> <span class="keyword">int</span> <span class="title">ftell</span> <span class="params">(FILE *__stream)</span> </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">rewind</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 674 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fseeko</span> <span class="params">(FILE *__stream, __off_t __off, <span class="keyword">int</span> __whence)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">__off_t</span> ftello (FILE *__stream) ;</span><br><span class="line"><span class="preprocessor"># 693 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fgetpos</span> <span class="params">(FILE *__restrict __stream, fpos_t *__restrict __pos)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fsetpos</span> <span class="params">(FILE *__stream, __const fpos_t *__pos)</span></span>;</span><br><span class="line"><span class="preprocessor"># 716 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 725 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">clearerr</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">feof</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">ferror</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">clearerr_unlocked</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">feof_unlocked</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">ferror_unlocked</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">perror</span> <span class="params">(__const <span class="keyword">char</span> *__s)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 1 "/usr/include/bits/sys_errlist.h" 1 3 4</span></span><br><span class="line"><span class="preprocessor"># 27 "/usr/include/bits/sys_errlist.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> sys_nerr;</span><br><span class="line"><span class="keyword">extern</span> __const <span class="keyword">char</span> *__const sys_errlist[];</span><br><span class="line"><span class="preprocessor"># 755 "/usr/include/stdio.h" 2 3 4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fileno</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">fileno_unlocked</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"><span class="preprocessor"># 774 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="keyword">extern</span> FILE *popen (__const <span class="keyword">char</span> *__command, __const <span class="keyword">char</span> *__modes) ;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">pclose</span> <span class="params">(FILE *__stream)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> *ctermid (<span class="keyword">char</span> *__s) __attribute__ ((__nothrow__));</span><br><span class="line"><span class="preprocessor"># 814 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">flockfile</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">int</span> <span class="title">ftrylockfile</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>) </span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">funlockfile</span> <span class="params">(FILE *__stream)</span> __<span class="title">attribute__</span> <span class="params">((__nothrow__)</span>)</span>;</span><br><span class="line"><span class="preprocessor"># 844 "/usr/include/stdio.h" 3 4</span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor"># 2 "main.c" 2</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line"> <span class="built_in">printf</span>(<span class="string">"hello world\n"</span>);</span><br><span class="line"> <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="编译">编译</h2><p>编译过程就是把预处理之后的字符串再经过词法分析,语法分析,语义分析以及优化后面的汇编文件这个过程比较复杂.</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -S hello.i -o hello.s</span><br></pre></td></tr></table></figure>
-<p>代码如下:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#9;.file&#9;&#34;main.c&#34;&#10;&#9;.section&#9;.rodata&#10;.LC0:&#10;&#9;.string&#9;&#34;hello world&#34;&#10;&#9;.text&#10;.globl main&#10;&#9;.type&#9;main, @function&#10;main:&#10;.LFB2:&#10;&#9;pushq&#9;%rbp&#10;.LCFI0:&#10;&#9;movq&#9;%rsp, %rbp&#10;.LCFI1:&#10;&#9;movl&#9;$.LC0, %edi&#10;&#9;call&#9;puts&#10;&#9;movl&#9;$0, %eax&#10;&#9;leave&#10;&#9;ret&#10;.LFE2:&#10;&#9;.size&#9;main, .-main&#10;&#9;.section&#9;.eh_frame,&#34;a&#34;,@progbits&#10;.Lframe1:&#10;&#9;.long&#9;.LECIE1-.LSCIE1&#10;.LSCIE1:&#10;&#9;.long&#9;0x0&#10;&#9;.byte&#9;0x1&#10;&#9;.string&#9;&#34;zR&#34;&#10;&#9;.uleb128 0x1&#10;&#9;.sleb128 -8&#10;&#9;.byte&#9;0x10&#10;&#9;.uleb128 0x1&#10;&#9;.byte&#9;0x3&#10;&#9;.byte&#9;0xc&#10;&#9;.uleb128 0x7&#10;&#9;.uleb128 0x8&#10;&#9;.byte&#9;0x90&#10;&#9;.uleb128 0x1&#10;&#9;.align 8&#10;.LECIE1:&#10;.LSFDE1:&#10;&#9;.long&#9;.LEFDE1-.LASFDE1&#10;.LASFDE1:&#10;&#9;.long&#9;.LASFDE1-.Lframe1&#10;&#9;.long&#9;.LFB2&#10;&#9;.long&#9;.LFE2-.LFB2&#10;&#9;.uleb128 0x0&#10;&#9;.byte&#9;0x4&#10;&#9;.long&#9;.LCFI0-.LFB2&#10;&#9;.byte&#9;0xe&#10;&#9;.uleb128 0x10&#10;&#9;.byte&#9;0x86&#10;&#9;.uleb128 0x2&#10;&#9;.byte&#9;0x4&#10;&#9;.long&#9;.LCFI1-.LCFI0&#10;&#9;.byte&#9;0xd&#10;&#9;.uleb128 0x6&#10;&#9;.align 8&#10;.LEFDE1:&#10;&#9;.ident&#9;&#34;GCC: (GNU) 4.1.2 20080704 (Red Hat 4.1.2-54)&#34;&#10;&#9;.section&#9;.note.GNU-stack,&#34;&#34;,@progbits</span><br></pre></td></tr></table></figure></p>
-<h2 id="汇编">汇编</h2><p>汇编是将汇编代码转成机器可以执行的指令,一般都是一一对应的,直接对着替换就行了,不存在什么语法分析了.<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gcc -c hello.s -o hello.o</span><br></pre></td></tr></table></figure></p>
-<p>用sublime text以binary的方式查看会是这样的<br><figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">7f45 4c46</span> <span class="number">0201 0100</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 3e00</span> <span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">3001 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">4000 0000</span> <span class="number">0000 4000</span> <span class="number">0d00 0a00</span></span><br><span class="line"><span class="number">5548 89e5</span> bf<span class="number">00 0000 00</span>e<span class="number">8 0000 00</span>00 b800</span><br><span class="line"><span class="number">0000 00c9</span> c<span class="number">300 0000</span> <span class="number">6865 6c6</span>c <span class="number">6f20 776</span>f</span><br><span class="line">726c <span class="number">6400 0000</span> <span class="number">0000 1400</span> <span class="number">0000 0000</span> 0000</span><br><span class="line">017a <span class="number">5200 0178</span> <span class="number">1001 030</span>c <span class="number">0708 9001</span> 0000</span><br><span class="line"><span class="number">1c00 0000</span> <span class="number">1c00 0000</span> <span class="number">0000 0000</span> <span class="number">1500 0000</span></span><br><span class="line"><span class="number">0041 0e10</span> <span class="number">8602 430</span>d <span class="number">0600 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0047 4343</span> <span class="number">3a20 2847</span> <span class="number">4e55 2920</span> 342e 312e</span><br><span class="line"><span class="number">3220 3230</span> <span class="number">3038 3037</span> <span class="number">3034 2028</span> <span class="number">5265 6420</span></span><br><span class="line"><span class="number">4861 7420</span> 342e 312e 322d <span class="number">3534 2900</span> 002e</span><br><span class="line"><span class="number">7379 6d74</span> <span class="number">6162 002</span>e <span class="number">7374 7274</span> <span class="number">6162 002</span>e</span><br><span class="line"><span class="number">7368 7374</span> <span class="number">7274 6162</span> 002e <span class="number">7265 6c61</span> 2e74</span><br><span class="line"><span class="number">6578 7400</span> <span class="number">2e64 6174</span> <span class="number">6100 2e62</span> <span class="number">7373 002</span>e</span><br><span class="line">726f <span class="number">6461 7461</span> 002e <span class="number">7265 6c61</span> <span class="number">2e65 685</span>f</span><br><span class="line"><span class="number">6672 616</span>d <span class="number">6500 2e63</span> 6f6d <span class="number">6d65 6e74</span> 002e</span><br><span class="line">6e6f <span class="number">7465 2e47</span> <span class="number">4e55 2d73</span> <span class="number">7461 636</span>b 0000</span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">2000 0000</span> <span class="number">0100 0000</span> <span class="number">0600 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">4000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">1500 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0400 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">1b00 0000</span> <span class="number">0400 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">9005 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">3000 0000</span> <span class="number">0000 0000</span> <span class="number">0b00 0000</span> <span class="number">0100 0000</span></span><br><span class="line"><span class="number">0800 0000</span> <span class="number">0000 0000</span> <span class="number">1800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">2600 0000</span> <span class="number">0100 0000</span> <span class="number">0300 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">5800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0400 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">2c00 0000</span> <span class="number">0800 0000</span> <span class="number">0300 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">5800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0400 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">3100 0000</span> <span class="number">0100 0000</span> <span class="number">0200 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">5800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0c00 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">3e00 0000</span> <span class="number">0100 0000</span> <span class="number">0200 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">6800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">3800 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0800 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">3900 0000</span> <span class="number">0400 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> c<span class="number">005 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">1800 0000</span> <span class="number">0000 0000</span> <span class="number">0b00 0000</span> <span class="number">0600 0000</span></span><br><span class="line"><span class="number">0800 0000</span> <span class="number">0000 0000</span> <span class="number">1800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">4800 0000</span> <span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> a<span class="number">000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">2e00 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">5100 0000</span> <span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> ce<span class="number">00 0000 00</span>00 0000</span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">1100 0000</span> <span class="number">0300 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> ce<span class="number">00 0000 00</span>00 0000</span><br><span class="line"><span class="number">6100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 0000</span> <span class="number">0200 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">7004 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0801 0000</span> <span class="number">0000 0000</span> <span class="number">0c00 0000</span> <span class="number">0900 0000</span></span><br><span class="line"><span class="number">0800 0000</span> <span class="number">0000 0000</span> <span class="number">1800 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0900 0000</span> <span class="number">0300 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">7805 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">1200 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0100 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0100 0000</span> 0400 f1ff</span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0300 0100</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0300 0300</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0300 0400</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0300 0500</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0300 0600</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0300 0900</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0300 0800</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0800 0000</span> <span class="number">1200 0100</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">1500 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0d00 0000</span> <span class="number">1000 0000</span> <span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> 006d <span class="number">6169 6e2</span>e 6300</span><br><span class="line"><span class="number">6d61 696</span>e <span class="number">0070 7574</span> <span class="number">7300 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0500 0000</span> <span class="number">0000 0000</span> <span class="number">0a00 0000</span> <span class="number">0500 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span> <span class="number">0a00 0000</span> <span class="number">0000 0000</span></span><br><span class="line"><span class="number">0200 0000</span> <span class="number">0a00 0000</span> fcff ffff ffff ffff</span><br><span class="line"><span class="number">2000 0000</span> <span class="number">0000 0000</span> <span class="number">0a00 0000</span> <span class="number">0200 0000</span></span><br><span class="line"><span class="number">0000 0000</span> <span class="number">0000 0000</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="链接">链接</h2><p>链接过程是个麻烦的,需要把很多.o文件链成一个可执行的文件.<br>例如:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ld -static crt1.o crti.o crtbeginT.o hello.o -start-group -lgcc -lgcc_eh -lc-end-group crtend.o crtn.o</span><br></pre></td></tr></table></figure></p>
-<h1 id="那么编译器到底在做什么呢?">那么编译器到底在做什么呢?</h1><p>编译器一般可以分为6步:扫描,语法分析,语义分析,源代码优化,代码生成和目标代码优化.<br><img src="/img/compile/001.png" alt="编译过程"></p>
-<p>我们用一个很简单的例子来说明一下:<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">array</span>[index]=(index+<span class="number">4</span>)*(<span class="number">2</span>+<span class="number">6</span>)</span><br></pre></td></tr></table></figure></p>
-<h2 id="词法分析">词法分析</h2><p>首先是扫描,扫描的任务很简单,就是简单的进行词法分析,用一种叫有限状态机的算法将源代码字符给分割出来.<br>经过扫描后应该会有如下的的16个记号</p>
-<table>
-<thead>
-<tr>
-<th>记号</th>
-<th>类型</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>array</td>
-<td>标识符</td>
-</tr>
-<tr>
-<td>[</td>
-<td>左方括号</td>
-</tr>
-<tr>
-<td>index</td>
-<td>标识符</td>
-</tr>
-<tr>
-<td>]</td>
-<td>右方括号</td>
-</tr>
-<tr>
-<td>=</td>
-<td>赋值</td>
-</tr>
-<tr>
-<td>(</td>
-<td>左圆括号</td>
-</tr>
-<tr>
-<td>index</td>
-<td>标识符</td>
-</tr>
-<tr>
-<td>+</td>
-<td>加号</td>
-</tr>
-<tr>
-<td>4</td>
-<td>数字</td>
-</tr>
-<tr>
-<td>)</td>
-<td>右圆括号</td>
-</tr>
-<tr>
-<td>*</td>
-<td>乘号</td>
-</tr>
-<tr>
-<td>(</td>
-<td>左圆括号</td>
-</tr>
-<tr>
-<td>2</td>
-<td>数字</td>
-</tr>
-<tr>
-<td>+</td>
-<td>加号</td>
-</tr>
-<tr>
-<td>6</td>
-<td>数字</td>
-</tr>
-<tr>
-<td>)</td>
-<td>右圆括号</td>
-</tr>
-</tbody>
-</table>
-<p>当然这个东西会有一个叫lex,或是flex的程序实现这个功能,我们只需要做配置就可以了</p>
-<h2 id="语法分析">语法分析</h2><p>语法分析将对扫描器产生的记录进行语法分析,从而产生语法树(Syntax Tree).</p>
-<p><img src="/img/compile/002.png" alt="语法树"></p>
-<p>这种抽象语法树的东西也有一个工具,叫着yacc.可以跟据用户配置输出这样的语法树</p>
-<h2 id="语义分析">语义分析</h2><p>语法分析权是完成了对表达式的表面分析,但不知道这语句是否正确,比如指针与指针相乘是不行的.<br>编译器只能分析静态语法,当然还有对应的动态语义,只能在运行时才知道是否正确.<br>静态语义通常会包括声明和类型的匹配,类型的转换.<br>下面可以看到没有类型转换.<br><img src="/img/compile/003.png" alt="语义分析"></p>
-<h2 id="中间语言生成">中间语言生成</h2><p>现在的编译器有很多优化手段,源码级的优化会在源代码层面中优化,例如我们可以将2+6可以优化一下,因为从字面上就可以看到.所以可能会是这样的.</p>
-<p><img src="/img/compile/004.png" alt="语法优化"></p>
-<p>但是这个优化在语法树上是比较困难的,所以源代码优化器会转成中间代码,它是语法树的顺序表示,其它它已经非常接近目标代码了,但是它一般跟目标机器和运行时环境是无关的.在不同的编译器中有着不同的形式,比较常见的有:三地址码,P-代码.<br>拿我们最常见的三地址码来说吧:<br><code>x=y op z</code><br>这是有三个地址码表示的将变量y和z进行op操作,op是算法运算符也可以其它任何应用到y和z的操作.<br>被翻译后会是这样的:<br><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="setting">t1=<span class="value"><span class="number">2</span>+<span class="number">6</span></span></span></span><br><span class="line"><span class="setting">t2=<span class="value">index+<span class="number">4</span></span></span></span><br><span class="line"><span class="setting">t3=<span class="value">t2*t1</span></span></span><br><span class="line"><span class="setting">array[index]=<span class="value">t3</span></span></span><br></pre></td></tr></table></figure></p>
-<p>而我们看到t2可以重复使用,那么:<br><figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">t2=<span class="keyword">index</span>+<span class="number">4</span></span><br><span class="line">t2=t2*<span class="number">8</span></span><br><span class="line"><span class="keyword">array</span>[<span class="keyword">index</span>]=t2</span><br></pre></td></tr></table></figure></p>
-<p>中间代码分为前端,后端.前端负责生成一些与机器无关的代码,后端是争对不同的平台将中间代码转成目标机器代码 .</p>
-<h2 id="目标代码的生成与优化">目标代码的生成与优化</h2><p>这里包括”代码生成器”和”目标代码优化器”<br>让我们用x86的汇编来表示生成后的代码:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movl index, %ecx&#10;addl $4, %ecx&#10;mull $8, %ecx&#10;movl index, %eax&#10;movl %ecx, array(,eax,4)</span><br></pre></td></tr></table></figure></p>
-<p>然后会对目标代码进行优化,比如选择合适的寻址方式,使用位移来代替乘法运算,删除多余的指令等.<br>优化之后:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movl index, %edx&#10;leal 32(,%edx,8), %eax&#10;movl %eax, array(,%edx,4)</span><br></pre></td></tr></table></figure>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/08/hadoop/hadoop安装/">
-                hadoop安装
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-08
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/hadoop/">hadoop</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/08/hadoop/hadoop安装/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/08/hadoop/hadoop安装/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="hadoop安装教程">hadoop安装教程</h1><p><a href="http://blog.csdn.net/andie_guo/article/details/44055613" title="hadoop服务器基础" target="_blank" rel="external">hadoop服务器基础</a></p>
-<p><a href="http://blog.csdn.net/andie_guo/article/details/44055701" title="hadoop单机模式" target="_blank" rel="external">Hadoop之单机模式搭建</a></p>
-<p><a href="http://blog.csdn.net/andie_guo/article/details/44055731" title="Hadoop之伪分布式环境搭建" target="_blank" rel="external">Hadoop之伪分布式环境搭建</a></p>
-<p><a href="http://blog.csdn.net/andie_guo/article/details/44055761" title="Hadoop之完全分布式环境搭建" target="_blank" rel="external">Hadoop之完全分布式环境搭建</a></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/05/31/arithmetic/术语详解/">
-                术语详解
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-05-31
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/算法/">算法</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/05/31/arithmetic/术语详解/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/31/arithmetic/术语详解/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="术语详解">术语详解</h1><h2 id="多线程">多线程</h2><ul>
-<li><code>Serial</code>串行, <code>Concurrent</code>并发.</li>
-</ul>
-<p>这些术语描述当任务相对于其它任务被执行，任务串行执行就是每次只有一个任务被执行，任务并发执行就是在同一时间可以有多个任务被执行.</p>
-<ul>
-<li><p><code>Synchronous</code>同步,<code>Asynchronous</code>异步<br>Synchronous是一个同步函数只在完成了它预定的任务后才返回。<br>Asynchronous会立即返回，预定的任务会完成但不会等它完成。因此，一个异步函数不会阻塞当前线程去执行下一个函数。</p>
-</li>
-<li><p><code>Critical Section</code> 临界区<br>就是一段代码不能被并发执行，也就是，两个线程不能同时执行这段代码。这很常见，因为代码去操作一个共享资源，例如一个变量若能被并发进程访问，那么它很可能会变质</p>
-</li>
-<li><p><code>Race Condition</code>竞态条件<br>这种状况是指基于特定序列或时机的事件的软件系统以不受控制的方式运行的行为，例如程序的并发任务执行的确切顺序。竞态条件可导致无法预测的行为，而不能通过代码检查立即发现。</p>
-</li>
-<li><p><code>Deadlock</code> 死锁<br>两个（有时更多）东西——在大多数情况下，是线程——所谓的死锁是指它们都卡住了，并等待对方完成或执行其它操作。第一个不能完成是因为它在等待第二个的完成。但第二个也不能完成，因为它在等待第一个的完成。</p>
-</li>
-<li><p><code>Thread Safe</code> 线程安全<br>线程安全的代码能在多线程或并发任务中被安全的调用，而不会导致任何问题（数据损坏，崩溃，等）。线程不安全的代码在某个时刻只能在一个上下文中运行。</p>
-</li>
-<li><p><code>Context Switch</code> 上下文切换<br>一个上下文切换指当你在单个进程里切换执行不同的线程时存储与恢复执行状态的过程。这个过程在编写多任务应用时很普遍，但会带来一些额外的开销。</p>
-</li>
-<li><p><code>Concurrency</code> vs <code>Parallelism</code> 并发与并行<br>并发和并行通常被一起提到，所以值得花些时间解释它们之间的区别。</p>
-</li>
-</ul>
-<p>并发代码的不同部分可以“同步”执行。然而，该怎样发生或是否发生都取决于系统。多核设备通过并行来同时执行多个线程；然而，为了使单核设备也能实现这一点，它们必须先运行一个线程，执行一个上下文切换，然后运行另一个线程或进程。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/05/29/object-c/ios开发技巧/">
-                ios开发技巧
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-05-29
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/05/29/object-c/ios开发技巧/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/29/object-c/ios开发技巧/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="ios开发中的一些技巧和规责">ios开发中的一些技巧和规责</h1><h2 id="将-m中的私有方法以p_开头">将.m中的私有方法以<code>p_</code>开头</h2><p>由于ios的sdk默认是以<code>_</code>开头,而我们并不知道有实现这些方法,所以尽量以<code>p_</code>开头.<br>例如:<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">void</span>)p_privateMethod&#123;</span><br><span class="line">    <span class="comment">/* ... */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/05/25/object-c/ios文档资料/">
-                ios文档资料
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-05-25
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/05/25/object-c/ios文档资料/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/25/object-c/ios文档资料/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="ios文档资料收集">ios文档资料收集</h1><h2 id="autolayout">autolayout</h2><p><a href="http://www.cocoachina.com/industry/20131203/7462.html" title="iOS 7中自动布局教程(一)" target="_blank" rel="external">iOS 7中自动布局教程(一)</a></p>
-<p><a href="http://www.cnblogs.com/zer0Black/p/3977288.html" title="iOS 7中自动布局教程(二)" target="_blank" rel="external">iOS 7中自动布局教程(二)</a></p>
-<p><a href="http://blog.csdn.net/dongbaojun_ios/article/details/12566529" title="autolayout自动布局1" target="_blank" rel="external">autolayout自动布局1</a></p>
-<p><a href="http://blog.csdn.net/dongbaojun_ios/article/details/12624393" title="autolayout自动布局2" target="_blank" rel="external">autolayout自动布局2</a></p>
-<p><a href="http://blog.csdn.net/dongbaojun_ios/article/details/12650831" title="autolayout自动布局3" target="_blank" rel="external">autolayout自动布局3</a></p>
-<p><a href="http://www.hmttommy.com/2014/12/05/AutoLayout/" title="autolayout与size Class" target="_blank" rel="external">autolayout与size Class</a></p>
-<h2 id="block">block</h2><p><a href="http://tanqisen.github.io/blog/2013/04/19/gcd-block-cycle-retain/" title="正确使用Block避免Cycle Retain和Crash" target="_blank" rel="external">Block简介</a></p>
-<h2 id="core_data">core data</h2><p><a href="http://yulingtianxia.com/blog/2014/05/01/chu-shi-core-data-1/" title="初识core data1" target="_blank" rel="external">初识core data1</a></p>
-<p><a href="http://yulingtianxia.com/blog/2014/05/02/chu-shi-core-data-2/" title="初识core data2" target="_blank" rel="external">初始core data2</a></p>
-<p><a href="http://yulingtianxia.com/blog/2014/07/03/chu-shi-core-data-3/" title="初识core data3" target="_blank" rel="external">初始core data3</a></p>
-<h2 id="UICollectionView">UICollectionView</h2><p><a href="http://my.oschina.net/sunqichao/blog/182622" title="UICollectionView使用介绍" target="_blank" rel="external">UICollectionView使用介绍</a></p>
-<p><a href="http://www.onevcat.com/2012/06/introducing-collection-views/" title="UICollectionView-01" target="_blank" rel="external">UICollectionView-01</a></p>
-<p><a href="http://onevcat.com/2012/08/advanced-collection-view/" title="UICollectionView-02" target="_blank" rel="external">UICollectionView-02</a></p>
-<h2 id="NSURLSession">NSURLSession</h2><p><a href="http://blog.csdn.net/crayondeng/article/details/18969385" title="iOS7 Networking with NSURLSession: Part 1" target="_blank" rel="external">iOS7 Networking with NSURLSession: Part 1</a></p>
-<p><a href="http://blog.csdn.net/crayondeng/article/details/18991115" title="iOS7 Networking with NSURLSession: Part 2" target="_blank" rel="external">iOS7 Networking with NSURLSession: Part 2</a></p>
-<p><a href="http://blog.csdn.net/crayondeng/article/details/18991153" title="iOS7 Networking with NSURLSession: Part 3" target="_blank" rel="external">iOS7 Networking with NSURLSession: Part 3</a></p>
-<p><a href="http://blog.csdn.net/crayondeng/article/details/18991179" title="iOS7 Networking with NSURLSession: Part 4" target="_blank" rel="external">iOS7 Networking with NSURLSession: Part 4</a></p>
-<h2 id="status_bar">status bar</h2><p><a href="http://blog.csdn.net/gaoyp/article/details/18406501" title="iOS7下隐藏status bar的详细研究" target="_blank" rel="external">iOS7下隐藏status bar的详细研究</a></p>
-<h2 id="uiscrollview">uiscrollview</h2><p><a href="http://blog.csdn.net/ch_soft/article/details/6947695" title="uiscrollview详解" target="_blank" rel="external">uiscrollview详解</a></p>
-<h2 id="UIView">UIView</h2><p><a href="http://www.cnblogs.com/pengyingh/articles/2379476.html" title="UIView常用方法总结" target="_blank" rel="external">UIView常用方法总结</a></p>
-<h2 id="GCD">GCD</h2><p><a href="https://github.com/nixzhu/dev-blog/blob/master/2014-04-19-grand-central-dispatch-in-depth-part-1.md" title="深入理解GCD2" target="_blank" rel="external">深入理解GCD1</a></p>
-<p><a href="https://github.com/nixzhu/dev-blog/blob/master/2014-05-14-grand-central-dispatch-in-depth-part-2.md" title="深入理解GCD2" target="_blank" rel="external">深入理解GCD2</a></p>
-<h2 id="ReactiveCocoa">ReactiveCocoa</h2><p><a href="http://benbeng.leanote.com/post/ReactiveCocoaTutorial-part1" title="入门第一部分" target="_blank" rel="external">入门第一部分</a></p>
-<p><a href="http://benbeng.leanote.com/post/ReactiveCocoaTutorial-part2" title="入门第二部分" target="_blank" rel="external">入门第二部分</a></p>
-<h2 id="后台推送">后台推送</h2><p><a href="http://esoftmobile.com/2013/06/23/ios7%E7%A8%8B%E5%BA%8F%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/" title="ios7新增后台推送" target="_blank" rel="external">ios7新增后台推送</a></p>
-<p><a href="http://ecowork-blog.logdown.com/posts/154225-ios-7-multitasking-enhancements" title="ios7后台推送" target="_blank" rel="external">ios7后台推送</a></p>
-<p><a href="http://blog.csdn.net/crayondeng/article/details/12753717" title="ios本地通知" target="_blank" rel="external">ios本地通知</a></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/05/12/unity3d/学习笔记/">
-                unity3d学习笔记
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-05-12
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/unity3d/">unity3d</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/05/12/unity3d/学习笔记/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/12/unity3d/学习笔记/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="Time">Time</h2><p>只读属性:</p>
-<p><code>Time.time</code> 从游戏开始到现在所用的时间<br><code>Time.timeSinceLevelLoad</code> 这是以秒计算到最后关卡已经加载完的时间<br><code>Time.deltaTime</code> 以秒计算,完成最后一帧的时间<br><code>Time.smoothDeltaTime</code> 一个平滑淡出Time.deltaTime<br><code>Time.frameCount</code> 已经传递的帧的总数<br><code>Time.realtimeSinceStartup</code> 以秒计,自游开始的实时时间<br><code>Time.unscaledDeltaTime</code> 以秒计算,完成最后一帧的时间(不计算Timescale)<br><code>Time.unscaledTime</code> 从游戏开始到现在所用的时间(不计算Timescale)</p>
-<p>可修改属性:</p>
-<p><code>Time.fixedDeltaTime</code> 以秒计算间隔,在物理和其他固定帧速率进行更新<br><code>Time.maximumDeltaTime</code> 一帧能获得最大时间,物理和其它固定帧速率进行更新<br><code>Time.timeScale</code> 传递时间的缩放,这可以用于减慢运动效果<br><code>Time.captureFramerate</code> 时间会在每帧(1.0/captureFramerate)前进,不考虑真实时间</p>
-<h2 id="random">random</h2><p>可修改属性:<br><code>Random.seed</code> 设置用于随机数生成器的种子</p>
-<p>只读属性:</p>
-<p><code>Random.value</code> 返回一个随机数 0.0~1.0之间<br><code>Random.insideUnitCircle</code> 返回半径为1的圆内的随机点<br><code>Random.insideUnitSphere</code> 返回半径为1的球体内的随机点<br><code>Random.onUnitSphere</code> 返回半径为1的球体在表面上的一个随机点<br><code>Random.rotation</code> 返回一个随机旋转角度<br><code>Random.rotationUniform</code> 返回一个随机旋转角度(平均分布)</p>
-<p>方法:</p>
-<p><code>float Random.Range(min,max);</code> 返回一个随机 float/int 数, 在min和max之间</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/05/07/unity3d/il2cpp/">
-                il2cpp分析
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-05-07
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/unity3d/">unity3d</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/05/07/unity3d/il2cpp/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/05/07/unity3d/il2cpp/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="详解">详解</h2><p><a href="http://www.indieace.com/thread-8197-1-1.html" target="_blank" rel="external">il2cpp详解上</a></p>
-<p><a href="http://www.indieace.com/thread-8199-1-1.html" target="_blank" rel="external">il2cpp详解下</a></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/04/21/graphical/什么是光栅化/">
-                什么是光栅化
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-04-21
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/04/21/graphical/什么是光栅化/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/21/graphical/什么是光栅化/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="光栅化">光栅化</h1><p>所谓的光栅化大致就是指你将顶点经过各种矩阵变幻的时候还是顶点,但是这些顶点构成的三角形,那么这三角形需要哪些像素信息也是要知道的.那么光栅化就是来帮你干这个事的.</p>
-<p><img src="/img/光栅化/ceCenYnP0eUqQ.png" alt="光栅化做的事情"></p>
-<p>注意看那些颜色比较深的就是覆盖的像素</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
   </div>
 
 
@@ -1112,21 +966,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">69</span>
+              <span class="site-state-item-count">77</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">52</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

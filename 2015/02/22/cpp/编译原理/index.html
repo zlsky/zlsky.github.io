@@ -123,7 +123,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          發表於 2015-06-12
+          發表於 2015-02-22
         </span>
 
         
@@ -143,8 +143,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/06/12/cpp/编译原理/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/12/cpp/编译原理/"></span>
+            <a href="/2015/02/22/cpp/编译原理/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/02/22/cpp/编译原理/"></span>
             </a>
           </span>
           
@@ -269,6 +269,9 @@
 <h2 id="目标代码的生成与优化">目标代码的生成与优化</h2><p>这里包括”代码生成器”和”目标代码优化器”<br>让我们用x86的汇编来表示生成后的代码:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movl index, %ecx&#10;addl $4, %ecx&#10;mull $8, %ecx&#10;movl index, %eax&#10;movl %ecx, array(,eax,4)</span><br></pre></td></tr></table></figure></p>
 <p>然后会对目标代码进行优化,比如选择合适的寻址方式,使用位移来代替乘法运算,删除多余的指令等.<br>优化之后:</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">movl index, %edx&#10;leal 32(,%edx,8), %eax&#10;movl %eax, array(,%edx,4)</span><br></pre></td></tr></table></figure>
+<h2 id="链接-1">链接</h2><p>链接主要是将各模块的目标文件组合在一起,然后调整每个相互引用的模块的地址加以修正.<br>链接整个过程包括了地址和空间分配,符号决议,重定位等相关操作.</p>
+<p>在这里我们把.o文件叫着”目标文件”</p>
+<p>例如,假如我们有个main.c,需要调用一个func.c模块中的foo()函数,那么main.c就必须要知道func.c这个模块</p>
 
       
     </div>
@@ -286,13 +289,13 @@
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2015/06/12/self/shadowsocks的安装使用/">shadowsocks的安装使用</a>
+              <a href="/2015/04/16/graphical/opengl环境配置/">opengl环境配置</a>
             
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/06/08/hadoop/hadoop安装/">hadoop安装</a>
+              <a href="/2015/02/05/arithmetic/smc工具教程/">smc状态机</a>
             
           </div>
         </div>
@@ -308,8 +311,8 @@
     
       <div class="comments" id="comments">
         
-          <div class="ds-thread" data-thread-key="2015/06/12/cpp/编译原理/"
-               data-title="编译原理简单概述" data-url="http://blog.zlsky.me/2015/06/12/cpp/编译原理/">
+          <div class="ds-thread" data-thread-key="2015/02/22/cpp/编译原理/"
+               data-title="编译原理简单概述" data-url="http://blog.zlsky.me/2015/02/22/cpp/编译原理/">
           </div>
         
       </div>
@@ -356,21 +359,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">69</span>
+              <span class="site-state-item-count">77</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">49</span>
+              <span class="site-state-item-count">52</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
@@ -412,7 +415,7 @@
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#编译原理简单概述"><span class="nav-number">1.</span> <span class="nav-text">编译原理简单概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hello_world"><span class="nav-number">1.1.</span> <span class="nav-text">hello world</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预编译"><span class="nav-number">1.2.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译"><span class="nav-number">1.3.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#汇编"><span class="nav-number">1.4.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接"><span class="nav-number">1.5.</span> <span class="nav-text">链接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#那么编译器到底在做什么呢?"><span class="nav-number">2.</span> <span class="nav-text">那么编译器到底在做什么呢?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#词法分析"><span class="nav-number">2.1.</span> <span class="nav-text">词法分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法分析"><span class="nav-number">2.2.</span> <span class="nav-text">语法分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语义分析"><span class="nav-number">2.3.</span> <span class="nav-text">语义分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中间语言生成"><span class="nav-number">2.4.</span> <span class="nav-text">中间语言生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标代码的生成与优化"><span class="nav-number">2.5.</span> <span class="nav-text">目标代码的生成与优化</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#编译原理简单概述"><span class="nav-number">1.</span> <span class="nav-text">编译原理简单概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hello_world"><span class="nav-number">1.1.</span> <span class="nav-text">hello world</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#预编译"><span class="nav-number">1.2.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编译"><span class="nav-number">1.3.</span> <span class="nav-text">编译</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#汇编"><span class="nav-number">1.4.</span> <span class="nav-text">汇编</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接"><span class="nav-number">1.5.</span> <span class="nav-text">链接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#那么编译器到底在做什么呢?"><span class="nav-number">2.</span> <span class="nav-text">那么编译器到底在做什么呢?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#词法分析"><span class="nav-number">2.1.</span> <span class="nav-text">词法分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语法分析"><span class="nav-number">2.2.</span> <span class="nav-text">语法分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#语义分析"><span class="nav-number">2.3.</span> <span class="nav-text">语义分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#中间语言生成"><span class="nav-number">2.4.</span> <span class="nav-text">中间语言生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标代码的生成与优化"><span class="nav-number">2.5.</span> <span class="nav-text">目标代码的生成与优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接-1"><span class="nav-number">2.6.</span> <span class="nav-text">链接</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
