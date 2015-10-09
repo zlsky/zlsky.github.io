@@ -117,6 +117,331 @@
           
           
             
+              <a class="post-title-link" href="/2015/10/07/golang/etcd学习/">
+                etcd学习
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-10-07
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/07/golang/etcd学习/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/07/golang/etcd学习/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="etcd学习">etcd学习</h1><h2 id="学习资料">学习资料</h2><p><a href="http://www.infoq.com/cn/articles/coreos-analyse-etcd&quot;etcd实战&quot;" target="_blank" rel="external">etcd实战</a></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/09/22/linux/linux中文乱码解决/">
+                linux中文乱码解决
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-09-22
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/linux/">linux</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/09/22/linux/linux中文乱码解决/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/22/linux/linux中文乱码解决/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="linux中文乱码解决">linux中文乱码解决</h1><p>由于我们在windows上打包zip文件,然后上传至linux,unzip就会出现很多中文乱码,这是由于在windows上默认是gbk,而我们安装的linux大部分默认编码都是utf8的,就会出现这样的情况</p>
+<p>由于unzip没帮我们转码,这个时候就需要用7z来解决了.</p>
+<h2 id="7z安装:">7z安装:</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget http://pkgs.repoforge.org/p7zip/p7zip-<span class="number">9.20</span>.<span class="number">1</span>-<span class="number">1</span>.el6.rf.x86_64.rpm</span><br><span class="line">wget http://pkgs.repoforge.org/p7zip/p7zip-plugins-<span class="number">9.20</span>.<span class="number">1</span>-<span class="number">1</span>.el6.rf.x86_64.rpm</span><br><span class="line">rpm -ivh p7zip-<span class="number">9.20</span>.<span class="number">1</span>-<span class="number">1</span>.el6.rf.x86_64.rpm</span><br><span class="line">rpm -ivh p7zip-plugins-<span class="number">9.20</span>.<span class="number">1</span>-<span class="number">1</span>.el6.rf.x86_64.rpm</span><br></pre></td></tr></table></figure>
+<p>装完之后就有7z这个命令了,然后在windows上打包好7z文件名上传.</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7<span class="tag">z</span> <span class="tag">x</span> <span class="tag">xxx</span><span class="class">.7z</span></span><br></pre></td></tr></table></figure>
+<p>再看看,应该就是正常的utf8编码了.</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/09/22/golang/grpc资料收集/">
+                grpc资料收集
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-09-22
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/09/22/golang/grpc资料收集/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/22/golang/grpc资料收集/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="grpc资料收集">grpc资料收集</h1><p><a href="http://grpc.io/" target="_blank" rel="external">grpc</a></p>
+<p>一个http2+protobuffer的项目比较通用,而且也符合规则.</p>
+<h2 id="http2">http2</h2><p><a href="http://www.cnblogs.com/ghj1976/p/4552583.html" target="_blank" rel="external">http2概述</a></p>
+<p><a href="http://www.cnblogs.com/ghj1976/p/4581426.html" target="_blank" rel="external">HTTP2 帧基础知识以及Header、CONTINUATION、DATA帧相关资料</a></p>
+<p><a href="http://www.cnblogs.com/ghj1976/p/4586529.html" target="_blank" rel="external">为 HTTP/2 头压缩专门设计的 HPACK</a></p>
+<h2 id="设置GIT代理">设置GIT代理</h2><p><a href="http://blog.leiqin.info/2013/05/24/%E5%A6%82%E4%BD%95%E4%B8%BAGit%E8%AE%BE%E7%BD%AE%E4%BB%A3%E7%90%86%EF%BC%9F.html" target="_blank" rel="external">设置GIT代理</a></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/09/15/linux/cmder/">
+                cmder配置
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-09-15
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/linux/">linux</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/09/15/linux/cmder/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/09/15/linux/cmder/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="cmder配置">cmder配置</h1><p>安装地址:<a href="http://bliker.github.io/cmder/" target="_blank" rel="external">http://bliker.github.io/cmder/</a></p>
+<p>将cmder加入PATH变量</p>
+<h2 id="添加右键">添加右键</h2><p>添加到右键菜单:    Cmder.exe /REGISTER ALL</p>
+<p>定位到注册表<br>HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Directory\background\shell\Cmder<br>HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Directory\shell\Cmder<br>将Icon的值 dir\icons\cmder.ico 改为 dir\Cmder.exe 即可显示图标</p>
+<h2 id="解决乱码">解决乱码</h2><p>输入 win + alt + p设置,将Monospace去掉</p>
+<p>在<code>config/aliases</code>文件中加如下代码:<br><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">l=<span class="keyword">ls</span> --show-<span class="keyword">control</span>-chars </span><br><span class="line">la=<span class="keyword">ls</span> -aF --show-<span class="keyword">control</span>-chars </span><br><span class="line">ll=<span class="keyword">ls</span> -alF --show-<span class="keyword">control</span>-chars</span><br><span class="line"><span class="keyword">ls</span>=<span class="keyword">ls</span> --show-<span class="keyword">control</span>-chars -F</span><br></pre></td></tr></table></figure></p>
+<h2 id="安装chocolatey">安装<a href="https://chocolatey.org/" target="_blank" rel="external">chocolatey</a></h2><p><code>@powershell -NoProfile -ExecutionPolicy unrestricted -Command &quot;iex ((new-object net.webclient).DownloadString(&#39;https://chocolatey.org/install.ps1&#39;))&quot; &amp;&amp; SET PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin</code></p>
+<h2 id="解决无法加载文件_C:\PS-PS1，因为在此系统上禁止运行脚本">解决无法加载文件 C:\PS.PS1，因为在此系统上禁止运行脚本</h2><p>以管理员模式运行cmd:<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set-executionpolicy remotesigned</span><br></pre></td></tr></table></figure></p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/08/24/hadoop/storm常用配置详解/">
                 storm常用配置详解
               </a>
@@ -510,88 +835,6 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/18/hadoop/hadoop权威指南笔记/">
-                hadoop权威指南笔记
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-08-18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/hadoop/">hadoop</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/08/18/hadoop/hadoop权威指南笔记/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/18/hadoop/hadoop权威指南笔记/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="hadoop权威指南笔记">hadoop权威指南笔记</h1><h3 id="distcp">distcp</h3><p><code>hadoop distcp hdfs://site1/foo hdfs://site2/bar</code></p>
-<p>site2的hdfs://site2/bar/foo会与hdfs://site1/foo一样.<br>这里是用的map来完成的,并没有reduce</p>
-<p>通过 -m属性来确定有多少个map任务.</p>
-<p>如果两个版本不一样的hdfs复制的话会出现问题,只能用ftp的方式流入文件<br><code>hadoop distcp hftp://site1:50070/foo hdfs://site2/bar</code></p>
-<p>这里的端口由配置<code>dfs.http.address</code>指定</p>
-<p>默认每个节点20个map任务.</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2015/08/18/hadoop/hadoop安装/">
                 hadoop安装
               </a>
@@ -666,268 +909,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/26/object-c/xcode常用插件/">
-                xcode常用插件
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-26
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/26/object-c/xcode常用插件/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/26/object-c/xcode常用插件/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="xcode常用插件">xcode常用插件</h1><h2 id="Cocoapods">Cocoapods</h2><h2 id="FuzzyAutocomplete">FuzzyAutocomplete</h2><h2 id="KSimageNamed">KSimageNamed</h2><h2 id="VVDocumenter-Xocde">VVDocumenter-Xocde</h2><h2 id="XcodeColors">XcodeColors</h2><h2 id="RTImageAssets">RTImageAssets</h2>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/19/self/项目规划/">
-                未命名
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-19
-        </span>
-
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/19/self/项目规划/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/19/self/项目规划/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="项目策划案">项目策划案</h1><h2 id="项目经理应该具备哪些品质">项目经理应该具备哪些品质</h2><h3 id="目标驱动">目标驱动</h3><p>有了目标才有最基本的目标管理和时间管理<br>项目的成功涉及到过程，人和方法工具技术<br>这些目标的过程中总结过去的成功经验和和实践过程<br>时刻明确项目的目标,项目当前状态和自我达成目标的差距.</p>
-<h3 id="与人沟通并协调达成最佳的能力">与人沟通并协调达成最佳的能力</h3><p>知道每个职位的工作职责<br>使用合适的工具连接职位的沟通</p>
-<h3 id="风险意识">风险意识</h3><p>在项目执行过程中以成熟的经验提前预知各种将要发生的问题.<br>成熟的经验让项目前紧后松.</p>
-<h3 id="数据量化">数据量化</h3><p>用数据说话的分析思维.<br>以数据说话让我们从全凭主观经验转变到对事物的客观数据分析上.<br>可以解决在项目决策中一些特殊原因而造成的波动.</p>
-<h3 id="个人看法">个人看法</h3><p>利用有限的时间、资源和人员完成项目.<br>完成一个项目比把一个项目做得完美就重要的多.<br>项目验收的能力要比其它能力都要重要.<br>擅长学习、记录、思考、总结和分享.</p>
-<h3 id="我能回答的问题">我能回答的问题</h3><p>项目的由来，为什么要建立这么一个项目？<br>项目的架构设计，采用什么技术、实现方式、逻辑架构？<br>怎样责任到人？<br>要测试了，有详细的计划吗？<br>测试出的问题，怎么跟踪呢？<br>代码、配置文件、数据库的表结构、数据有清单吗?<br>上线内容是什么？<br>出问题怎么查？有指导手册吗？</p>
-<h2 id="立项初期">立项初期</h2><p>拼着对游戏的热情开发是不行的,因为你不知道市场需要什么,没有对这个产业有一个分析.只知道我要做什么,但是不知道我要做成什么.</p>
-<h3 id="游戏特性分析">游戏特性分析</h3><p>游戏操作性<br>男女用户比例<br>用户群体<br>消费习惯<br>交互方式<br>手机流量</p>
-<h3 id="了解这些游戏的生命周期">了解这些游戏的生命周期</h3><p>导入期<br>发展期<br>稳定期<br>衰退期</p>
-<h3 id="完整的体验完这款游戏">完整的体验完这款游戏</h3><h3 id="定位一种游戏类型">定位一种游戏类型</h3><h2 id="开发">开发</h2><h3 id="按着立项的最终结果定位游戏类型">按着立项的最终结果定位游戏类型</h3><ul>
-<li>对游戏类型所需要的算法做一定的了解</li>
-</ul>
-<h3 id="定位架构">定位架构</h3><ul>
-<li>3D游戏是如何做出来的,从2D的角度去分析然后转成3d.</li>
-<li>现有的美术团队有多少是用maya,3dmax,无鏠的与unity3d做连接,保证对接的流畅.</li>
-<li>在策划上面,其实2d转3d对策划来说并没有什么大的改变,但策划得知道3D的表现形式的优点,善于利用这些优点.</li>
-<li>服务器的tcp服务器,保证服务器的在线稳定性,开服,合服的便携性.</li>
-<li>单元测试</li>
-<li>数值,剧情,玩法等配置文件的定位,无鏠的保证策划</li>
-<li>游戏包的压缩</li>
-</ul>
-<h3 id="删档测试">删档测试</h3><ul>
-<li>测试流程</li>
-<li>数据分析<br>通过统计图表来分析用户,在这里可以看到很多流失,留存等.</li>
-<li>数据调整<br>将数据图表里面流失的点都拿出来对应到游戏里面去,试图去修改这些流失点.继续观察图表,优化出好的成绩</li>
-</ul>
-<h3 id="不删档测试">不删档测试</h3><ul>
-<li>有留存了,就要试图加上付费点</li>
-<li>优化arpu值</li>
-</ul>
-<h3 id="人员的分配">人员的分配</h3>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/06/17/golang/gosublime配置/">
-                mac下sublime配置godef,goimport,gosublime
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-06-17
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/06/17/golang/gosublime配置/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/06/17/golang/gosublime配置/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="sublime配置golang开发环境">sublime配置golang开发环境</h1><p>由于liteide在mac下面运行比较慢,而且UI也没sublime漂亮,所以这里想办法用sublime text来达到lite相同的效果.<br><code>gosublime</code>这个插件就不用说了,大家都懂的.<br><code>goimports</code>这个主要是用来在保存时,格式化当前文件,导入相应的包.<br><code>godef</code>这个主要用来做代码跳转.</p>
-<blockquote>
-<p>注意godef目前只能在mac下,windows上还是乖乖用liteide,而且在windows下性能还是蛮高的.</p>
-</blockquote>
-<h2 id="基础要求">基础要求</h2><p>sublime text安装以及package都不需要我说了,大家去网上找就行了.</p>
-<p>brew安装好最新版的go,顺便设置好gopath</p>
-<p>直接package安装好godef,goimport,gosublime.</p>
-<p><img src="/img/goide/001.png" alt="安装插件"></p>
-<h3 id="配置gosublime">配置gosublime</h3><p><img src="/img/goide/002.png" alt="配置gosublime"></p>
-<p>PATH和GOPATH都不用我说,大家应该都懂,PATH是我直接从shell里面的环境变量里面弄出来的,最后的/Volumes/data/tools/bin里面会有我编译好的goimport,godef这两个文件,不然sublime不知道可执行文件在哪.<br>fmt_cmd配置好goimports,意思是说每次在保存的时候都会goimport一次,格式化你的文件,并且导入必要的包.<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    "<span class="attribute">env</span>": <span class="value">&#123; </span><br><span class="line">        "<span class="attribute">PATH</span>": <span class="value"><span class="string">"/Users/zhulei/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Volumes/data/tools/bin"</span></span>, </span><br><span class="line">        "<span class="attribute">GOPATH</span>":<span class="value"><span class="string">"/Volumes/data/lang/go/package:/Volumes/data/lang/go/game_server:/Volumes/data/lang/go/web_server"</span></span><br><span class="line">    </span>&#125;</span>,</span><br><span class="line"></span><br><span class="line">    "<span class="attribute">fmt_cmd</span>": <span class="value">[<span class="string">"goimports"</span>]</span><br><span class="line"></span>&#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="配置godef">配置godef</h3><p><img src="/img/goide/003.png" alt="配置godef"></p>
-<p>设置<code>Settings-Default</code><br>这里gopath设置好,godef在代码跳转的时候会搜索这些目录,跳转到指定的位置去<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="comment">// Copy this file to Settings - User</span></span><br><span class="line">    <span class="comment">// Set your real GOPATH in user's Godef.sublime-settings</span></span><br><span class="line">    <span class="comment">// For example:</span></span><br><span class="line">    <span class="string">"gopath"</span>: <span class="string">"/Volumes/data/lang/go/package:/Volumes/data/lang/go/game_server:/Volumes/data/lang/go/web_server"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>配置<code>Key Bindings-Default</code><br>这里我配置的是<code>command+d</code>跳到光标指定的函数或变量位置.<br><code>command+j</code>和<code>command+k</code>是前一个位置,后一个位置<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    // &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"g"</span>,<span class="string">"d"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"godef"</span> </span>&#125;</span><br><span class="line">    &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"super+d"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"godef"</span> </span>&#125;,</span><br><span class="line">    &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"super+j"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"jump_forward"</span></span>&#125;,</span><br><span class="line">    &#123; "<span class="attribute">keys</span>": <span class="value">[<span class="string">"super+k"</span>]</span>, "<span class="attribute">command</span>": <span class="value"><span class="string">"jump_back"</span></span>&#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure></p>
-<h2 id="相关下载">相关下载</h2><p><a href="/img/goide/binary.zip">gocode,goimport,godef编译后的文件下载</a></p>
-<h2 id="相关教程">相关教程</h2><p><a href="http://michaelwhatcott.com/gosublime-goimports/" target="_blank" rel="external">goimport</a><br><a href="http://get.jobdeer.com/6431.get" target="_blank" rel="external">godef</a></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -966,7 +947,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">77</span>
+              <span class="site-state-item-count">80</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
@@ -980,7 +961,7 @@
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">52</span>
+              <span class="site-state-item-count">54</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
@@ -993,7 +974,7 @@
           
             
               <span class="links-of-author-item">
-              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+              <a href="https://github.com/zlsky" target="_blank">GitHub</a>
             </span>
             
               <span class="links-of-author-item">

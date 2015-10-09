@@ -117,6 +117,524 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/12/golang/xorm源码学习/">
+                xorm源码学习
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-12
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/12/golang/xorm源码学习/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/12/golang/xorm源码学习/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="xorm简介">xorm简介</h1><p>xorm是把一个sql的连接库再次封装,不想让用户使用原生的sql字符串来写代码.毕竟在命令式语言中,大家都喜欢API.不过好像函数式也是API.没人喜欢用字符串吧.</p>
+<h2 id="源码分析">源码分析</h2><p>初始化所有数据库连接引擎:<code>go-xorm/xorm/xorm.go</code>里面<code>regDrvsNDialects()</code>函数会将支持的函数都注册到<code>go-xorm/core/driver.go</code>文件里面的<code>drivers = map[string]Driver{}</code>和<code>dialects = map[DbType]Dialect{}</code></p>
+<p><code>xorm.Engine</code>是由以下数据结构组成:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Engine <span class="keyword">struct</span> &#123;</span><br><span class="line">	db      *core.DB</span><br><span class="line">	dialect core.Dialect</span><br><span class="line"></span><br><span class="line">	ColumnMapper  core.IMapper</span><br><span class="line">	TableMapper   core.IMapper</span><br><span class="line">	TagIdentifier <span class="typename">string</span></span><br><span class="line">	Tables        <span class="keyword">map</span>[reflect.Type]*core.Table</span><br><span class="line"></span><br><span class="line">	mutex  *sync.RWMutex</span><br><span class="line">	Cacher core.Cacher</span><br><span class="line"></span><br><span class="line">	ShowSQL <span class="typename">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// !nashtsai! <span class="doctag">TODO</span> ought to deprecate these but having logger to control its log level</span></span><br><span class="line">	ShowInfo  <span class="typename">bool</span></span><br><span class="line">	ShowErr   <span class="typename">bool</span></span><br><span class="line">	ShowDebug <span class="typename">bool</span></span><br><span class="line">	ShowWarn  <span class="typename">bool</span></span><br><span class="line">	<span class="comment">// --227</span></span><br><span class="line"></span><br><span class="line">	Logger     core.ILogger</span><br><span class="line">	TZLocation *time.Location</span><br><span class="line"></span><br><span class="line">	disableGlobalCache <span class="typename">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Engine-DB">Engine.DB</h3><p>Engine.DB是extend <code>sql.DB</code>,这个sql.DB是来自于包:<code>database/sql/sql.go</code>标准库相关的东西自己可以看一下这个网站:<a href="http://go-database-sql.org/" target="_blank" rel="external">http://go-database-sql.org/</a></p>
+<h3 id="Engine-ColumnMapper,Engine-TableMapper">Engine.ColumnMapper,Engine.TableMapper</h3><p><code>ColumnMapper,TableMapper</code>两个是core.IMapper类型,主要是用来做名称映射的.就是说将数据结构名称,字段与表名,列名做转换.<br>目前内置了<code>SnakeMapper</code>和<code>SameMapper</code><br>SameMapper基本上是没做任何更改,完全相等.</p>
+<p><code>SnakeMapper</code>是默认mapper,两个核心方法在这里.<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Obj2Table 例如:  UserRole会转为user_role</span></span><br><span class="line"><span class="keyword">func</span> snakeCasedName(name <span class="typename">string</span>) <span class="typename">string</span> &#123;</span><br><span class="line">	newstr := <span class="built_in">make</span>([]<span class="typename">rune</span>, <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> idx, chr := <span class="keyword">range</span> name &#123;</span><br><span class="line">		<span class="keyword">if</span> isUpper := <span class="string">'A'</span> &lt;= chr &amp;&amp; chr &lt;= <span class="string">'Z'</span>; isUpper &#123;</span><br><span class="line">			<span class="keyword">if</span> idx &gt; <span class="number">0</span> &#123;</span><br><span class="line">				newstr = <span class="built_in">append</span>(newstr, <span class="string">'_'</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			chr -= (<span class="string">'A'</span> - <span class="string">'a'</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		newstr = <span class="built_in">append</span>(newstr, chr)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="typename">string</span>(newstr)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Table2Obj 例: user_role转为UserRole</span></span><br><span class="line"><span class="keyword">func</span> titleCasedName(name <span class="typename">string</span>) <span class="typename">string</span> &#123;</span><br><span class="line">	newstr := <span class="built_in">make</span>([]<span class="typename">rune</span>, <span class="number">0</span>)</span><br><span class="line">	upNextChar := <span class="constant">true</span></span><br><span class="line"></span><br><span class="line">	name = strings.ToLower(name)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, chr := <span class="keyword">range</span> name &#123;</span><br><span class="line">		<span class="keyword">switch</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> upNextChar:</span><br><span class="line">			upNextChar = <span class="constant">false</span></span><br><span class="line">			<span class="keyword">if</span> <span class="string">'a'</span> &lt;= chr &amp;&amp; chr &lt;= <span class="string">'z'</span> &#123;</span><br><span class="line">				chr -= (<span class="string">'a'</span> - <span class="string">'A'</span>)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> chr == <span class="string">'_'</span>:</span><br><span class="line">			upNextChar = <span class="constant">true</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		newstr = <span class="built_in">append</span>(newstr, chr)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="typename">string</span>(newstr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是要注意在<code>engine.SetMapper(core.NewCacheMapper(new(core.SnakeMapper)))</code>时又加了一层<code>CacheMapper</code>.<br>这一层主要是为了缓存Obj2Table,Table2Obj这样的方法,免得被次获取都要执行一次.</p>
+<h3 id="Engine-Logger(core-ILogger)">Engine.Logger(core.ILogger)</h3><p>这个log主要是记录sql里面的一些数据,一般由xorm.NewSimpleLogger(io.Writer)来实现.<br>也就是说你只要提供一个io.Writer,就可以了.<br><code>NewSimpleLogger</code>会返回一个core.ILogger,当然这个函数有几种,还可以自定义显示别级,分别为Info,Debug,Error,Warn</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/29/arithmetic/进制转换/">
+                进制运算过程
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-29
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/算法/">算法</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/29/arithmetic/进制转换/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/29/arithmetic/进制转换/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="进制运算">进制运算</h1><p>当一个10进制的数:354要表示出来应该是<br><figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">3<span class="keyword">*</span>(10的2次方)+5<span class="keyword">*</span>(10的1次方)+4<span class="keyword">*</span>(10的0次方)</span><br><span class="line">=3<span class="keyword">*</span>100+5<span class="keyword">*</span>10+4</span><br><span class="line">=354</span><br></pre></td></tr></table></figure></p>
+<p>相信大家对这个比较明了.我们换一种方式<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">354</span> / <span class="number">10</span> =<span class="number">35</span> 余 <span class="number">4</span></span><br><span class="line"><span class="number">35</span> / <span class="number">10</span> = <span class="number">3</span> 余 <span class="number">5</span></span><br><span class="line"><span class="number">3</span> / <span class="number">10</span> = <span class="number">0</span> 余 <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//这个数正好就是余数</span></span><br></pre></td></tr></table></figure></p>
+<p>现在我们试着转换成其它进制<br><figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//转成8进制</span></span><br><span class="line">(10)354</span><br><span class="line">354 / 8 = 44 余 2</span><br><span class="line">44 / 8  = 5 余 4</span><br><span class="line">5 / 8   = 0 余 5</span><br><span class="line"></span><br><span class="line">(10)354==(8)542</span><br><span class="line"></span><br><span class="line"><span class="comment">//转成10进制</span></span><br><span class="line">(8)542 </span><br><span class="line"><span class="header">= 5*(8*8)+4*(8)+2 </span></span><br><span class="line"><span class="header">= 320+32+2</span></span><br><span class="line"><span class="header">= 354</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="其它进制">其它进制</h2><p>上面只是按10进制来的,现在我们试试7进制的算法,当然我们得先列出7进制的加法,乘法表</p>
+<h3 id="加法表:">加法表:</h3><table>
+<thead>
+<tr>
+<th>7进制</th>
+<th style="text-align:center">1</th>
+<th style="text-align:center">2</th>
+<th style="text-align:center">3</th>
+<th style="text-align:center">4</th>
+<th style="text-align:center">5</th>
+<th style="text-align:left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td style="text-align:center">2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:left">10</td>
+</tr>
+<tr>
+<td>2</td>
+<td style="text-align:center">3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:left">11</td>
+</tr>
+<tr>
+<td>3</td>
+<td style="text-align:center">4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:left">12</td>
+</tr>
+<tr>
+<td>4</td>
+<td style="text-align:center">5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+<td style="text-align:left">13</td>
+</tr>
+<tr>
+<td>5</td>
+<td style="text-align:center">6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">13</td>
+<td style="text-align:left">14</td>
+</tr>
+<tr>
+<td>6</td>
+<td style="text-align:center">10</td>
+<td style="text-align:center">11</td>
+<td style="text-align:center">12</td>
+<td style="text-align:center">13</td>
+<td style="text-align:center">14</td>
+<td style="text-align:left">15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="乘法表:">乘法表:</h3><table>
+<thead>
+<tr>
+<th>7进制</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6    </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>4</td>
+<td>6</td>
+<td>11</td>
+<td>13</td>
+<td>15</td>
+</tr>
+<tr>
+<td>3</td>
+<td>3</td>
+<td>6</td>
+<td>12</td>
+<td>15</td>
+<td>21</td>
+<td>24</td>
+</tr>
+<tr>
+<td>4</td>
+<td>4</td>
+<td>10</td>
+<td>15</td>
+<td>22</td>
+<td>26</td>
+<td>33</td>
+</tr>
+<tr>
+<td>5</td>
+<td>5</td>
+<td>13</td>
+<td>21</td>
+<td>26</td>
+<td>34</td>
+<td>42</td>
+</tr>
+<tr>
+<td>6</td>
+<td>6</td>
+<td>15</td>
+<td>24</td>
+<td>33</td>
+<td>42</td>
+<td>51</td>
+</tr>
+</tbody>
+</table>
+<p>我们用24*265来试试:<br><figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">    <span class="number">265</span></span><br><span class="line">     <span class="number">24</span></span><br><span class="line"><span class="comment">//-----</span></span><br><span class="line">   <span class="number">1456</span></span><br><span class="line">    <span class="number">563</span></span><br><span class="line"><span class="comment">//-----</span></span><br><span class="line">  <span class="number">10416</span></span><br></pre></td></tr></table></figure></p>
+<p>通过上面的加法和乘法表,我们可以得出如下的数.<br>转换成10进制:<br><figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">10416</span><br><span class="line">=<span class="ruby"><span class="number">1</span>*(<span class="number">7</span>的<span class="number">4</span>次方)+<span class="number">0</span>*(<span class="number">7</span>的<span class="number">3</span>次方)+<span class="number">4</span>*(<span class="number">7</span>的<span class="number">2</span>次方)+<span class="number">1</span>*(<span class="number">7</span>的<span class="number">1</span>次方)+<span class="number">6</span></span><br><span class="line"></span>=<span class="ruby"><span class="number">2401</span>+<span class="number">0</span>+<span class="number">196</span>+<span class="number">7</span>+<span class="number">6</span></span><br><span class="line"></span>=<span class="ruby"><span class="number">2610</span></span></span><br></pre></td></tr></table></figure></p>
+<p>验证一下: </p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">10</span>进制:<span class="number">145</span>*<span class="number">18</span>=<span class="number">2610</span></span><br><span class="line"><span class="number">7</span>进制:<span class="number">265</span>*<span class="number">24</span>=<span class="number">10416</span></span><br><span class="line"><span class="comment">//-----------------</span></span><br><span class="line"><span class="comment">//145转成7进制</span></span><br><span class="line"><span class="number">145</span> / <span class="number">7</span> = <span class="number">20</span> 余 <span class="number">5</span></span><br><span class="line"><span class="number">20</span> / <span class="number">7</span>  = <span class="number">2</span> 余 <span class="number">6</span></span><br><span class="line"><span class="number">2</span> / <span class="number">7</span>   = <span class="number">0</span> 余 <span class="number">2</span></span><br><span class="line"><span class="comment">//-----------------</span></span><br><span class="line"><span class="comment">//18转成7进制</span></span><br><span class="line"><span class="number">18</span> / <span class="number">7</span> = <span class="number">2</span> 余 <span class="number">4</span></span><br><span class="line"><span class="number">2</span> / <span class="number">7</span>  = <span class="number">0</span> 余 <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/26/golang/reflect设计select/">
+                reflect设计select
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-26
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/26/golang/reflect设计select/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/26/golang/reflect设计select/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="常规模式:">常规模式:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> chs1 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">var</span> chs2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">float64</span>)</span><br><span class="line">	<span class="keyword">var</span> chs3 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">	<span class="keyword">var</span> ch4close = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">defer</span> <span class="built_in">close</span>(ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">int</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- i</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs1, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">float64</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="typename">float64</span>(i) + <span class="number">0.1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs2, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">string</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="string">"string:"</span> + strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs3, ch4close)</span><br><span class="line">	done := <span class="number">0</span></span><br><span class="line">	finished := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> finished &lt; <span class="number">3</span> &#123;</span><br><span class="line">		<span class="keyword">select</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs1:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">0</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs2:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">1</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> v, ok := &lt;-chs3:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				done = done + <span class="number">1</span></span><br><span class="line"></span><br><span class="line">				fmt.Println(<span class="number">2</span>, v)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> _, ok := &lt;-ch4close:</span><br><span class="line">			<span class="keyword">if</span> ok &#123;</span><br><span class="line">				finished = finished + <span class="number">1</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">"Done"</span>, done)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="reflect设计:">reflect设计:</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">	<span class="string">"strconv"</span></span><br><span class="line">)</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> chs1 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">var</span> chs2 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">float64</span>)</span><br><span class="line">	<span class="keyword">var</span> chs3 = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">string</span>)</span><br><span class="line">	<span class="keyword">var</span> ch4close = <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">	<span class="keyword">defer</span> <span class="built_in">close</span>(ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">int</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- i</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs1, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">float64</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="typename">float64</span>(i) + <span class="number">0.1</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs2, ch4close)</span><br><span class="line">	<span class="keyword">go</span> <span class="keyword">func</span>(c <span class="keyword">chan</span> <span class="typename">string</span>, ch4close <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;</span><br><span class="line">			c &lt;- <span class="string">"string:"</span> + strconv.Itoa(i)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">close</span>(c)</span><br><span class="line">		ch4close &lt;- <span class="number">1</span></span><br><span class="line">	&#125;(chs3, ch4close)</span><br><span class="line">	<span class="keyword">var</span> selectCase = <span class="built_in">make</span>([]reflect.SelectCase, <span class="number">4</span>)</span><br><span class="line">	selectCase[<span class="number">0</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">0</span>].Chan = reflect.ValueOf(chs1)</span><br><span class="line">	selectCase[<span class="number">1</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">1</span>].Chan = reflect.ValueOf(chs2)</span><br><span class="line">	selectCase[<span class="number">2</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">2</span>].Chan = reflect.ValueOf(chs3)</span><br><span class="line">	selectCase[<span class="number">3</span>].Dir = reflect.SelectRecv</span><br><span class="line">	selectCase[<span class="number">3</span>].Chan = reflect.ValueOf(ch4close)</span><br><span class="line">	done := <span class="number">0</span></span><br><span class="line">	finished := <span class="number">0</span></span><br><span class="line">	<span class="keyword">for</span> finished &lt; <span class="built_in">len</span>(selectCase)-<span class="number">1</span> &#123;</span><br><span class="line">		chosen, recv, recvOk := reflect.Select(selectCase)</span><br><span class="line">		<span class="keyword">if</span> recvOk &#123;</span><br><span class="line">			done = done+<span class="number">1</span></span><br><span class="line">			<span class="keyword">switch</span> chosen &#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">				fmt.Println(chosen, recv.Int())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">				fmt.Println(chosen, recv.Float())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">				fmt.Println(chosen, recv.String())</span><br><span class="line">			<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">				finished = finished+<span class="number">1</span></span><br><span class="line">				done = done-<span class="number">1</span></span><br><span class="line">				<span class="comment">// fmt.Println("finished\t", finished)</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(<span class="string">"Done"</span>, done)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="reflect-SelectCase是用来描述select_&gt;_case里面的语句"><code>reflect.SelectCase</code>是用来描述select &gt; case里面的语句</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> SelectCase <span class="keyword">struct</span> &#123;</span><br><span class="line">    Dir  SelectDir <span class="comment">// case的方向</span></span><br><span class="line">    Chan Value     <span class="comment">// 使用的通道（收/发）</span></span><br><span class="line">    Send Value     <span class="comment">// 用于发送的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如果Dir是SelectDefault，该条case代表default case。Chan和Send字段必须是Value零值。</li>
+<li>如果Dir是SelectSend，该条case代表一个发送操作。Chan字段底层必须是一个chan类型，Send的底层必须是可以直接赋值给该chan类型成员类型的类型。如果Chan是Value零值，则不管Send字段是不是零值，该条case都会被忽略。</li>
+<li>如果Dir是SelectRecv，该条case代表一个接收操作。Chan字段底层必须是一个chan类型，而Send必须是一个Value零值。如果Chan是Value零值，该条case会被忽略，但Send字段仍需是Value零值。当该条case被执行时，接收到的值会被Select返回。</li>
+</ul>
+<h3 id="reflect-Select(cases_[]SelectCase)_(chosen_int,_recv_Value,_recvOK_bool)">reflect.Select(cases []SelectCase) (chosen int, recv Value, recvOK bool)</h3><p>Select函数执行cases切片描述的select操作。 类似go的select语句，它会阻塞直到至少一条case可以执行，从可执行的case中（伪）随机的选择一条，并执行该条case。它会返回选择执行的case的索引，以及如果执行的是接收case时，会返回接收到的值，以及一个布尔值说明该值是否对应于通道中某次发送的值（用以区分通道关闭时接收到的零值，此时recvOK会设为false）。</p>
+<blockquote>
+<p>这样的好处是当select &gt; case时一大堆时,要写一大堆,直接用反射包就能很好的解决了.</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/18/cpp/内存对齐基础/">
+                C++对象对齐基础
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/18/cpp/内存对齐基础/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/cpp/内存对齐基础/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="内存布局基础讲解">内存布局基础讲解</h1><blockquote>
+<p>   注：本文代码测试环境为win7 X64 cpu, 编译器为gcc4.7.1 和 vs2010</p>
+</blockquote>
+<h2 id="内存对齐是编译器为了便于CPU快速访问而采用的一项技术">内存对齐是编译器为了便于CPU快速访问而采用的一项技术</h2><p>我们先从一个例子开始，对下面的类(或者结构体)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">short</span> s;</span><br><span class="line">&#125;no;</span><br></pre></td></tr></table></figure>
+<p>sizeof(no)的值是多少呢，如果你的回答是7(1+4+2)，那么你应该认真阅读下面的内容。可以在编译器上试试，输出的结果是12，这就是内存对齐的结果。</p>
+<h2 id="为什么要进行内存对齐呢？">为什么要进行内存对齐呢？</h2><ol>
+<li>平台原因(移植原因)：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</li>
+<li>性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问.</li>
+</ol>
+<p>编译器一般按照几个字节对齐呢？本文中两个<strong>编译器默认按照类中最大类型长度来对齐</strong>，我么也可以使用语句#pragma pack(i)(i = 1,2,4,8,16)来设置对齐字节数目，vs还可以在项目属性-配置属性-c/c++-代码生成-结构成员对齐设置。</p>
+<h2 id="对齐规则如下：">对齐规则如下：</h2><ol>
+<li>如果设置了内存对齐为 i 字节，类中最大成员对齐字节数为j，那么整体对齐字节n = min(i, j)  （某个成员的对齐字节数定义：如果该成员是c++自带类型如int、char、double等，那么其对齐字节数=该类型在内存中所占的字节数；如果该成员是自定义类型如某个class或者struct，那个它的对齐字节数 = 该类型内最大的成员对齐字节数《详见实例4》）</li>
+<li>每个成员对齐规则：类中第一个数据成员放在offset为0的位置；对于其他的数据成员（假设该数据成员对齐字节数为k），他们放置的起始位置offset应该是 min(k, n) 的整数倍</li>
+<li>整体对齐规则：最后整个类的大小应该是n的整数倍</li>
+<li>当设置的对齐字节数大于类中最大成员对齐字节数时，这个设置实际上不产生任何效果（实例2）；当设置对齐字节数为1时，类的大小就是简单的把所有成员大小相加</li>
+</ol>
+<p>我们通过以下几个实例来分析</p>
+<p><strong>实例1：（没有指定对齐字节，则n = 最大成员（int i）的大小4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;   <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i;      <span class="comment">//4 = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~7]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即8，位置区间为[8~9]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~9]10个字节，还要整体对齐，大小应该是4的倍数，即12</p>
+</blockquote>
+<p><strong>实例2：（假设指定对齐字节为8，那么n = min(8,4) = 4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//放在位置0，位置区间[0~3]</span></span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//1 &lt; n, 那么放置起始位置应该是1的倍数，即4，位置区间为[4]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   成员共占据[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
+</blockquote>
+<p><strong>实例3：（假设指定对齐字节是2，则n = min(2,4) = 2）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//4 &gt; n, 那么放置起始位置应该是2的倍数，即2，位置区间为[2~5]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 = n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
+</blockquote>
+<p><strong>实例4：（按照默认设置）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> temp </span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">    <span class="keyword">int</span> i; </span><br><span class="line">    <span class="keyword">short</span> s1; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   由实例1可知，默认对齐情况下，temp的大小是12，temp的对齐字节数是：三个成员取最大的，即为4；</p>
+</blockquote>
+<p>对于node，n = 其三个成员对齐字节数取最大，即等于t的对齐字节数，也就是 4。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	temp t; <span class="comment">//4（temp的对齐字节数） = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~15]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即16，位置区间为[16~17]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~17]18个字节，还要整体对齐，大小应该是4的倍数，因此大小是20</p>
+</blockquote>
+<p><strong>实例5：（默然设置）</strong></p>
+<p>对于node，n = 其三个成员对齐字节数取最大，即等于d的对齐字节数，也就是 8。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	temp t; <span class="comment">//放在位置0，位置区间[0~11]</span></span><br><span class="line">	<span class="keyword">double</span> d; <span class="comment">//8（temp的对齐字节数） = n, 那么放置起始位置应该是8的倍数，即16，位置区间为[16~23]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即24，位置区间为[24~25]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~25]26个字节，还要整体对齐，大小应该是8的倍数，因此大小是32.</p>
+</blockquote>
+<h2 id="类继承时的内存对齐">类继承时的内存对齐</h2><p>考虑如下类<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> B:<span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> C:<span class="keyword">public</span> B</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>sizeof(C)结果是多少呢，gcc和vs给出了不同的结果，分别是8、16</p>
+<p>gcc中：C相当于把所有成员i、c1、c2、c3当作是在一个class内部，(先继承后对齐)</p>
+<p>vs中：对于A，对齐后其大小是8；对于B，c2加上对齐后的A的大小是9，对齐后就是12；对于C，c3加上对齐后的B大小是13，再对齐就是16 (先对齐后继承)</p>
+<p>关于c++对象继承后的内存布局，更详细的分析可以《深度探索参考c++对象模型》第三章</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/11/18/golang/golang反射实战/">
                 golang反射实战
               </a>
@@ -329,130 +847,6 @@
 <p>比如也可以通过unsafe来灵活取值：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> b []<span class="typename">byte</span> = []<span class="typename">byte</span>&#123;<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>&#125;</span><br><span class="line">    <span class="keyword">var</span> c *<span class="typename">byte</span> = &amp;b[<span class="number">0</span>]</span><br><span class="line">    fmt.Println(*(*<span class="typename">byte</span>)(unsafe.Pointer(<span class="typename">uintptr</span>(unsafe.Pointer(c)) + <span class="typename">uintptr</span>(<span class="number">1</span>))))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>关于填充，FastCGI协议就用到了。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/11/18/cpp/内存对齐基础/">
-                C++对象对齐基础
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/18/cpp/内存对齐基础/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/cpp/内存对齐基础/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="内存布局基础讲解">内存布局基础讲解</h1><blockquote>
-<p>   注：本文代码测试环境为win7 X64 cpu, 编译器为gcc4.7.1 和 vs2010</p>
-</blockquote>
-<h2 id="内存对齐是编译器为了便于CPU快速访问而采用的一项技术">内存对齐是编译器为了便于CPU快速访问而采用的一项技术</h2><p>我们先从一个例子开始，对下面的类(或者结构体)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">short</span> s;</span><br><span class="line">&#125;no;</span><br></pre></td></tr></table></figure>
-<p>sizeof(no)的值是多少呢，如果你的回答是7(1+4+2)，那么你应该认真阅读下面的内容。可以在编译器上试试，输出的结果是12，这就是内存对齐的结果。</p>
-<h2 id="为什么要进行内存对齐呢？">为什么要进行内存对齐呢？</h2><ol>
-<li>平台原因(移植原因)：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</li>
-<li>性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问.</li>
-</ol>
-<p>编译器一般按照几个字节对齐呢？本文中两个<strong>编译器默认按照类中最大类型长度来对齐</strong>，我么也可以使用语句#pragma pack(i)(i = 1,2,4,8,16)来设置对齐字节数目，vs还可以在项目属性-配置属性-c/c++-代码生成-结构成员对齐设置。</p>
-<h2 id="对齐规则如下：">对齐规则如下：</h2><ol>
-<li>如果设置了内存对齐为 i 字节，类中最大成员对齐字节数为j，那么整体对齐字节n = min(i, j)  （某个成员的对齐字节数定义：如果该成员是c++自带类型如int、char、double等，那么其对齐字节数=该类型在内存中所占的字节数；如果该成员是自定义类型如某个class或者struct，那个它的对齐字节数 = 该类型内最大的成员对齐字节数《详见实例4》）</li>
-<li>每个成员对齐规则：类中第一个数据成员放在offset为0的位置；对于其他的数据成员（假设该数据成员对齐字节数为k），他们放置的起始位置offset应该是 min(k, n) 的整数倍</li>
-<li>整体对齐规则：最后整个类的大小应该是n的整数倍</li>
-<li>当设置的对齐字节数大于类中最大成员对齐字节数时，这个设置实际上不产生任何效果（实例2）；当设置对齐字节数为1时，类的大小就是简单的把所有成员大小相加</li>
-</ol>
-<p>我们通过以下几个实例来分析</p>
-<p><strong>实例1：（没有指定对齐字节，则n = 最大成员（int i）的大小4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;   <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i;      <span class="comment">//4 = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~7]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即8，位置区间为[8~9]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~9]10个字节，还要整体对齐，大小应该是4的倍数，即12</p>
-</blockquote>
-<p><strong>实例2：（假设指定对齐字节为8，那么n = min(8,4) = 4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//放在位置0，位置区间[0~3]</span></span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//1 &lt; n, 那么放置起始位置应该是1的倍数，即4，位置区间为[4]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   成员共占据[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
-</blockquote>
-<p><strong>实例3：（假设指定对齐字节是2，则n = min(2,4) = 2）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//4 &gt; n, 那么放置起始位置应该是2的倍数，即2，位置区间为[2~5]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 = n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
-</blockquote>
-<p><strong>实例4：（按照默认设置）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> temp </span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">    <span class="keyword">int</span> i; </span><br><span class="line">    <span class="keyword">short</span> s1; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   由实例1可知，默认对齐情况下，temp的大小是12，temp的对齐字节数是：三个成员取最大的，即为4；</p>
-</blockquote>
-<p>对于node，n = 其三个成员对齐字节数取最大，即等于t的对齐字节数，也就是 4。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	temp t; <span class="comment">//4（temp的对齐字节数） = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~15]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即16，位置区间为[16~17]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~17]18个字节，还要整体对齐，大小应该是4的倍数，因此大小是20</p>
-</blockquote>
-<p><strong>实例5：（默然设置）</strong></p>
-<p>对于node，n = 其三个成员对齐字节数取最大，即等于d的对齐字节数，也就是 8。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	temp t; <span class="comment">//放在位置0，位置区间[0~11]</span></span><br><span class="line">	<span class="keyword">double</span> d; <span class="comment">//8（temp的对齐字节数） = n, 那么放置起始位置应该是8的倍数，即16，位置区间为[16~23]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即24，位置区间为[24~25]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~25]26个字节，还要整体对齐，大小应该是8的倍数，因此大小是32.</p>
-</blockquote>
-<h2 id="类继承时的内存对齐">类继承时的内存对齐</h2><p>考虑如下类<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> B:<span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> C:<span class="keyword">public</span> B</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>sizeof(C)结果是多少呢，gcc和vs给出了不同的结果，分别是8、16</p>
-<p>gcc中：C相当于把所有成员i、c1、c2、c3当作是在一个class内部，(先继承后对齐)</p>
-<p>vs中：对于A，对齐后其大小是8；对于B，c2加上对齐后的A的大小是9，对齐后就是12；对于C，c3加上对齐后的B大小是13，再对齐就是16 (先对齐后继承)</p>
-<p>关于c++对象继承后的内存布局，更详细的分析可以《深度探索参考c++对象模型》第三章</p>
 
         
       
@@ -872,466 +1266,6 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/25/golang/goroutine背后的系统知识/">
-                goroutine背后的系统知识
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-25
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/25/golang/goroutine背后的系统知识/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/25/golang/goroutine背后的系统知识/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>Go语言从诞生到普及已经三年了，先行者大都是Web开发的背景，也有了一些普及型的书籍，可系统开发背景的人在学习这些书籍的时候，总有语焉不详的感觉，网上也有若干流传甚广的文章，可其中或多或少总有些与事实不符的技术描述。希望这篇文章能为比较缺少系统编程背景的Web开发人员介绍一下goroutine背后的系统知识。</p>
-<ol>
-<li>操作系统与运行库</li>
-<li>并发与并行 (Concurrency and Parallelism)</li>
-<li>线程的调度</li>
-<li>并发编程框架</li>
-<li>goroutine</li>
-</ol>
-<h2 id="操作系统与运行库">操作系统与运行库</h2><p>对于普通的电脑用户来说，能理解应用程序是运行在操作系统之上就足够了，可对于开发者，我们还需要了解我们写的程序是如何在操作系统之上运行起来的，操作系统如何为应用程序提供服务，这样我们才能分清楚哪些服务是操作系统提供的，而哪些服务是由我们所使用的语言的运行库提供的。</p>
-<p>除了内存管理、文件管理、进程管理、外设管理等等内部模块以外，操作系统还提供了许多外部接口供应用程序使用，这些接口就是所谓的“系统调用”。从DOS时代开始，系统调用就是通过软中断的形式来提供，也就是著名的INT 21，程序把需要调用的功能编号放入AH寄存器，把参数放入其他指定的寄存器，然后调用INT 21，中断返回后，程序从指定的寄存器(通常是AL)里取得返回值。这样的做法一直到奔腾2也就是P6出来之前都没有变，譬如windows通过INT 2E提供系统调用，Linux则是INT 80，只不过后来的寄存器比以前大一些，而且可能再多一层跳转表查询。后来，Intel和AMD分别提供了效率更高的SYSENTER/SYSEXIT和SYSCALL/SYSRET指令来代替之前的中断方式，略过了耗时的特权级别检查以及寄存器压栈出栈的操作，直接完成从RING 3代码段到RING 0代码段的转换。</p>
-<p>系统调用都提供什么功能呢？用操作系统的名字加上对应的中断编号到谷歌上一查就可以得到完整的列表 (Windows, Linux)，这个列表就是操作系统和应用程序之间沟通的协议，如果需要超出此协议的功能，我们就只能在自己的代码里去实现，譬如，对于内存管理，操作系统只提供进程级别的内存段的管理，譬如Windows的virtualmemory系列，或是Linux的brk，操作系统不会去在乎应用程序如何为新建对象分配内存，或是如何做垃圾回收，这些都需要应用程序自己去实现。如果超出此协议的功能无法自己实现，那我们就说该操作系统不支持该功能，举个例子，Linux在2.6之前是不支持多线程的，无论如何在程序里模拟，我们都无法做出多个可以同时运行的并符合POSIX 1003.1c语义标准的调度单元。</p>
-<p>可是，我们写程序并不需要去调用中断或是SYSCALL指令，这是因为操作系统提供了一层封装，在Windows上，它是NTDLL.DLL，也就是常说的Native API，我们不但不需要去直接调用INT 2E或SYSCALL，准确的说，我们不能直接去调用INT 2E或SYSCALL，因为Windows并没有公开其调用规范，直接使用INT 2E或SYSCALL无法保证未来的兼容性。在Linux上则没有这个问题，系统调用的列表都是公开的，而且Linus非常看重兼容性，不会去做任何更改，glibc里甚至专门提供了syscall(2)来方便用户直接用编号调用，不过，为了解决glibc和内核之间不同版本兼容性带来的麻烦，以及为了提高某些调用的效率(譬如<em>_NR</em> gettimeofday)，Linux上还是对部分系统调用做了一层封装，就是VDSO (早期叫linux-gate.so)。</p>
-<p>可是，我们写程序也很少直接调用NTDLL或者VDSO，而是通过更上一层的封装，这一层处理了参数准备和返回值格式转换、以及出错处理和错误代码转换，这就是我们所使用语言的运行库，对于C语言，Linux上是glibc，Windows上是kernel32(或调用msvcrt)，对于其他语言，譬如Java，则是JRE，这些“其他语言”的运行库通常最终还是调用glibc或kernel32。</p>
-<p>“运行库”这个词其实不止包括用于和编译后的目标执行程序进行链接的库文件，也包括了脚本语言或字节码解释型语言的运行环境，譬如Python，C#的CLR，Java的JRE。</p>
-<p>对系统调用的封装只是运行库的很小一部分功能，运行库通常还提供了诸如字符串处理、数学计算、常用数据结构容器等等不需要操作系统支持的功能，同时，运行库也会对操作系统支持的功能提供更易用更高级的封装，譬如带缓存和格式的IO、线程池。</p>
-<p>所以，在我们说“某某语言新增了某某功能”的时候，通常是这么几种可能：</p>
-<ol>
-<li>支持新的语义或语法，从而便于我们描述和解决问题。譬如Java的泛型、Annotation、lambda表达式。</li>
-<li>提供了新的工具或类库，减少了我们开发的代码量。譬如Python 2.7的argparse</li>
-<li>对系统调用有了更良好更全面的封装，使我们可以做到以前在这个语言环境里做不到或很难做到的事情。譬如Java NIO</li>
-</ol>
-<p>但任何一门语言，包括其运行库和运行环境，都不可能创造出操作系统不支持的功能，Go语言也是这样，不管它的特性描述看起来多么炫丽，那必然都是其他语言也可以做到的，只不过Go提供了更方便更清晰的语义和支持，提高了开发的效率。</p>
-<h2 id="并发与并行_(Concurrency_and_Parallelism)">并发与并行 (Concurrency and Parallelism)</h2><p>并发是指程序的逻辑结构。非并发的程序就是一根竹竿捅到底，只有一个逻辑控制流，也就是顺序执行的(Sequential)程序，在任何时刻，程序只会处在这个逻辑控制流的某个位置。而如果某个程序有多个独立的逻辑控制流，也就是可以同时处理(deal)多件事情，我们就说这个程序是并发的。这里的“同时”，并不一定要是真正在时钟的某一时刻(那是运行状态而不是逻辑结构)，而是指：如果把这些逻辑控制流画成时序流程图，它们在时间线上是可以重叠的。</p>
-<p>并行是指程序的运行状态。如果一个程序在某一时刻被多个CPU流水线同时进行处理，那么我们就说这个程序是以并行的形式在运行。（严格意义上讲，我们不能说某程序是“并行”的，因为“并行”不是描述程序本身，而是描述程序的运行状态，但这篇小文里就不那么咬文嚼字，以下说到“并行”的时候，就是指代“以并行的形式运行”）显然，并行一定是需要硬件支持的。</p>
-<p>而且不难理解：</p>
-<ol>
-<li><p>并发是并行的必要条件，如果一个程序本身就不是并发的，也就是只有一个逻辑控制流，那么我们不可能让其被并行处理。</p>
-</li>
-<li><p>并发不是并行的充分条件，一个并发的程序，如果只被一个CPU流水线进行处理(通过分时)，那么它就不是并行的。</p>
-</li>
-<li><p>并发只是更符合现实问题本质的表达方式，并发的最初目的是简化代码逻辑，而不是使程序运行的更快；</p>
-</li>
-</ol>
-<p>这几段略微抽象，我们可以用一个最简单的例子来把这些概念实例化：用C语言写一个最简单的HelloWorld，它就是非并发的，如果我们建立多个线程，每个线程里打印一个HelloWorld，那么这个程序就是并发的，如果这个程序运行在老式的单核CPU上，那么这个并发程序还不是并行的，如果我们用多核多CPU且支持多任务的操作系统来运行它，那么这个并发程序就是并行的。</p>
-<p>还有一个略微复杂的例子，更能说明并发不一定可以并行，而且并发不是为了效率，就是Go语言例子里计算素数的sieve.go。我们从小到大针对每一个因子启动一个代码片段，如果当前验证的数能被当前因子除尽，则该数不是素数，如果不能，则把该数发送给下一个因子的代码片段，直到最后一个因子也无法除尽，则该数为素数，我们再启动一个它的代码片段，用于验证更大的数字。这是符合我们计算素数的逻辑的，而且每个因子的代码处理片段都是相同的，所以程序非常的简洁，但它无法被并行，因为每个片段都依赖于前一个片段的处理结果和输出。</p>
-<p>并发可以通过以下方式做到：</p>
-<ol>
-<li><p>显式地定义并触发多个代码片段，也就是逻辑控制流，由应用程序或操作系统对它们进行调度。它们可以是独立无关的，也可以是相互依赖需要交互的，譬如上面提到的素数计算，其实它也是个经典的生产者和消费者的问题：两个逻辑控制流A和B，A产生输出，当有了输出后，B取得A的输出进行处理。线程只是实现并发的其中一个手段，除此之外，运行库或是应用程序本身也有多种手段来实现并发，这是下节的主要内容。</p>
-</li>
-<li><p>隐式地放置多个代码片段，在系统事件发生时触发执行相应的代码片段，也就是事件驱动的方式，譬如某个端口或管道接收到了数据(多路IO的情况下)，再譬如进程接收到了某个信号(signal)。</p>
-</li>
-</ol>
-<p>并行可以在四个层面上做到：</p>
-<ol>
-<li><p>多台机器。自然我们就有了多个CPU流水线，譬如Hadoop集群里的MapReduce任务。</p>
-</li>
-<li><p>多CPU。不管是真的多颗CPU还是多核还是超线程，总之我们有了多个CPU流水线。</p>
-</li>
-<li><p>单CPU核里的ILP(Instruction-level parallelism)，指令级并行。通过复杂的制造工艺和对指令的解析以及分支预测和乱序执行，现在的CPU可以在单个时钟周期内执行多条指令，从而，即使是非并发的程序，也可能是以并行的形式执行。</p>
-</li>
-<li><p>单指令多数据(Single instruction, multiple data. SIMD)，为了多媒体数据的处理，现在的CPU的指令集支持单条指令对多条数据进行操作。</p>
-</li>
-</ol>
-<p>其中，1牵涉到分布式处理，包括数据的分布和任务的同步等等，而且是基于网络的。3和4通常是编译器和CPU的开发人员需要考虑的。这里我们说的并行主要针对第2种：单台机器内的多核CPU并行。</p>
-<h2 id="线程的调度">线程的调度</h2><p>上一节主要说的是并发和并行的概念，而线程是最直观的并发的实现，这一节我们主要说操作系统如何让多个线程并发的执行，当然在多CPU的时候，也就是并行的执行。我们不讨论进程，进程的意义是“隔离的执行环境”，而不是“单独的执行序列”。</p>
-<p>我们首先需要理解IA-32 CPU的指令控制方式，这样才能理解如何在多个指令序列(也就是逻辑控制流)之间进行切换。CPU通过CS:EIP寄存器的值确定下一条指令的位置，但是CPU并不允许直接使用MOV指令来更改EIP的值，必须通过JMP系列指令、CALL/RET指令、或INT中断指令来实现代码的跳转；在指令序列间切换的时候，除了更改EIP之外，我们还要保证代码可能会使用到的各个寄存器的值，尤其是栈指针SS:ESP，以及EFLAGS标志位等，都能够恢复到目标指令序列上次执行到这个位置时候的状态。</p>
-<p>线程是操作系统对外提供的服务，应用程序可以通过系统调用让操作系统启动线程，并负责随后的线程调度和切换。我们先考虑单颗单核CPU，操作系统内核与应用程序其实是也是在共享同一个CPU，当EIP在应用程序代码段的时候，内核并没有控制权，内核并不是一个进程或线程，内核只是以实模式运行的，代码段权限为RING 0的内存中的程序，只有当产生中断或是应用程序呼叫系统调用的时候，控制权才转移到内核，在内核里，所有代码都在同一个地址空间，为了给不同的线程提供服务，内核会为每一个线程建立一个内核堆栈，这是线程切换的关键。通常，内核会在时钟中断里或系统调用返回前(考虑到性能，通常是在不频繁发生的系统调用返回前)，对整个系统的线程进行调度，计算当前线程的剩余时间片，如果需要切换，就在“可运行”的线程队列里计算优先级，选出目标线程后，则保存当前线程的运行环境，并恢复目标线程的运行环境，其中最重要的，就是切换堆栈指针ESP，然后再把EIP指向目标线程上次被移出CPU时的指令。Linux内核在实现线程切换时，耍了个花枪，它并不是直接JMP，而是先把ESP切换为目标线程的内核栈，把目标线程的代码地址压栈，然后JMP到<strong>switch_to()，相当于伪造了一个CALL </strong>switch_to()指令，然后，在__switch_to()的最后使用RET指令返回，这样就把栈里的目标线程的代码地址放入了EIP，接下来CPU就开始执行目标线程的代码了，其实也就是上次停在switch_to这个宏展开的地方。</p>
-<p>这里需要补充几点：</p>
-<ol>
-<li>虽然IA-32提供了TSS (Task State Segment)，试图简化操作系统进行线程调度的流程，但由于其效率低下，而且并不是通用标准，不利于移植，所以主流操作系统都没有去利用TSS。更严格的说，其实还是用了TSS，因为只有通过TSS才能把堆栈切换到内核堆栈指针SS0:ESP0，但除此之外的TSS的功能就完全没有被使用了。</li>
-<li>线程从用户态进入内核的时候，相关的寄存器以及用户态代码段的EIP已经保存了一次，所以，在上面所说的内核态线程切换时，需要保存和恢复的内容并不多。(3) 以上描述的都是抢占式(preemptively)的调度方式，内核以及其中的硬件驱动也会在等待外部资源可用的时候主动调用schedule()，用户态的代码也可以通过sched_yield()系统调用主动发起调度，让出CPU。</li>
-</ol>
-<p>现在我们一台普通的PC或服务里通常都有多颗CPU (physical package)，每颗CPU又有多个核 (processor core)，每个核又可以支持超线程 (two logical processors for each core)，也就是逻辑处理器。每个逻辑处理器都有自己的一套完整的寄存器，其中包括了CS:EIP和SS:ESP，从而，以操作系统和应用的角度来看，每个逻辑处理器都是一个单独的流水线。在多处理器的情况下，线程切换的原理和流程其实和单处理器时是基本一致的，内核代码只有一份，当某个CPU上发生时钟中断或是系统调用时，该CPU的CS:EIP和控制权又回到了内核，内核根据调度策略的结果进行线程切换。但在这个时候，如果我们的程序用线程实现了并发，那么操作系统可以使我们的程序在多个CPU上实现并行。</p>
-<p>这里也需要补充两点：</p>
-<ol>
-<li><p>多核的场景里，各个核之间并不是完全对等的，譬如在同一个核上的两个超线程是共享L1/L2缓存的；在有NUMA支持的场景里，每个核访问内存不同区域的延迟是不一样的；所以，多核场景里的线程调度又引入了“调度域”(scheduling domains)的概念，但这不影响我们理解线程切换机制。</p>
-</li>
-<li><p>多核的场景下，中断发给哪个CPU？软中断(包括除以0，缺页异常，INT指令)自然是在触发该中断的CPU上产生，而硬中断则又分两种情况，一种是每个CPU自己产生的中断，譬如时钟，这是每个CPU处理自己的，还有一种是外部中断，譬如IO，可以通过APIC来指定其送给哪个CPU；因为调度程序只能控制当前的CPU，所以，如果IO中断没有进行均匀的分配的话，那么和IO相关的线程就只能在某些CPU上运行，导致CPU负载不均，进而影响整个系统的效率。</p>
-</li>
-</ol>
-<h2 id="并发编程框架">并发编程框架</h2><p>以上大概介绍了一个用多线程来实现并发的程序是如何被操作系统调度以及并行执行(在有多个逻辑处理器时)，同时大家也可以看到，代码片段或者说逻辑控制流的调度和切换其实并不神秘，理论上，我们也可以不依赖操作系统和其提供的线程，在自己程序的代码段里定义多个片段，然后在我们自己程序里对其进行调度和切换。</p>
-<p>为了描述方便，我们接下来把“代码片段”称为“任务”。</p>
-<p>和内核的实现类似，只是我们不需要考虑中断和系统调用，那么，我们的程序本质上就是一个循环，这个循环本身就是调度程序schedule()，我们需要维护一个任务的列表，根据我们定义的策略，先进先出或是有优先级等等，每次从列表里挑选出一个任务，然后恢复各个寄存器的值，并且JMP到该任务上次被暂停的地方，所有这些需要保存的信息都可以作为该任务的属性，存放在任务列表里。</p>
-<p>看起来很简单啊，可是我们还需要解决几个问题：</p>
-<ol>
-<li><p>我们运行在用户态，是没有中断或系统调用这样的机制来打断代码执行的，那么，一旦我们的schedule()代码把控制权交给了任务的代码，我们下次的调度在什么时候发生？答案是，不会发生，只有靠任务主动调用schedule()，我们才有机会进行调度，所以，这里的任务不能像线程一样依赖内核调度从而毫无顾忌的执行，我们的任务里一定要显式的调用schedule()，这就是所谓的协作式(cooperative)调度。(虽然我们可以通过注册信号处理函数来模拟内核里的时钟中断并取得控制权，可问题在于，信号处理函数是由内核调用的，在其结束的时候，内核重新获得控制权，随后返回用户态并继续沿着信号发生时被中断的代码路径执行，从而我们无法在信号处理函数内进行任务切换)</p>
-</li>
-<li><p>堆栈。和内核调度线程的原理一样，我们也需要为每个任务单独分配堆栈，并且把其堆栈信息保存在任务属性里，在任务切换时也保存或恢复当前的SS:ESP。任务堆栈的空间可以是在当前线程的堆栈上分配，也可以是在堆上分配，但通常是在堆上分配比较好：几乎没有大小或任务总数的限制、堆栈大小可以动态扩展(gcc有split stack，但太复杂了)、便于把任务切换到其他线程。</p>
-</li>
-</ol>
-<p>到这里，我们大概知道了如何构造一个并发的编程框架，可如何让任务可以并行的在多个逻辑处理器上执行呢？只有内核才有调度CPU的权限，所以，我们还是必须通过系统调用创建线程，才可以实现并行。在多线程处理多任务的时候，我们还需要考虑几个问题：</p>
-<ol>
-<li>如果某个任务发起了一个系统调用，譬如长时间等待IO，那当前线程就被内核放入了等待调度的队列，岂不是让其他任务都没有机会执行？</li>
-</ol>
-<p>在单线程的情况下，我们只有一个解决办法，就是使用非阻塞的IO系统调用，并让出CPU，然后在schedule()里统一进行轮询，有数据时切换回该fd对应的任务；效率略低的做法是不进行统一轮询，让各个任务在轮到自己执行时再次用非阻塞方式进行IO，直到有数据可用。</p>
-<p>如果我们采用多线程来构造我们整个的程序，那么我们可以封装系统调用的接口，当某个任务进入系统调用时，我们就把当前线程留给它(暂时)独享，并开启新的线程来处理其他任务。</p>
-<ol>
-<li>任务同步。譬如我们上节提到的生产者和消费者的例子，如何让消费者在数据还没有被生产出来的时候进入等待，并且在数据可用时触发消费者继续执行呢？</li>
-</ol>
-<p>在单线程的情况下，我们可以定义一个结构，其中有变量用于存放交互数据本身，以及数据的当前可用状态，以及负责读写此数据的两个任务的编号。然后我们的并发编程框架再提供read和write方法供任务调用，在read方法里，我们循环检查数据是否可用，如果数据还不可用，我们就调用schedule()让出CPU进入等待；在write方法里，我们往结构里写入数据，更改数据可用状态，然后返回；在schedule()里，我们检查数据可用状态，如果可用，则激活需要读取此数据的任务，该任务继续循环检测数据是否可用，发现可用，读取，更改状态为不可用，返回。代码的简单逻辑如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="keyword">chan</span> &#123;</span><br><span class="line">    <span class="typename">bool</span> ready,</span><br><span class="line">    <span class="typename">int</span> data</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="typename">int</span> read (<span class="keyword">struct</span> <span class="keyword">chan</span> *c) &#123;</span><br><span class="line">    while (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c-&gt;ready) &#123;</span><br><span class="line">            c-&gt;ready = <span class="constant">false</span>;</span><br><span class="line">            <span class="keyword">return</span> c-&gt;data;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            schedule();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void write (<span class="keyword">struct</span> <span class="keyword">chan</span> *c, <span class="typename">int</span> i) &#123;</span><br><span class="line">    while (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (c-&gt;ready) &#123;</span><br><span class="line">            schedule(); </span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            c-&gt;data = i;</span><br><span class="line">            c-&gt;ready = <span class="constant">true</span>;</span><br><span class="line">            schedule(); <span class="comment">// optional</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>很显然，如果是多线程的话，我们需要通过线程库或系统调用提供的同步机制来保护对这个结构体内数据的访问。</p>
-<p>以上就是最简化的一个并发框架的设计考虑，在我们实际开发工作中遇到的并发框架可能由于语言和运行库的不同而有所不同，在功能和易用性上也可能各有取舍，但底层的原理都是殊途同归。</p>
-<p>譬如，glic里的getcontext/setcontext/swapcontext系列库函数可以方便的用来保存和恢复任务执行状态；Windows提供了Fiber系列的SDK API；这二者都不是系统调用，getcontext和setcontext的man page虽然是在section 2，但那只是SVR4时的历史遗留问题，其实现代码是在glibc而不是kernel；CreateFiber是在kernel32里提供的，NTDLL里并没有对应的NtCreateFiber。</p>
-<p>在其他语言里，我们所谓的“任务”更多时候被称为“协程”，也就是Coroutine。譬如C++里最常用的是Boost.Coroutine；Java因为有一层字节码解释，比较麻烦，但也有支持协程的JVM补丁，或是动态修改字节码以支持协程的项目；PHP和Python的generator和yield其实已经是协程的支持，在此之上可以封装出更通用的协程接口和调度；另外还有原生支持协程的Erlang等，笔者不懂，就不说了.</p>
-<p>由于保存和恢复任务执行状态需要访问CPU寄存器，所以相关的运行库也都会列出所支持的CPU列表。</p>
-<p>从操作系统层面提供协程以及其并行调度的，好像只有OS X和iOS的Grand Central Dispatch，其大部分功能也是在运行库里实现的。</p>
-<h2 id="goroutine">goroutine</h2><p>Go语言通过goroutine提供了目前为止所有(我所了解的)语言里对于并发编程的最清晰最直接的支持，Go语言的文档里对其特性也描述的非常全面甚至超过了，在这里，基于我们上面的系统知识介绍，列举一下goroutine的特性，算是小结：</p>
-<ol>
-<li><p>goroutine是Go语言运行库的功能，不是操作系统提供的功能，goroutine不是用线程实现的。具体可参见Go语言源码里的pkg/runtime/proc.c</p>
-</li>
-<li><p>goroutine就是一段代码，一个函数入口，以及在堆上为其分配的一个堆栈。所以它非常廉价，我们可以很轻松的创建上万个goroutine，但它们并不是被操作系统所调度执行</p>
-</li>
-<li><p>除了被系统调用阻塞的线程外，Go运行库最多会启动$GOMAXPROCS个线程来运行goroutine</p>
-</li>
-<li><p>goroutine是协作式调度的，如果goroutine会执行很长时间，而且不是通过等待读取或写入channel的数据来同步的话，就需要主动调用Gosched()来让出CPU</p>
-</li>
-<li><p>和所有其他并发框架里的协程一样，goroutine里所谓“无锁”的优点只在单线程下有效，如果$GOMAXPROCS &gt; 1并且协程间需要通信，Go运行库会负责加锁保护数据，这也是为什么sieve.go这样的例子在多CPU多线程时反而更慢的原因</p>
-</li>
-<li><p>Web等服务端程序要处理的请求从本质上来讲是并行处理的问题，每个请求基本独立，互不依赖，几乎没有数据交互，这不是一个并发编程的模型，而并发编程框架只是解决了其语义表述的复杂性，并不是从根本上提高处理的效率，也许是并发连接和并发编程的英文都是concurrent吧，很容易产生“并发编程框架和coroutine可以高效处理大量并发连接”的误解。</p>
-</li>
-<li><p>Go语言运行库封装了异步IO，所以可以写出貌似并发数很多的服务端，可即使我们通过调整$GOMAXPROCS来充分利用多核CPU并行处理，其效率也不如我们利用IO事件驱动设计的、按照事务类型划分好合适比例的线程池。在响应时间上，协作式调度是硬伤。</p>
-</li>
-<li><p>goroutine最大的价值是其实现了并发协程和实际并行执行的线程的映射以及动态扩展，随着其运行库的不断发展和完善，其性能一定会越来越好，尤其是在CPU核数越来越多的未来，终有一天我们会为了代码的简洁和可维护性而放弃那一点点性能的差别。</p>
-</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/24/golang/反射规则/">
-                反射规则 the law of reflection
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-24
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/24/golang/反射规则/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/24/golang/反射规则/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="类型和接口(type_and_interfaces)">类型和接口(type and interfaces)</h2><p>因为接口是基于类型系统的（type system），所以首先看下一下go的类型</p>
-<p>go是静态类型的。每个变量都有一个静态的类型(static type)，也就是说一种类型在编译的时候被声明和确定了(one type known and fixed at complie time)。如果我们定义：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> i <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> j MyInt</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   i的类型是int，j的类型是MyInt，i和j的类型是不一样的。尽管他们有着相同的底层类型(?)(underlying type)，但是它们是不能在不转换的情况下互相赋值的。</p>
-</blockquote>
-<p>类型里面一个重要的分类是接口类型(interface types)，它表示一系列的固定方法。一个接口变量可以存储任何实现这个结构的实际变量(? concrete type)。<br>一个出名的例子就是io包里的io.Reader和io.Writer：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Reader is the interface that wraps the basic Read method.</span></span><br><span class="line"><span class="keyword">type</span> Reader <span class="keyword">interface</span> &#123;</span><br><span class="line">	Read(p []<span class="typename">byte</span>) (n <span class="typename">int</span>, err error)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// Writer is the interface that wraps the basic Write method.</span></span><br><span class="line"><span class="keyword">type</span> Writer <span class="keyword">interface</span> &#123;</span><br><span class="line">	Write(p []<span class="typename">byte</span>) (n <span class="typename">int</span>, err error)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   任何类型以上面的特征(? with this signature)实现了Read（或者 Writer）方法，就可以说该类型实现了io.Read（或者io.Writer）。</p>
-</blockquote>
-<p>这就意味着接口io.Read类型的变量可以存放任何有Read方法的变量：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">r = os.Stdin</span><br><span class="line">r = bufio.NewReader(r)</span><br><span class="line">r = <span class="built_in">new</span>(bytes.Buffer)</span><br><span class="line"><span class="comment">// and so on</span></span><br></pre></td></tr></table></figure>
-<p>有一点要搞清楚，不管r里面存放的具体值是什么，r的类型一直都是io.Read：go是静态类型的语言，r的静态类型是io.Read。<br>一个关于接口的非常重要的例子就是空接口：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面代表一个空的方法集，可以存放任何数据类型。因为每个类型都有零个或者更多的方法。<br>有人说go的接口是动态类型(dynamically typed)，这是一种误导。他们其实是静态的类型：一个接口类型的变量一直都有同样的静态类型(static type)，虽然在运行的时候存放在接口类型变量里的值可能会变，但是那些值都会是实现过这个接口的。</p>
-<p>我们需要严谨对待上面这些概念，因为反射和接口是紧密相连的。</p>
-<h2 id="关于接口的说明（the_representation_of_an_interface）">关于接口的说明（the representation of an interface）</h2><p>一个接口类型的变量是成对存储的(stores a pair)：分配给变量的具体值(concrete value)和该值的类型描述(value’s type descriptor)。更准确说，这个值是实现了该接口的底层具体数据(? the underlaying concrete data item)，类型(type)描述表示这个数据的所有类型信息(the type describes the full type of that item)：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> r io.Reader</span><br><span class="line">tty, err := os.OpenFile(<span class="string">"/dev/tty"</span>, os.O_RDWR, <span class="number">0</span>)</span><br><span class="line"><span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="constant">nil</span>, err</span><br><span class="line">&#125;</span><br><span class="line">r = tty</span><br></pre></td></tr></table></figure>
-<p>r包含了值对(the pair)，【value,type】，【tty,<em>os.File】。这里要注意类型</em>os.File继承了不止read一个方法。<br>尽管这里的接口类型只提供Read一种方法，但是值(value)里面带有这个关于这个数值的所有信息。这就是为什么我们这么做：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> w io.Writer</span><br><span class="line">w = r.(io.Writer)</span><br></pre></td></tr></table></figure>
-<p>这里的赋值表达式是一个类型声明(type assertion)。这个所声明里，r中的元素同时也继承了io.Writer，所以我们可以赋值给w。赋值以后，w就会存有值对(pair):【tty，*os.File】。和存放在r中的值对是一样的。接口的静态类型要求接口变量只能使用接口里所定义的方法，尽管接口变量中存放的值(value)可能拥有大量额方法。</p>
-<p>继续上面的例子，我们还可以这么做：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> empty <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">empty = w</span><br></pre></td></tr></table></figure></p>
-<p>这的空接口变量，empty，一样的包含有同上面相同的值对(pair)，【tty，*os.File】。也就是说一个空的接口能存放所有的变量，包含有关于这个变量我们所需要的所有信息。</p>
-<blockquote>
-<p>   我们这不需要一个类型声明，是因为我们都知道w是符合空接口的。在这个例子里，我们把Read转换成Writer，我们是需要特别的类型声明的，这是因为Writer的方法不是Reader方法的子集。</p>
-</blockquote>
-<p>注意一个重要的细节，存放在接口变量中的pai存放的类型一直都是【value,concrete type】，而不是【value,interface type】。接口中不保存接口变量。</p>
-<h2 id="反射的第一法则[从接口变量到反射对象的反射(reflection_goes_from_interface_value_to_reflection_object)]">反射的第一法则[从接口变量到反射对象的反射(reflection goes from interface value to reflection object)]</h2><p>简单的说，反射只是检查存放在一个接口变量里的类型和值对（type and value pair）的机制。要了解这些，我们需要知道reflect包里的两个类型：Type和Value。这个两个类型提供了访问结构变量里内容的途径，两个函数，reflect.TypeOf和reflect.ValueOf，可以获得从一个接口数据里面获取reflect.Type和reflect.Value。（当然从reflect.Value里面也能很很容易的获得reflect.Type，但是我们现在暂时把Value和Type的概念区分开）</p>
-<p>让我们先来看看TypeOf:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	 fmt.Println(<span class="string">"type:"</span>, reflect.TypeOf(x))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: type: float64</span></span><br></pre></td></tr></table></figure></p>
-<p>你可能会好奇，这里哪有接口？程序里里面我们传递给reflect.TypeOf的x变量时float64，而不是接口啊。但是跟据godoc里显示，reflect.TypeOf的声明里包含有一个空的接口：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TypeOf returns the reflection Type of the value in the interface&#123;&#125;.</span></span><br><span class="line"><span class="comment">// TypeOf(nil) returns nil.</span></span><br><span class="line"><span class="keyword">func</span> TypeOf(i <span class="keyword">interface</span>&#123;&#125;) Type &#123;</span><br><span class="line">	eface := *(*emptyInterface)(unsafe.Pointer(&amp;i))</span><br><span class="line">	<span class="keyword">return</span> toType(eface.typ)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>当我们调用<code>reflect.TypeOf(x)</code>时，x首先被存放在一个空的接口中，然后被当成参数传递过去。reflect.Typeof拆开（unpacks）这个空的接口，获取类型的信息（type information）。</p>
-<p>那么reflect.ValueOf函数自然是用来获取值（value）的（这里我们忽略样板（? boilerplate），先关注可执行的代码）：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, reflect.ValueOf(x))</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: value: &lt;float64 Value&gt;</span></span><br></pre></td></tr></table></figure>
-<p>reflect.Type和reflect.ValueOf都拥有很多的方法供我们使用。一个非常重要的例子就是Value有一个Type的方法，这个方法可以从refelct.Value中获得Type。另外一个Type和Value都有的方法是Kind，这个方法可以返回一个常量说明（? a constant indicating(底层类型,例如:int,float)），类似：Uint和Float64等等。同时Value里面还有类似Int和Float的函数，能让我们获取其中获取的值：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">fmt.Println(<span class="string">"type:"</span>, v.Type())</span><br><span class="line">fmt.Println(<span class="string">"kind is float64:"</span>, v.Kind() == reflect.Float64)</span><br><span class="line">fmt.Println(<span class="string">"value:"</span>, v.Float())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type: float64</span></span><br><span class="line"><span class="comment">//			kind is float64: true</span></span><br><span class="line"><span class="comment">//			value: 3.4</span></span><br></pre></td></tr></table></figure>
-<p>这里还有类似SetInt和SetFloat的方法，但是使用这些方法前我们需要了解settability（？）这个是下面第三部分才能谈到的，待会再讨论。</p>
-<p>反射库里面有两个属性需要特别指出来。第一，为了让api简单，Value的setter和getter方法都是基于可以用来保存数据的最大数据类型的：比如所有的有符号整形操作都是基于int64的。也就是说，Value的Int方法返回一个int64的数据，而SetInt的方法获取的是一个int64。用实际的例子里说明：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">uint8</span> = <span class="string">'x'</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">fmt.Println(<span class="string">"type:"</span>, v.Type())<span class="comment">// uint8.</span></span><br><span class="line">fmt.Println(<span class="string">"kind is uint8: "</span>, v.Kind() == reflect.Uint8) <span class="comment">// true.</span></span><br><span class="line">x = <span class="typename">uint8</span>(v.Uint())<span class="comment">// v.Uint returns a uint64.</span></span><br></pre></td></tr></table></figure>
-<p>第二是属性，反射对象的Kind方法描述的是底层类型（underlying type），不是静态类型。如果一个反射对象包含有一个用户自定义类型，如下：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> MyInt <span class="typename">int</span></span><br><span class="line"><span class="keyword">var</span> x MyInt = <span class="number">7</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br></pre></td></tr></table></figure>
-<p>v的Kind方法返回值依旧是reflect.Int，尽管x的静态类型是MyInt而不是int。也就是说，Kind方法不能识别基于int的MyInt类型，尽管Type是可以的。</p>
-<h2 id="反射的第二法则[从反射对象到接口变量的反射(reflection_goes_from_reflection_object_to_interface_value)]">反射的第二法则[从反射对象到接口变量的反射(reflection goes from reflection object to interface value)]</h2><p>就像物理世界中的反射，Go中的反射也有自己反转(inverse)。</p>
-<p>给我一个reflect.Value，我们就可以通过Interface这个方法重新得到一个接口。实际上，这个方法吧type和value信息打包成一个接口引用，并且返回：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Interface returns v's value as an interface&#123;&#125;.</span></span><br><span class="line"><span class="keyword">func</span> (v Value) Interface() <span class="keyword">interface</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>因此我们可以这么说：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">y := v.Interface().(<span class="typename">float64</span>) <span class="comment">// y will have type float64.</span></span><br><span class="line">fmt.Println(y)	<span class="comment">//把有对象v所表示的float64的值答应出来了。</span></span><br></pre></td></tr></table></figure>
-<p>我们还可以加以改进。fmt.Println，fmt.Printf等等函数的参数都是以一个空的接口变量传递过去的，也就是说就像我们在之前的例子里一样，这个参数在fmt包里被解包（unpacked）了。所以只要给上面的函数直接传递Interface方法的返回值就能正确的输出内容：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(v.Interface())</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   （为什么不直接使用fmt.Println(v)？这是因为v其实是一个reflect.Value；我们需要的是里面保存的确定的值(? concrete value)）。</p>
-</blockquote>
-<p>既然我们的值的类型是float64，我们甚至可以使用浮点数类型：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(<span class="string">"value is %7.1e\n"</span>, v.Interface())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: 3.4e+00</span></span><br></pre></td></tr></table></figure>
-<p>再说一遍，我们不需要把v.Interface的结果类型转换（? type-assert）。这个空的接口值里面包含有具体数据的类型信息，Printf可以从中获取的到。</p>
-<p>简单的说，Interface是函数ValueOf的反转，只可惜的是它的结果都是静态类型interface{}</p>
-<p>小结：从接口反射到反射变量，然后又反射回来。</p>
-<h2 id="反射的第三法则[要想修改一个反射对象，值必须是可设置的(to_modify_a_reflection_object,the_value_must_be_settable)]">反射的第三法则[要想修改一个反射对象，值必须是可设置的(to modify a reflection object,the value must be settable)]</h2><p>第三条法则是很为微妙(subtle)和让人困惑的(confusing)，但是我们从第一法则(principles)来看的话的，也是很容搞懂的。</p>
-<p>下面这些代码无法运行，但是值得我们学习：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">v.SetFloat(<span class="number">7.1</span>) <span class="comment">// Error: will panic</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//output: panic: reflect.Value.SetFloat using unaddressable value</span></span><br></pre></td></tr></table></figure>
-<p>会触发panic，产生一段含混不清的提示，其实问题并不是常量7.1无法寻址，是因为v是不可设置的（not settable）。可设置(settableility)是反射Value的一个属性，但不是所有的反射Value都有这个属性。</p>
-<p>Value的CanSet方法可以判断Value可不可设置，如下面的例子：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br><span class="line">fmt.Println(<span class="string">"settability of v:"</span>, v.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output: settability of v: false</span></span><br></pre></td></tr></table></figure>
-<p>对一个不可设置（non-settable）的Value使用set就会报错。那么什么是可设置性（settabiliy）？<br>可设置性有点像可寻址(addressability)，但是更加严格，它是表示一个反射对象可不可修改创建这个反射对象原始存储数据(storage)的属性</p>
-<p>可设置性取决于反射对象中保存的是不是原始的数据。当我们输入一下代码：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">v := reflect.ValueOf(x)</span><br></pre></td></tr></table></figure></p>
-<p>我们传递给reflection.ValueOf的是一个x的拷贝，所以作为reflect.ValueOf的参数用来反射对象的接口，其实x的拷贝，而不是x本身。因此如果下面的代码：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">v.SetFloat(<span class="number">7.1</span>)</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   理论上是允许运行成功的，只是不会去修改x的值，尽管看起来v是由x创建的一样。其实这样操作会更新x的拷贝在内存中的值，而x本身是不会受到影响的。这样的话会显得让人困惑，而且一点用的都没有。所以这种方法就被规定为非法的，可设置属性是不允许这么操作的。</p>
-</blockquote>
-<p>可能这些看起来有些怪异（bizarre），但其实是很简单的。这其实是一种很常见的情况，只是有个不同的外在而已。想想当我们把x传递给一个函数的时候：<code>f(x)</code><br>因为我们传递给函数的是x的拷贝而不是x的本身，所以我们知道f不能修改x的值。如果我们想f能修改x的值，那么我们就必须给这个函数传递x的的地址了（也就是x的指针）: <code>f(&amp;x)</code></p>
-<p>这样看起来就显得很简单很熟悉了，反射也是同样的运作方式的。如果我们也想让反射修改x的话，我们也必须给反射库(reflection library)一个我们想修改的值得指针。</p>
-<p>让我们这操作一下试试。首先我们像往常一样初始化x，然后创建一个指向x的反射变量p：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">p := reflect.ValueOf(&amp;x) <span class="comment">// <span class="doctag">Note</span>: take the address of x.</span></span><br><span class="line">fmt.Println(<span class="string">"type of p:"</span>, p.Type())</span><br><span class="line">fmt.Println(<span class="string">"settability of p:"</span>, p.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type of p: *float64</span></span><br><span class="line">			settability of p: <span class="constant">false</span></span><br></pre></td></tr></table></figure>
-<p>p这个反射是不可设置的，但是p也也不是我想设置的数据，我们要设置的实际是*p。想要得到p所指向的数据，我们使用Value的Elem方法。这个方法可以通过指针间接访问数据，并且保存在反射Value的变量v中：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v := p.Elem()</span><br><span class="line">fmt.Println(<span class="string">"settability of v:"</span>, v.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	settability of v: true</span></span><br></pre></td></tr></table></figure>
-<p>既然v代表的是x，我们终于可以使用v.SetFloat修改x的值了：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">v.SetFloat(<span class="number">7.1</span>)</span><br><span class="line">fmt.Println(v.Interface())</span><br><span class="line">fmt.Println(x)</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	7.1</span></span><br><span class="line">			<span class="number">7.1</span></span><br></pre></td></tr></table></figure></p>
-<p>尽管反射执行着语言的功能，通过反射中Type和Values可以掩盖住具体的细节，但是可能还是难以去理解。你只需要记住了，Values需要一个数据的地址才能修改反射所代表的数据。</p>
-<h2 id="结构体(Structs)">结构体(Structs)</h2><p>在我们之前的例子里，v并不是指针本身，它只是指针的派生而已。这种方法适用于用反射来修改结构体的域(field)。只要我们有这个结构体的体质，我们就能修改这个结构体的域。</p>
-<p>这里有一个简单额例子来分析一下一个结构体变量t。因为我们待会要修改这个结构体，所以我们先用结构体的指针创建反射对象。我们用typeOf保存它的类型，用直接的方法（? straightforward method calls）迭代出所有的域【参考反射包获取更多的细节】。注意我们这里导出了结构体域的名字，但是域本身还是reflect.Value对象的：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> T <span class="keyword">struct</span> &#123;</span><br><span class="line">    A <span class="typename">int</span></span><br><span class="line">    B <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line">t := T&#123;<span class="number">23</span>, <span class="string">"skidoo"</span>&#125;</span><br><span class="line">s := reflect.ValueOf(&amp;t).Elem()</span><br><span class="line">typeOfT := s.Type()</span><br><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; s.NumField(); i++ &#123;</span><br><span class="line">    f := s.Field(i)</span><br><span class="line">    fmt.Printf(<span class="string">"%d: %s %s = %v\n"</span>, i,</span><br><span class="line">        typeOfT.Field(i).Name, f.Type(), f.Interface())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	0: A int = 23</span></span><br><span class="line">			<span class="number">1</span>: B <span class="typename">string</span> = skidoo</span><br></pre></td></tr></table></figure>
-<p>需要注意的是我们这里使用的可设置性（? there’s one more point about settability introduced in passing here）：这里把T的域名（field name）导出来，是因为一个结构体只有导出的域才能设置。</p>
-<p>因为s中保存着一个可设置的反射对象，所以我们可以修改结构体的域：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s.Field(<span class="number">0</span>).SetInt(<span class="number">77</span>)</span><br><span class="line">s.Field(<span class="number">1</span>).SetString(<span class="string">"Sunset Strip"</span>)</span><br><span class="line">fmt.Println(<span class="string">"t is now"</span>, t)</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	is now &#123;77 Sunset Strip&#125;</span></span><br></pre></td></tr></table></figure></p>
-<p>如果你把程序改成s是由t创建的而不是&amp;t，那么在你调用SetInt和SetString时程序就报错，因为此时t的域是不可修改的。</p>
-<h2 id="小结（conclusion）">小结（conclusion）</h2><p>反射的规则：</p>
-<ol>
-<li>由接口到反射变量的反射</li>
-<li>由反射对象到接口的反射</li>
-<li>要修改一个反射对象，value必须是可设置的</li>
-</ol>
-<p>一旦说你了解了这些规则，尽管难以理解，但是Go会变的更容易使用。这是一个强大的工具，在使用的时候要注意，不是绝对必要的时候不要使用。</p>
-<p>关于反射我们还有很多没有涉及——在channels中的发送和接收、分配内存、使用slice和map、调用方法和函数——但是这篇文章内容已经足够多了。我们会在后面文章里涉及这些内容中的部分。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/14/object-c/uibutton/">
-                UIButton详解
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-14
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/14/object-c/uibutton/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/14/object-c/uibutton/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="创建">创建</h2><ol>
-<li><p><strong>常规的 initWithFrame</strong><br><code>UIButton *btn1 = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 80, 44)];</code><br>对代码创建View（UIControl继承自UIView，所以也是view）不甚了解的请参看：《有关View的几个基础知识点》</p>
-</li>
-<li><p><strong>UIButton 的一个类方法（也可以说是静态方法）buttonWithType</strong><br><code>UIButton *btn2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];</code><br>风格有如下:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">enum</span> &#123;  </span><br><span class="line">    <span class="built_in">UIButtonTypeCustom</span> = <span class="number">0</span>,           <span class="comment">// 自定义，无风格  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeRoundedRect</span>,        <span class="comment">// 白色圆角矩形，类似偏好设置表格单元或者地址簿卡片  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeDetailDisclosure</span>,<span class="comment">//蓝色的披露按钮，可放在任何文字旁  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeInfoLight</span>,<span class="comment">//微件(widget)使用的小圆圈信息按钮，可以放在任何文字旁  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeInfoDark</span>,<span class="comment">//白色背景下使用的深色圆圈信息按钮  </span></span><br><span class="line">    <span class="built_in">UIButtonTypeContactAdd</span>,<span class="comment">//蓝色加号(+)按钮，可以放在任何文字旁  </span></span><br><span class="line">&#125; <span class="built_in">UIButtonType</span>;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="设置属性">设置属性</h2><ul>
-<li><p><strong>Frame属性</strong><br>第2种方法创建按钮后你可以给按钮的frame属性赋值，用一个CGRect结构设置他的位置和大小.</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGRect</span> btn2Frame = <span class="built_in">CGRectMake</span>(<span class="number">10.0</span>, <span class="number">10.0</span>, <span class="number">60.0</span>, <span class="number">44.0</span>);  </span><br><span class="line">btn2<span class="variable">.frame</span> =btn2Frame;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>属性</strong><br>对于任何特定状态下的按钮，都可以设定该按钮该状态下的按钮标题。用setTitle 方法 设置即可：<br><code>[btn1 setTitle:@&quot;BTN1&quot; forState:UIControlStateNormal];</code><br>你也可以为按钮的某一状态设置为图。用 setImage 即可：<br><code>[btn2 setImage:[UIImage imageNamed:@&quot;pic&quot;] forState:UIControlStateNormal];</code><br>此外，你还可以为每种按钮状态设置标题的颜色和阴影，以及按钮的背景。方法 setTitleColor 和 setTitleShadowColor 都需要一个UIColor对象做参数：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[btn1 setTitleColor:[<span class="built_in">UIColor</span> redColor] forState:<span class="built_in">UIControlStateNormal</span>];			<span class="comment">//设置标题颜色  </span></span><br><span class="line">[btn1 setTitleShadowColor:[<span class="built_in">UIColor</span> grayColor] forState:<span class="built_in">UIControlStateNormal</span> ];	<span class="comment">//阴影  </span></span><br><span class="line">[btn1 setBackgroundImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"PIC"</span>] forState:<span class="built_in">UIControlStateHighlighted</span>];	<span class="comment">//背景图像</span></span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>上面几个方法都提到 共同的参数 forState . 这个参数决定了标题、图像或其他属性将在何种状态下显现。你可以编程令按钮在那个状态变化<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> &#123;  </span><br><span class="line">    <span class="built_in">UIControlStateNormal</span>       = <span class="number">0</span>,				<span class="comment">//常态                       </span></span><br><span class="line">    <span class="built_in">UIControlStateHighlighted</span>  = <span class="number">1</span> &lt;&lt; <span class="number">0</span>,		<span class="comment">//高亮  </span></span><br><span class="line">    <span class="built_in">UIControlStateDisabled</span>     = <span class="number">1</span> &lt;&lt; <span class="number">1</span>,		<span class="comment">//禁用  </span></span><br><span class="line">    <span class="built_in">UIControlStateSelected</span>     = <span class="number">1</span> &lt;&lt; <span class="number">2</span>,		<span class="comment">// 选中  </span></span><br><span class="line">    <span class="built_in">UIControlStateApplication</span>  = <span class="number">0x00FF0000</span>,	<span class="comment">// 当应用程序标志使用时  </span></span><br><span class="line">    <span class="built_in">UIControlStateReserved</span>     = <span class="number">0xFF000000</span>		<span class="comment">// 为内部框架预留的  </span></span><br><span class="line">&#125;;  </span><br><span class="line"><span class="keyword">typedef</span> <span class="built_in">NSUInteger</span> <span class="built_in">UIControlState</span>;</span><br></pre></td></tr></table></figure></p>
-<p>你只要掌握前四种状态就好了。<br>当按钮高亮或者禁用，UIButton 类可以调整自己的外观，下面几个属性可以让你按照需要对按钮的外观进行微调：<br><strong>adjustsImageWhenHighlighted</strong><br>默认情况下，在按钮被禁用时，图像会被画的颜色深一些。要禁用此功能，请将这个属性设置为NO：<br><code>btn1.adjustsImageWhenHighlighted = NO;</code><br><strong>adjustsImageWhenDisabled</strong><br>默认情况下，按钮在被禁用时，图像会被画的颜色淡一些。要禁用此功能，请将这个属性设置为NO：<br><code>btn1.adjustsImageWhenDisabled = NO;</code><br><strong>showsTouchWhenHighlighted</strong><br>这个属性设置为YES，可令按钮在按下时发光。这可以用于信息按钮或者有些重要的按钮：<br><code>btn1.showsTouchWhenHighlighted = YES;</code></p>
-<h2 id="显示控件">显示控件</h2><p>显示控件一如继往的简单：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span><span class="variable">.view</span> addSubview:btn1];  </span><br><span class="line">[<span class="keyword">self</span><span class="variable">.view</span> addSubview:btn2];</span><br></pre></td></tr></table></figure></p>
-<h2 id="重写绘制行为">重写绘制行为</h2><p>你可以通过子类化按钮来定制属于你自己的按钮类。在子类化的时候你可以重载下面这些方法，这些方法返回CGRect结构，指明了按钮每一组成部分的边界。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">backgroundRectForBounds   <span class="comment">//指定背景边界  </span></span><br><span class="line">contentRectForBounds <span class="comment">// 指定内容边界  </span></span><br><span class="line">titleRectForContentRect    <span class="comment">// 指定文字标题边界  </span></span><br><span class="line">imageRectForContentRect     <span class="comment">//指定按钮图像边界  </span></span><br><span class="line"><span class="comment">//例：</span></span><br><span class="line">- (<span class="built_in">CGRect</span>)imageRectForContentRect:(<span class="built_in">CGRect</span>)bounds&#123;  </span><br><span class="line">     <span class="keyword">return</span> <span class="built_in">CGRectMake</span>(<span class="number">0.0</span>, <span class="number">0.0</span>, <span class="number">44</span>, <span class="number">44</span>);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>   注意：不要直接调用这些方法， 这些方法是你写给系统调用的。</p>
-</blockquote>
-<h2 id="添加动作">添加动作</h2><p>按钮是用来干嘛的？用来激发某个动作或事件的。那我们我们要为他添加一个动作，与 UIControl 里讲的一样：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[btn1 addTarget:<span class="keyword">self</span> action:<span class="keyword">@selector</span>(btnPressed:) forControlEvents:<span class="built_in">UIControlEventTouchUpInside</span>];  </span><br><span class="line">-(<span class="keyword">void</span>)btnPressed:(<span class="keyword">id</span>)sender&#123;  </span><br><span class="line">	<span class="built_in">UIButton</span>* btn = (<span class="built_in">UIButton</span>*)sender;   </span><br><span class="line">	<span class="comment">//开始写你自己的动作  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
@@ -1370,7 +1304,7 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">77</span>
+              <span class="site-state-item-count">80</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
@@ -1384,7 +1318,7 @@
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">52</span>
+              <span class="site-state-item-count">54</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
@@ -1397,7 +1331,7 @@
           
             
               <span class="links-of-author-item">
-              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+              <a href="https://github.com/zlsky" target="_blank">GitHub</a>
             </span>
             
               <span class="links-of-author-item">

@@ -117,6 +117,326 @@
           
           
             
+              <a class="post-title-link" href="/2014/09/01/cocos2dx/锚点/">
+                锚点
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-01
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cocos2dx/">cocos2dx</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/01/cocos2dx/锚点/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/cocos2dx/锚点/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="问题">问题</h2><ul>
+<li>在cocos2d示例代码HelloCpp中，为什么要将CCMenu设置位置到CCPointZero，即使CCMenu的锚点是在(0.5, 0.5)?</li>
+<li>这是因为CCMenu没有使用锚点进行坐标定位，而是使用的坐标原点。也就是说，CCMenu的坐标原点放到了其父节点的坐标原点。</li>
+</ul>
+<h2 id="延伸">延伸</h2><ul>
+<li>不光是CCMenu没有使用锚点定位，像CCLayer，CCScene都没有使用锚点定位。具体设定是在构造函数中设计标记m_bIgnoreAnchorPointForPosition = true;下表描述了节点的默认锚点位置及定位方式</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>节点类型</th>
+<th>锚点位置</th>
+<th>使用锚点？</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CCNode</td>
+<td>(0, 0)</td>
+<td>是</td>
+</tr>
+<tr>
+<td>CCScene及其子类</td>
+<td>(0.5, 0.5)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>CCLayer及其子类</td>
+<td>(0.5, 0.5)</td>
+<td>否</td>
+</tr>
+<tr>
+<td>CCSprite及其子类</td>
+<td>(0.5, 0.5)</td>
+<td>是</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>说明：CCNode的其它子类如果没有特殊指定，都是继承了CCNode的锚点位置及定位方式。典型的是CCLabelAtlas，它就是使用CCNode的定位方式，因为它及它的父类CCAtlasNode都没有对锚点位置和是否使用锚点进行设置，而CCLabelFont使用与CCSprite的锚点和定位方式，因为它是CCSprite的子类。</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/01/arithmetic/最大公约数/">
+                最大公约数
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-01
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/算法/">算法</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/01/arithmetic/最大公约数/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/arithmetic/最大公约数/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="最大公约数">最大公约数</h1><h2 id="辗除法的数学原理分析">辗除法的数学原理分析</h2><ul>
+<li>辗转相除法使用到的原理很聪明也很简单，假设用f（x, y）表示x，y的最大公约数，取k = x/y，b = x%y，则x = ky + b，如果一个数能够同时整除x和y，则必能同时整除b和y；而能够同时整除b和y的数也必能同时整除x和y，即x和y的公约数与b和y的公约数是相同的，其最大公约数也是相同的，则有f（x, y）= f（y, x%y）（y &gt; 0），如此便可把原问题转化为求两个更小数的最大公约数，直到其中一个数为0，剩下的另外一个数就是两者最大的公约数。</li>
+<li>例如，12和30的公约数有：1、2、3、6，其中6就是12和30的最大公约数。</li>
+<li>辗转相除法是古希腊求两个正整数的最大公约数的，也叫欧几里德算法，其方法是用较大的数除以较小的数，上面较小的除数和得出的余数构成新的一对数，继续做上面的除法，直到出现能够整除的两个数，其中较小的数（即除数）就是最大公约数。以求288和123的最大公约数为例，操作如下：</li>
+</ul>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">288÷123=2</span>余42</span><br><span class="line"><span class="number">123÷42=2余39</span></span><br><span class="line"><span class="number">42÷39=1余3</span></span><br><span class="line">39÷3=13</span><br><span class="line">所以3就是<span class="number">288和123</span>的最大公约数。</span><br><span class="line">因为x == k*y＋ｂ；</span><br><span class="line">如果同时对量边做除法，注意都是整数，若同整除ｍ，则有x/m == k * (y/m) + b/m</span><br><span class="line">由此可见可以将其转化为两个更小的数的最大公约数。</span><br></pre></td></tr></table></figure>
+<ul>
+<li>代码如下：</li>
+</ul>
+<figure class="highlight aspectj"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">gcd</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> temp;</span><br><span class="line">    <span class="keyword">if</span>(a&lt;b)&#123;<span class="comment">/*交换两个数，使大数放在a上*/</span></span><br><span class="line">        temp=a;</span><br><span class="line">        a=b;</span><br><span class="line">        b=temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(b!=<span class="number">0</span>)&#123;<span class="comment">/*利用辗除法，直到b为0为止*/</span></span><br><span class="line">        temp=a%b;</span><br><span class="line">        a=b;</span><br><span class="line">        b=temp;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/09/01/arithmetic/协程/">
+                进程,线程,协程
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-09-01
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/算法/">算法</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/09/01/arithmetic/协程/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/01/arithmetic/协程/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="进程,线程,协程">进程,线程,协程</h1><h2 id="进程">进程</h2><p>进程是操作系统中最重要的一个概念，基本上是说程序执行的实例，（以unix系统为例）它包括正在执行的程序代码以及其对应的数据，还包括了进程所占用的虚拟内存，信号量，文件目录，文件句柄等等。可以看出，创建一个进程代价是比较高的，所以操作系统中的进程数往往是有限的，不能无限制的增长，因为他要耗费太多的系统的资源。进程之间可以互相通信，通过这种方式，来完成进程之间的沟通与协作。进程间通信的主要有两种方式：第一种是信号量，通过向其他进程发送信号，内核接收到这个请求，然后通知接受信号的进程来处理；第二个种方式是通过管道，两个进程共享一个管道信息，一个进程往往管道的一段写数据，另外一个进程从管道的另外一端接受数据，从实现原理来看，更像是两个进程共享一段内存信息。在进程调度上，都是由操作系统内核进行调度，进程调度比较复杂，由专门的算法来实现进程调度，一般都有时间片的调度算法那，这里就不说了。正常情况下，一个进程有一定的执行时间，当发生以下几种情况的时候，进程会被迫让出时间片，腾出CPU给其他进程，包括：1 当期正在执行的进程陷入io，被阻塞 2线程被人为中断，例如给线程发送中断信号 3 进程用完时间片 4 有优先级更高的进程要执行，被抢占。 如果进程过多，调度就越频繁，由于进程一次调度，在系统上，需要做很多的工作，比如：保存当前进程的调用栈信息，cpu各个寄存器信息，虚拟内存交换，保护相关的资源等等，所以进行一次进程切换的代价是比较高的。</p>
+<p><strong>从上面的分析，我们从三个维度来总结以下进程相关的特性:</strong></p>
+<ol>
+<li><p>资源占用：比较多</p>
+</li>
+<li><p>进程通信：效率比较低</p>
+</li>
+<li><p>上下文切换：慢</p>
+</li>
+</ol>
+<h2 id="线程">线程</h2><p>由于创建进程的代价太高，所以在操作系统中，又出现了线程的概念，简单的说，就是一个进程可以拥有多个线程，每个线程都会共享进程所占用的资源信息，包括虚拟内存，文件资源等等。在这个方面，线程所占用的资源远远小于进程，系统中就可以创建相对数量较多的线程，这些线程共享一个进程所占有的所有资源。在unix操作系统中，线程也是用进程表示的，只不过这些进程可以共享了父进程相关的信息，这里成为轻量级进程。 在线程之间，不仅仅可以通过进程之间的通信方式：信号量，管道，还可以通过共享内存的方式进行通信，在java里面就表现的比较明显，例如两个线程之间可以通过一个实例变量（例如消息队列）进行通信，这种通信方式很高效，毕竟访问内存是非常快的。在调度层面，同一个线程组（共享一个进程）的切换相对比较高效，但是不同线程组之间的切换其实和进程切换效率差不多。</p>
+<p><strong>从上面的分析，也总结以下以下线程的特性</strong></p>
+<ol>
+<li><p>资源占用：一般</p>
+</li>
+<li><p>线程通信：效率高</p>
+</li>
+<li><p>上下文切换：一般</p>
+</li>
+</ol>
+<h2 id="协程">协程</h2><p>对于进程和线程来说，都是通过操作系统内核进行调度的，是抢占式的，也就是说，进程和线程还没有运行完成，是可以被其他进程或者线程进行抢占的，进程调度这么设计，是完全有道理的，避免由于一个进程无限运行，其他进程无法得到cpu的时间，导致整个系统死机。但是进程之间切换也是很耗时的，但可以考虑，如果保证业务处理会在有限的时间内完成，那么就没有必要采用抢占式调度的机制。同时如果任务永远不会被阻塞（系统必须支持非阻塞IO），那么就可能采取一种简单的调度策略，这种策略就是顺序执行将要处理的任务列表。</p>
+<p>假设采用这种调度方式，就是由一个线程循环处理所有的任务，要想提高性能，就必须满足以下几个条件：</p>
+<ol>
+<li><p><strong>任务执行的时间比较短</strong>.假设任务执行时间都比较长，远远高于线程切换的代价，那完全可以采用单独一个线程进行处理，没有必要采用这种复杂的方案</p>
+</li>
+<li><p><strong>任务所依赖的线程不能被阻塞</strong>.相当于执行任务的线程要被阻塞，相当于每个任务里面不能调用阻塞线程相关的操作，否则后续的任务就无法执行，整体的效率反而比多线程的效率低</p>
+</li>
+<li><p><strong>任务之间是没有依赖的</strong>.任务之间彼此独立，没有依赖关系，也就是说不会涉及到同步和互斥。</p>
+</li>
+</ol>
+<p>这里面会涉及到一个问题，就是这个执行的任务如果调用了非阻塞io，，需要等io完成了，才能进行后续的业务处理。为了解决这种情况，我们必须保存这个任务的上下文，然后跳过这个任务，调度程序会执行下一个任务，等操作系统io完成之后，通知执行线程，那么这个线程会找到当时没有执行完成的任务，继续执行。这里面其实也会涉及到任务的上下文切换，但是这种切换代价很低，完全可以在线程里面实现，不需要调用内核完成切换，避免性能开销。</p>
+<p>以上说的就是一个coroutine机制，这种机制的思路就是在用户层设计一个任务调度任务，这个任务名字就要做协程，比线程更轻量级，协程有很多限制。并不是所有的业务都适合用这种方式来实现。</p>
+<p><strong>可以看出协程的一些特性：</strong></p>
+<ol>
+<li><p>占用资源：很少</p>
+</li>
+<li><p>协程通信：不能同步通信，只能采取异步消息通信，效率高</p>
+</li>
+<li><p>上下文切换：很快</p>
+</li>
+</ol>
+<h2 id="关系图:">关系图:</h2><p><img src="/img/协程/xiecheng.png" alt="image"> </p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/09/01/arithmetic/三角型/">
                 三角型基础
               </a>
@@ -1033,7 +1353,7 @@ pFun a[<span class="number">5</span>];
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">77</span>
+              <span class="site-state-item-count">80</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
@@ -1047,7 +1367,7 @@ pFun a[<span class="number">5</span>];
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">52</span>
+              <span class="site-state-item-count">54</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
@@ -1060,7 +1380,7 @@ pFun a[<span class="number">5</span>];
           
             
               <span class="links-of-author-item">
-              <a href="https://github.com/zl8522115" target="_blank">GitHub</a>
+              <a href="https://github.com/zlsky" target="_blank">GitHub</a>
             </span>
             
               <span class="links-of-author-item">
