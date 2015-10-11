@@ -230,7 +230,7 @@
 <p>可能这些看起来有些怪异（bizarre），但其实是很简单的。这其实是一种很常见的情况，只是有个不同的外在而已。想想当我们把x传递给一个函数的时候：<code>f(x)</code><br>因为我们传递给函数的是x的拷贝而不是x的本身，所以我们知道f不能修改x的值。如果我们想f能修改x的值，那么我们就必须给这个函数传递x的的地址了（也就是x的指针）: <code>f(&amp;x)</code></p>
 <p>这样看起来就显得很简单很熟悉了，反射也是同样的运作方式的。如果我们也想让反射修改x的话，我们也必须给反射库(reflection library)一个我们想修改的值得指针。</p>
 <p>让我们这操作一下试试。首先我们像往常一样初始化x，然后创建一个指向x的反射变量p：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">p := reflect.ValueOf(&amp;x) <span class="comment">// <span class="doctag">Note</span>: take the address of x.</span></span><br><span class="line">fmt.Println(<span class="string">"type of p:"</span>, p.Type())</span><br><span class="line">fmt.Println(<span class="string">"settability of p:"</span>, p.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type of p: *float64</span></span><br><span class="line">			settability of p: <span class="constant">false</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">p := reflect.ValueOf(&amp;x) <span class="comment">// Note: take the address of x.</span></span><br><span class="line">fmt.Println(<span class="string">"type of p:"</span>, p.Type())</span><br><span class="line">fmt.Println(<span class="string">"settability of p:"</span>, p.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type of p: *float64</span></span><br><span class="line">			settability of p: <span class="constant">false</span></span><br></pre></td></tr></table></figure>
 <p>p这个反射是不可设置的，但是p也也不是我想设置的数据，我们要设置的实际是*p。想要得到p所指向的数据，我们使用Value的Elem方法。这个方法可以通过指针间接访问数据，并且保存在反射Value的变量v中：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v := p.Elem()</span><br><span class="line">fmt.Println(<span class="string">"settability of v:"</span>, v.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	settability of v: true</span></span><br></pre></td></tr></table></figure>
 <p>既然v代表的是x，我们终于可以使用v.SetFloat修改x的值了：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">v.SetFloat(<span class="number">7.1</span>)</span><br><span class="line">fmt.Println(v.Interface())</span><br><span class="line">fmt.Println(x)</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	7.1</span></span><br><span class="line">			<span class="number">7.1</span></span><br></pre></td></tr></table></figure></p>
@@ -338,21 +338,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">80</span>
+              <span class="site-state-item-count">84</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">56</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

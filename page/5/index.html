@@ -117,6 +117,404 @@
           
           
             
+              <a class="post-title-link" href="/2014/12/17/database/mongodb的shell以及修改器/">
+                mongodb的shell以及修改器
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-17
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/database/">database</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/17/database/mongodb的shell以及修改器/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/17/database/mongodb的shell以及修改器/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h3 id="ObjectId详解">ObjectId详解</h3><p>ObjectId 使用12 字节的存储空间，是一个由24 个十六进制数字组成的字符串（每个字节可以存储两个十六进制数字）。由于看起来很长，不少人会觉得难以处理。但关键是要知道这个长长的ObjectId 是实际存储数据的两倍长。</p>
+<p>如果快速连续创建多个ObjectId，会发现每次只有最后几位数字有变化。另外，<br>中间的几位数字也会变化（要是在创建的过程中停顿几秒钟）。这是ObjectId 的创<br>建方式导致的。ObjectId 的12 字节按照如下方式生成：</p>
+<p>0 1 2 3 | 4 5 6 | 7 8 | 9 10 11<br>时间戳  | 机器  | PID | 计数器</p>
+<h2 id="shell">shell</h2><h3 id="shell脚本对象的js函数">shell脚本对象的js函数</h3><p>辅助函数             |    等价函数<br>use foo             |    db.getSisterDB(“foo”)<br>show dbs              |    db.getMongo().getDBs()<br>show collections     |    db.getCollectionNames()</p>
+<h3 id="mongorc-js">mongorc.js</h3><p>如果某些脚本会被频繁加载，可以将它们添加到mongorc.js 文件中。这个文件会在启动shell 时自动运行。<br>例如，我们希望启动成功时让shell 显示一句欢迎语。为此，我们在用户主目录下创建一个名为.mongorc.js 的文件，向其中添加如下内容：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// mongorc.js</span></span><br><span class="line"><span class="keyword">var</span> compliment = [<span class="string">"attractive"</span>, <span class="string">"intelligent"</span>, <span class="string">"like Batman"</span>];</span><br><span class="line"><span class="keyword">var</span> index = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random()*<span class="number">3</span>);</span><br><span class="line">print(<span class="string">"Hello, you're looking particularly "</span>+compliment[index]+<span class="string">" today!"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>然后，当启动shell 时，就会看到这样一些内容：<br><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mongo&#10;MongoDB shell version: 2.4.0-preconnecting&#10;to: test&#10;Hello, you&#39;re looking particularly like Batman today!&#10;&#62;</span><br></pre></td></tr></table></figure></p>
+<p>为了实用，可以使用这个脚本创建一些自己需要的全局变量，或者是为太长的名字创建一个简短的别名，也可以重写内置的函数。.mongorc.js 最常见的用途之一是移除那些比较“危险”的shell 辅助函数。可以在这里集中重写这些方法，比如为dropDatabase 或者deleteIndexes 等辅助函数添加no 选项，或者取消它们的定义。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> no = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	print(<span class="string">"Not on my watch."</span>);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 禁止删除数据库</span></span><br><span class="line">db.dropDatabase = DB.prototype.dropDatabase = no;</span><br><span class="line"><span class="comment">// 禁止删除集合</span></span><br><span class="line">DBCollection.prototype.drop = no;</span><br><span class="line"><span class="comment">// 禁止删除索引</span></span><br><span class="line">DBCollection.prototype.dropIndex = no;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>   注意，这种方式并不能保护数据库免受恶意用户的攻击，只能预防自己的手误。<br>   如果在启动shell 时指定—norc 参数，就可以禁止加载.mongorc.js。</p>
+</blockquote>
+<h3 id="prompt">prompt</h3><p>将prompt 变量设为一个字符串或者函数，就可以重写默认的shell 提示。例如，如果正在运行一个需要耗时几分钟的查询，你可能希望完成时在shell 提示中输出当前时间，这样就可以知道最后一个操作的完成时间了。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">return</span> (<span class="keyword">new</span> <span class="built_in">Date</span>())+<span class="string">"&gt; "</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>另一个方便的提示是显示当前使用的数据库：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">prompt = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> db == <span class="string">'undefined'</span>) &#123;</span><br><span class="line"><span class="keyword">return</span> <span class="string">'(nodb)&gt; '</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 检查最后的数据库操作</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">db.runCommand(&#123;getLastError:<span class="number">1</span>&#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (e) &#123;</span><br><span class="line">print(e);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> db+<span class="string">"&gt; "</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h3 id="EDITOR">EDITOR</h3><p>shell 的多行支持是非常有限的：不可以编辑之前的行。如果编辑到第15 行时发现第1 行有个错误，那会让人非常懊恼。因此，对于大块的代码或者是对象，你可能更愿意在编辑器中编辑。为了方便地调用编辑器，可以在shell 中设置EDITOR 变量（也可以在环境变量中设置）：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EDITOR=&#34;vim&#34;&#10;var wap = db.books.findOne(&#123;title: &#34;War and Peace&#34;&#125;)&#10;edit wap</span><br></pre></td></tr></table></figure>
+<h2 id="文档更新">文档更新</h2><h3 id="upsert">upsert</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">db.analytics.update(&#123;<span class="string">"url"</span> : <span class="string">"/blog"</span>&#125;, &#123;<span class="string">"$inc"</span> : &#123;<span class="string">"pageviews"</span> : <span class="number">1</span>&#125;&#125;, <span class="literal">true</span>)</span><br><span class="line"><span class="comment">//第三个参数的意思是说先看集合中是否有满足条件:url=="/blog"这条记录,如果有的话就update pageviews=1</span></span><br><span class="line"><span class="comment">//否则就创建一条这样的记录,这样做的好处是原子性.</span></span><br></pre></td></tr></table></figure>
+<h3 id="修改器">修改器</h3><p>$inc,用于自动增加<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$inc:&#123;<span class="string">"relationships.friends"</span>:<span class="number">1</span>&#125;&#125;);</span><br><span class="line"><span class="comment">//更新users集合,条件是username=="joe",inc修改器,修改relationships.friends的值+1</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   注意relationships.friends是子记录,所以要加引号</p>
+</blockquote>
+<p>$set,用于修改某个字段的值<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$set:&#123;address:<span class="string">"china1"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//设置address字段,为"china1",如果不存在就自动创建这个字段</span></span><br></pre></td></tr></table></figure></p>
+<p>$push,会向已有的数组末尾加入一个元素，要是没有就创建一个新的数组。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$push:&#123;item:<span class="string">"gold"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//向users集合条件为:username=="joe"的记录增加一个item字段array类型,并且里面push一个元素"gold"</span></span><br></pre></td></tr></table></figure>
+<p>$each,可以通过一次”$push” 操作添加多个值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$push:&#123;item:&#123;$each:[<span class="string">"send"</span>,<span class="string">"me"</span>]&#125;&#125;&#125;)</span><br><span class="line"><span class="comment">//向users集合条件为:username="joe"的记录里面的item增加若干元素"send","me"</span></span><br></pre></td></tr></table></figure></p>
+<p>$slice,可以保证数组不会超出设定好的最大长度<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;username:<span class="string">"joe"</span>&#125;,&#123;$push:&#123;item:&#123;$each:[<span class="string">"send"</span>,<span class="string">"me"</span>],$slice:-<span class="number">2</span>&#125;&#125;&#125;)<span class="comment">//$slice的值必须是负整数</span></span><br><span class="line"><span class="comment">//向users集合条件为:username="joe"的记录里面的item增加若干元素"send","me",但是只允许2个,而且是最后插入的2个,这里有点队列的感觉</span></span><br></pre></td></tr></table></figure></p>
+<p>$addToSet,用来解决唯一性,用法跟$push是差不多的</p>
+<p>$pop,如果一个字段里面是数组,而且把这个数组当成队列来看来的就可以使用这个指令<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;&#125;,&#123;$pop:&#123;item:-<span class="number">1</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//数组的开头删除一个元素,如果是正数的话就是在数组的结尾处删除一个元素</span></span><br></pre></td></tr></table></figure></p>
+<p> $pull,与$pop差不多,但是是基于特定条件删除<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;&#125;, &#123;<span class="string">"$pull"</span> : &#123;<span class="string">"item"</span> : <span class="string">"send"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//删除item元素中"send"这个元素</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   注意如果有很多”send”的话会全部被删除</p>
+</blockquote>
+<p>$setOninsert,当执行update()函数,upsert为true时不存在会创建新的记录,这个修改器可以保证第一次创建的时候值,以后都不会再修改这个值.<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.update(&#123;title:<span class="string">"send"</span>&#125;, &#123;<span class="string">"$setOnInsert"</span> : &#123;<span class="string">"createdAt"</span> : <span class="keyword">new</span> <span class="built_in">Date</span>()&#125;&#125;, <span class="literal">true</span>)</span><br><span class="line"><span class="comment">//update记录,条件为title=="send",但没有这个记录就会创建一条记录createAt就是当前时间,但是一下次再执行这个函数时就有记录了,这个值是不会发生变化的.</span></span><br></pre></td></tr></table></figure></p>
+<p>“$lt”、”$lte”、”$gt” 和”$gte” 对应&lt;、&lt;=、&gt;和&gt;=。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;<span class="string">"age"</span> : &#123;<span class="string">"$gte"</span> : <span class="number">18</span>, <span class="string">"$lte"</span> : <span class="number">30</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from users where age &gt;=18 and age&lt;=30</span></span><br></pre></td></tr></table></figure></p>
+<p>$ne,不等于 !=<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.users.find(&#123;<span class="string">"username"</span> : &#123;<span class="string">"$ne"</span> : <span class="string">"joe"</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from users where username!='joe'</span></span><br></pre></td></tr></table></figure></p>
+<p>$in,同sql里的where in.$nin同sql里面的where not in<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.raffle.find(&#123;<span class="string">"ticket_no"</span> : &#123;<span class="string">"$in"</span> : [<span class="number">725</span>, <span class="number">542</span>, <span class="number">390</span>]&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from raffle where ticket_no in (725,542,390)</span></span><br></pre></td></tr></table></figure></p>
+<p>$or<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.raffle.find(&#123;<span class="string">"$or"</span> : [&#123;<span class="string">"ticket_no"</span> : <span class="number">725</span>&#125;, &#123;<span class="string">"winner"</span> : <span class="literal">true</span>&#125;]&#125;)</span><br><span class="line"><span class="comment">//select * from raffle where ticket_no=725 or winner=true</span></span><br></pre></td></tr></table></figure></p>
+<p>$all用于搜索字段为数组的多个元素的匹配<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.food.insert(&#123;<span class="string">"_id"</span> : <span class="number">1</span>, <span class="string">"fruit"</span> : [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"peach"</span>]&#125;)</span><br><span class="line">&gt; db.food.insert(&#123;<span class="string">"_id"</span> : <span class="number">2</span>, <span class="string">"fruit"</span> : [<span class="string">"apple"</span>, <span class="string">"kumquat"</span>, <span class="string">"orange"</span>]&#125;)</span><br><span class="line">&gt; db.food.insert(&#123;<span class="string">"_id"</span> : <span class="number">3</span>, <span class="string">"fruit"</span> : [<span class="string">"cherry"</span>, <span class="string">"banana"</span>, <span class="string">"apple"</span>]&#125;)</span><br><span class="line">&gt; db.food.find(&#123;fruit : &#123;$all : [<span class="string">"apple"</span>, <span class="string">"banana"</span>]&#125;&#125;)</span><br><span class="line">&#123;<span class="string">"_id"</span> : <span class="number">1</span>, <span class="string">"fruit"</span> : [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"peach"</span>]&#125;</span><br><span class="line">&#123;<span class="string">"_id"</span> : <span class="number">3</span>, <span class="string">"fruit"</span> : [<span class="string">"cherry"</span>, <span class="string">"banana"</span>, <span class="string">"apple"</span>]&#125;</span><br><span class="line"><span class="comment">//select * from food where fruit has ['apple','banana']. 大致是这个意思,在sql中应该不行.</span></span><br><span class="line"></span><br><span class="line">&gt; db.food.find(&#123;<span class="string">"fruit.2"</span> : <span class="string">"peach"</span>&#125;)</span><br><span class="line"><span class="comment">//这个意思是指找到fruit里面的第3个元素='peach'</span></span><br></pre></td></tr></table></figure></p>
+<p>$size,对数组字段进行count条件搜索<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.food.find(&#123;<span class="string">"fruit"</span> : &#123;<span class="string">"$size"</span> : <span class="number">3</span>&#125;&#125;)</span><br><span class="line"><span class="comment">//select * from food where fruint.count()=3</span></span><br></pre></td></tr></table></figure></p>
+<p>limit()<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">db.stock.find(&#123;<span class="string">"desc"</span> : <span class="string">"mp3"</span>&#125;).limit(<span class="number">50</span>).sort(&#123;<span class="string">"price"</span> : -<span class="number">1</span>&#125;)</span><br><span class="line"><span class="comment">//select * from stock where desc='mp3' order by price desc limit50</span></span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   注意 -1=desc 1=asc</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/17/database/mongodb游标/">
+                mongodb游标
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-17
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/database/">database</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/17/database/mongodb游标/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/17/database/mongodb游标/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="游标">游标</h1><p>数据库使用游标返回find 的执行结果。客户端对游标的实现通常能够对最终结果进行有效的控制。可以限制结果的数量，略过部分结果，根据任意键按任意顺序的组合对结果进行各种排序，或者是执行其他一些强大的操作。<br>要想从shell 中创建一个游标，首先要对集合填充一些文档，然后对其执行查询，并将结果分配给一个局部变量（用var 声明的变量就是局部变量）。这里，先创建一个简单的集合，而后做个查询，并用cursor 变量保存结果：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">100</span>; i++) &#123;</span><br><span class="line">... db.collection.insert(&#123;x : i&#125;);</span><br><span class="line">... &#125;</span><br><span class="line">&gt; <span class="keyword">var</span> cursor = db.collection.find();</span><br></pre></td></tr></table></figure></p>
+<p>这么做的好处是可以一次查看一条结果。如果将结果放在全局变量或者就没有放在变量中，MongoDB shell 会自动迭代，自动显示最开始的若干文档。也就是在这之前我们看到的种种例子，一般大家只想通过shell 看看集合里面有什么，而不是想在其中实际运行程序，这样设计也就很合适。</p>
+<p>要迭代结果，可以使用游标的next 方法。也可以使用hasNext 来查看游标中是否还有其他结果。典型的结果遍历如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">while</span> (cursor.hasNext()) &#123;</span><br><span class="line">... obj = cursor.next();</span><br><span class="line">... <span class="comment">// do stuff</span></span><br><span class="line">... &#125;</span><br></pre></td></tr></table></figure>
+<p>cursor.hasNext() 检查是否有后续结果存在，然后用cursor.next() 获得它。<br>游标类还实现了JavaScript 的迭代器接口，所以可以在forEach 循环中使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">var</span> cursor = db.people.find();</span><br><span class="line">&gt; cursor.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">... print(x.name);</span><br><span class="line">... &#125;);</span><br><span class="line">adam</span><br><span class="line">matt</span><br><span class="line">zak</span><br></pre></td></tr></table></figure></p>
+<p>调用find 时，shell 并不立即查询数据库，而是等待真正开始要求获得结果时才发送查询，这样在执行之前可以给查询附加额外的选项。几乎游标对象的每个方法都返回游标本身，这样就可以按任意顺序组成方法链。例如，下面几种表达是等价的：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">var</span> cursor = db.foo.find().sort(&#123;<span class="string">"x"</span> : <span class="number">1</span>&#125;).limit(<span class="number">1</span>).skip(<span class="number">10</span>);</span><br><span class="line">&gt; <span class="keyword">var</span> cursor = db.foo.find().limit(<span class="number">1</span>).sort(&#123;<span class="string">"x"</span> : <span class="number">1</span>&#125;).skip(<span class="number">10</span>);</span><br><span class="line">&gt; <span class="keyword">var</span> cursor = db.foo.find().skip(<span class="number">10</span>).limit(<span class="number">1</span>).sort(&#123;<span class="string">"x"</span> : <span class="number">1</span>&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>此时，查询还没有真正执行，所有这些函数都只是构造查询。现在，假设我们执行如下操作：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; cursor.hasNext()</span><br></pre></td></tr></table></figure></p>
+<p>这时，查询被发往服务器。shell 立刻获取前100 个结果或者前4 MB 数据（两者之中较小者），这样下次调用next 或者hasNext 时就不必再次连接服务器取结果了。客户端用光了第一组结果，shell 会再一次联系数据库，使用getMore 请求提取更多的结果。getMore 请求包含一个查询标识符，向数据库询问是否还有更多的结果，如果有，则返回下一批结果。这个过程会一直持续到游标耗尽或者结果全部返回。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/17/database/mongodb填充因子/">
+                mongodb填充因子
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-17
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/database/">database</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/17/database/mongodb填充因子/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/17/database/mongodb填充因子/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="填充因子">填充因子</h1><p>将文档插入到MongoDB 中时，依次插入的文档在磁盘上的位置是相邻的。因此，如果一个文档变大了，原先的位置就放不下这个文档了，这个文档就会被移动到集合中的另一个位置。<br>例:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.coll.insert(&#123;<span class="string">"x"</span> :<span class="string">"a"</span>&#125;)</span><br><span class="line">&gt; db.coll.insert(&#123;<span class="string">"x"</span> :<span class="string">"b"</span>&#125;)</span><br><span class="line">&gt; db.coll.insert(&#123;<span class="string">"x"</span> :<span class="string">"c"</span>&#125;)</span><br><span class="line">&gt; db.coll.find()</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"507c3581d87d6a342e1c81d3"</span>), <span class="string">"x"</span> : <span class="string">"a"</span> &#125;</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"507c3583d87d6a342e1c81d4"</span>), <span class="string">"x"</span> : <span class="string">"b"</span> &#125;</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"507c3585d87d6a342e1c81d5"</span>), <span class="string">"x"</span> : <span class="string">"c"</span> &#125;</span><br><span class="line">&gt; db.coll.update(&#123;<span class="string">"x"</span> : <span class="string">"b"</span>&#125;, &#123;$set: &#123;<span class="string">"x"</span> : <span class="string">"bbb"</span>&#125;&#125;)</span><br><span class="line">&gt; db.coll.find()</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"507c3581d87d6a342e1c81d3"</span>), <span class="string">"x"</span> : <span class="string">"a"</span> &#125;</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"507c3585d87d6a342e1c81d5"</span>), <span class="string">"x"</span> : <span class="string">"c"</span> &#125;</span><br><span class="line">&#123; <span class="string">"_id"</span> : ObjectId(<span class="string">"507c3583d87d6a342e1c81d4"</span>), <span class="string">"x"</span> : <span class="string">"bbb"</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>MongoDB 不得不移动一个文档时，它会修改集合的填充因子（padding factor）。填充因子是MongoDB 为每个新文档预留的增长空间。可以运行db.coll.stats()<br>查看填充因子。执行上面的更新之前，”paddingFactor” 字段的值是1：根据实际的文档大小，为每个新文档分配精确的空间，不预留任何增长空间，如图3-1 所示。让其中一个文档增大之后，再次运行这个命令（如图3-2 所示），会发现填充因子增加到了1.5：为每个新文档预留其一半大小的空间作为增长空间，如图3-2 所示。如果随后的更新导致了更多次的文档移动，填充因子会持续变大（虽然不会像第一次移动时的变化那么大）。如果不再有文档移动，填充因子的值会缓慢降低，如图所示。</p>
+<p><img src="/img/mongo填充因子/01.png" alt="内存示例"></p>
+<p>移动文档是非常慢的。MongoDB 必须将文档原先所占的空间释放掉，然后将文档写入另一片空间。因此，应该尽量让填充因子的值接近1。无法手动设定填充因子的值（除非是要对集合进行压缩，参见18.4 节），但是可以设计一种不依赖于文档、可以任意增长的模式。</p>
+<p>下面用一个简单的程序来展示原地更新和文档移动的速度差别。下面的程序插入了<br>一个只包含一个键的文档，并且对这个键的值进行了100 000 次增加：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.tester.insert(&#123;<span class="string">"x"</span> : <span class="number">1</span>&#125;)</span><br><span class="line">&gt; <span class="keyword">var</span> timeInc = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">... <span class="keyword">var</span> start = (<span class="keyword">new</span> <span class="built_in">Date</span>()).getTime();</span><br><span class="line">...</span><br><span class="line">... <span class="keyword">for</span> (<span class="keyword">var</span> i=<span class="number">0</span>; i&lt;<span class="number">100000</span>; i++) &#123;</span><br><span class="line">... db.tester.update(&#123;&#125;, &#123;<span class="string">"$inc"</span> : &#123;<span class="string">"x"</span> : <span class="number">1</span>&#125;&#125;);</span><br><span class="line">... db.getLastError();</span><br><span class="line">... &#125;</span><br><span class="line">...</span><br><span class="line">... <span class="keyword">var</span> timeDiff = (<span class="keyword">new</span> <span class="built_in">Date</span>()).getTime() - start;</span><br><span class="line">... print(<span class="string">"Updates took: "</span>+timeDiff+<span class="string">"ms"</span>);</span><br><span class="line">... &#125;</span><br><span class="line">&gt; timeInc()</span><br></pre></td></tr></table></figure>
+<p>在MacBook Air 上，总共花费了7.33 秒。也就是每秒超过13 000 次更新。现在，<br>使用”$push” 向一个只有一个键的数组中插入新数据，重复100 000 次。将上面例<br>子中用于更新文档的代码修改为：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">... db.tester.update(&#123;&#125;, &#123;<span class="string">"$push"</span> : &#123;<span class="string">"x"</span> : <span class="number">1</span>&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<p>这个程序运行时间为67.58 秒，每秒少于1500 次更新。</p>
+<p>MongoDB 仍然不能很好地重用空白空间，因此频繁移动文档会产生大量空的数据文件。如果有太多不能重用的空白空间，你会经常在日志中看到如下信息：<br><code>Thu Apr 5 01:12:28 [conn124727] info DFM::findAll(): extent a:7f18dc00 wasempty, skipping ahead</code></p>
+<p>这就是说，执行查询时，MongoDB 会在整个范围内进行查找，却找不到任何文档：这只是个空白空间。这个消息提示本身没什么影响，但是它指出你当前拥有太多的碎片，可能需要进行压缩。</p>
+<p>如果你的模式在进行插入和删除时会进行大量的移动或者是经常打乱数据，可以使用usePowerOf2Sizes 选项以提高磁盘复用率。可以通过collMod 命令来设定这个选项：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.runCommand(&#123;<span class="string">"collMod"</span> : collectionName, <span class="string">"usePowerOf2Sizes"</span> : <span class="literal">true</span>&#125;)</span><br></pre></td></tr></table></figure></p>
+<p>这个集合之后进行的所有空间分配，得到的块大小都是2 的幂。由于这个选项会导致初始空间分配不再那么高效，所以应该只在需要经常打乱数据的集合上使用。在一个只进行插入或者原地更新的集合上使用这个选项，会导致写入速度变慢。</p>
+<p>如果在这个命令中指定”usePowerOf2Sizes” 选项的值为false，就会关闭这种特殊分配机制。这个选项只会影响之后新分配的记录，因此，在已有的集合上运行这个命令或者是更改这个选项的值，不会对现有数据产生影响。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/12/14/golang/goimport/">
+                go improt记录
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-12-14
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/12/14/golang/goimport/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/12/14/golang/goimport/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <p>我们在写Go代码的时候经常用到import这个命令用来导入包文件，而我们经常看到的方式参考如下：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>(</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>然后我们代码里面可以通过如下的方式调用</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Println(<span class="string">"hello world"</span>)</span><br></pre></td></tr></table></figure>
+<p>上面这个fmt是Go语言的标准库，他其实是去goroot下去加载该模块，当然Go的import还支持如下两种方式来加载自己写的模块：</p>
+<ol>
+<li>相对路径</li>
+</ol>
+<p>import “./model” //当前文件同一目录的model目录，但是不建议这种方式来import</p>
+<ol>
+<li>绝对路径</li>
+</ol>
+<p>import “shorturl/model” //加载gopath/src/shorturl/model模块</p>
+<p>上面展示了一些import常用的几种方式，但是还有一些特殊的import，让很多新手很费解，下面我们来一一讲解一下到底是怎么一回事</p>
+<ol>
+<li>点操作<br>我们有时候会看到如下的方式导入包</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>( . “fmt” ) </span><br><span class="line"></span><br><span class="line"><span class="comment">//这个点操作的含义就是这个包导入之后在你调用这个包的函数时，你可以省略前缀的包名，也就是前面你调用的fmt.Println(“hello world”)可以省略的写成Println(“hello world”)</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li><p>别名操作<br>别名操作顾名思义我们可以把包命名成另一个我们用起来容易记忆的名字</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>( f “fmt” ) <span class="comment">//别名操作的话调用包函数时前缀变成了我们的前缀，即f.Println(“hello world”)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>_操作<br>这个操作经常是让很多人费解的一个操作符，请看下面这个import</p>
+</li>
+</ol>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> ( “database/sql” _ “github.com/ziutek/mymysql/godrv” ) </span><br><span class="line"></span><br><span class="line"><span class="comment">//_操作其实是引入该包，而不直接使用包里面的函数，而是调用了该包里面的init函数，要理解这个问题，需要看下面这个图，理解包是怎么按照顺序加载的：</span></span><br></pre></td></tr></table></figure>
+<p>程序的初始化和执行都起始于main包。如果main包还导入了其它的包，那么就会在编译时将它们依次导入。有时一个包会被多个包同时导入，那么它只会被导入一次（例如很多包可能都会用到fmt包，但它只会被导入一次，因为没有必要导入多次）。当一个包被导入时，如果该包还导入了其它的包，那么会先将其它包导入进来，然后再对这些包中的包级常量和变量进行初始化，接着执行init函数（如果有的话），依次类推。等所有被导入的包都加载完毕了，就会开始对main包中的包级常量和变量进行初始化，然后执行main包中的init函数（如果存在的话），最后执行main函数。下图详细地解释了整个执行过程：</p>
+<p><img src="/img/goimport/01.png" alt="golang执行流程"></p>
+<p>通过上面的介绍我们了解了import的时候其实是执行了该包里面的init函数，初始化了里面的变量，_操作只是说该包引入了，我只初始化里面的init函数和一些变量，但是往往这些init函数里面是注册自己包里面的引擎，让外部可以方便的使用，就很多实现database/sql的引起，在init函数里面都是调用了sql.Register(name string, driver driver.Driver)注册自己，然后外部就可以使用了。</p>
+<p>这样我们就介绍完了全部import的情况，希望对你理解Go的import有一定的帮助。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/12/12/golang/xorm源码学习/">
                 xorm源码学习
               </a>
@@ -165,7 +563,7 @@
         
           <h1 id="xorm简介">xorm简介</h1><p>xorm是把一个sql的连接库再次封装,不想让用户使用原生的sql字符串来写代码.毕竟在命令式语言中,大家都喜欢API.不过好像函数式也是API.没人喜欢用字符串吧.</p>
 <h2 id="源码分析">源码分析</h2><p>初始化所有数据库连接引擎:<code>go-xorm/xorm/xorm.go</code>里面<code>regDrvsNDialects()</code>函数会将支持的函数都注册到<code>go-xorm/core/driver.go</code>文件里面的<code>drivers = map[string]Driver{}</code>和<code>dialects = map[DbType]Dialect{}</code></p>
-<p><code>xorm.Engine</code>是由以下数据结构组成:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Engine <span class="keyword">struct</span> &#123;</span><br><span class="line">	db      *core.DB</span><br><span class="line">	dialect core.Dialect</span><br><span class="line"></span><br><span class="line">	ColumnMapper  core.IMapper</span><br><span class="line">	TableMapper   core.IMapper</span><br><span class="line">	TagIdentifier <span class="typename">string</span></span><br><span class="line">	Tables        <span class="keyword">map</span>[reflect.Type]*core.Table</span><br><span class="line"></span><br><span class="line">	mutex  *sync.RWMutex</span><br><span class="line">	Cacher core.Cacher</span><br><span class="line"></span><br><span class="line">	ShowSQL <span class="typename">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// !nashtsai! <span class="doctag">TODO</span> ought to deprecate these but having logger to control its log level</span></span><br><span class="line">	ShowInfo  <span class="typename">bool</span></span><br><span class="line">	ShowErr   <span class="typename">bool</span></span><br><span class="line">	ShowDebug <span class="typename">bool</span></span><br><span class="line">	ShowWarn  <span class="typename">bool</span></span><br><span class="line">	<span class="comment">// --227</span></span><br><span class="line"></span><br><span class="line">	Logger     core.ILogger</span><br><span class="line">	TZLocation *time.Location</span><br><span class="line"></span><br><span class="line">	disableGlobalCache <span class="typename">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>xorm.Engine</code>是由以下数据结构组成:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Engine <span class="keyword">struct</span> &#123;</span><br><span class="line">	db      *core.DB</span><br><span class="line">	dialect core.Dialect</span><br><span class="line"></span><br><span class="line">	ColumnMapper  core.IMapper</span><br><span class="line">	TableMapper   core.IMapper</span><br><span class="line">	TagIdentifier <span class="typename">string</span></span><br><span class="line">	Tables        <span class="keyword">map</span>[reflect.Type]*core.Table</span><br><span class="line"></span><br><span class="line">	mutex  *sync.RWMutex</span><br><span class="line">	Cacher core.Cacher</span><br><span class="line"></span><br><span class="line">	ShowSQL <span class="typename">bool</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// !nashtsai! <span class="doctag"><span class="keyword">TODO</span></span> ought to deprecate these but having logger to control its log level</span></span><br><span class="line">	ShowInfo  <span class="typename">bool</span></span><br><span class="line">	ShowErr   <span class="typename">bool</span></span><br><span class="line">	ShowDebug <span class="typename">bool</span></span><br><span class="line">	ShowWarn  <span class="typename">bool</span></span><br><span class="line">	<span class="comment">// --227</span></span><br><span class="line"></span><br><span class="line">	Logger     core.ILogger</span><br><span class="line">	TZLocation *time.Location</span><br><span class="line"></span><br><span class="line">	disableGlobalCache <span class="typename">bool</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="Engine-DB">Engine.DB</h3><p>Engine.DB是extend <code>sql.DB</code>,这个sql.DB是来自于包:<code>database/sql/sql.go</code>标准库相关的东西自己可以看一下这个网站:<a href="http://go-database-sql.org/" target="_blank" rel="external">http://go-database-sql.org/</a></p>
 <h3 id="Engine-ColumnMapper,Engine-TableMapper">Engine.ColumnMapper,Engine.TableMapper</h3><p><code>ColumnMapper,TableMapper</code>两个是core.IMapper类型,主要是用来做名称映射的.就是说将数据结构名称,字段与表名,列名做转换.<br>目前内置了<code>SnakeMapper</code>和<code>SameMapper</code><br>SameMapper基本上是没做任何更改,完全相等.</p>
 <p><code>SnakeMapper</code>是默认mapper,两个核心方法在这里.<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Obj2Table 例如:  UserRole会转为user_role</span></span><br><span class="line"><span class="keyword">func</span> snakeCasedName(name <span class="typename">string</span>) <span class="typename">string</span> &#123;</span><br><span class="line">	newstr := <span class="built_in">make</span>([]<span class="typename">rune</span>, <span class="number">0</span>)</span><br><span class="line">	<span class="keyword">for</span> idx, chr := <span class="keyword">range</span> name &#123;</span><br><span class="line">		<span class="keyword">if</span> isUpper := <span class="string">'A'</span> &lt;= chr &amp;&amp; chr &lt;= <span class="string">'Z'</span>; isUpper &#123;</span><br><span class="line">			<span class="keyword">if</span> idx &gt; <span class="number">0</span> &#123;</span><br><span class="line">				newstr = <span class="built_in">append</span>(newstr, <span class="string">'_'</span>)</span><br><span class="line">			&#125;</span><br><span class="line">			chr -= (<span class="string">'A'</span> - <span class="string">'a'</span>)</span><br><span class="line">		&#125;</span><br><span class="line">		newstr = <span class="built_in">append</span>(newstr, chr)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="typename">string</span>(newstr)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Table2Obj 例: user_role转为UserRole</span></span><br><span class="line"><span class="keyword">func</span> titleCasedName(name <span class="typename">string</span>) <span class="typename">string</span> &#123;</span><br><span class="line">	newstr := <span class="built_in">make</span>([]<span class="typename">rune</span>, <span class="number">0</span>)</span><br><span class="line">	upNextChar := <span class="constant">true</span></span><br><span class="line"></span><br><span class="line">	name = strings.ToLower(name)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">for</span> _, chr := <span class="keyword">range</span> name &#123;</span><br><span class="line">		<span class="keyword">switch</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> upNextChar:</span><br><span class="line">			upNextChar = <span class="constant">false</span></span><br><span class="line">			<span class="keyword">if</span> <span class="string">'a'</span> &lt;= chr &amp;&amp; chr &lt;= <span class="string">'z'</span> &#123;</span><br><span class="line">				chr -= (<span class="string">'a'</span> - <span class="string">'A'</span>)</span><br><span class="line">			&#125;</span><br><span class="line">		<span class="keyword">case</span> chr == <span class="string">'_'</span>:</span><br><span class="line">			upNextChar = <span class="constant">true</span></span><br><span class="line">			<span class="keyword">continue</span></span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		newstr = <span class="built_in">append</span>(newstr, chr)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="typename">string</span>(newstr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -511,130 +909,6 @@
           
           
             
-              <a class="post-title-link" href="/2014/11/18/cpp/内存对齐基础/">
-                C++对象对齐基础
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-18
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/18/cpp/内存对齐基础/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/cpp/内存对齐基础/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="内存布局基础讲解">内存布局基础讲解</h1><blockquote>
-<p>   注：本文代码测试环境为win7 X64 cpu, 编译器为gcc4.7.1 和 vs2010</p>
-</blockquote>
-<h2 id="内存对齐是编译器为了便于CPU快速访问而采用的一项技术">内存对齐是编译器为了便于CPU快速访问而采用的一项技术</h2><p>我们先从一个例子开始，对下面的类(或者结构体)</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">short</span> s;</span><br><span class="line">&#125;no;</span><br></pre></td></tr></table></figure>
-<p>sizeof(no)的值是多少呢，如果你的回答是7(1+4+2)，那么你应该认真阅读下面的内容。可以在编译器上试试，输出的结果是12，这就是内存对齐的结果。</p>
-<h2 id="为什么要进行内存对齐呢？">为什么要进行内存对齐呢？</h2><ol>
-<li>平台原因(移植原因)：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</li>
-<li>性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问.</li>
-</ol>
-<p>编译器一般按照几个字节对齐呢？本文中两个<strong>编译器默认按照类中最大类型长度来对齐</strong>，我么也可以使用语句#pragma pack(i)(i = 1,2,4,8,16)来设置对齐字节数目，vs还可以在项目属性-配置属性-c/c++-代码生成-结构成员对齐设置。</p>
-<h2 id="对齐规则如下：">对齐规则如下：</h2><ol>
-<li>如果设置了内存对齐为 i 字节，类中最大成员对齐字节数为j，那么整体对齐字节n = min(i, j)  （某个成员的对齐字节数定义：如果该成员是c++自带类型如int、char、double等，那么其对齐字节数=该类型在内存中所占的字节数；如果该成员是自定义类型如某个class或者struct，那个它的对齐字节数 = 该类型内最大的成员对齐字节数《详见实例4》）</li>
-<li>每个成员对齐规则：类中第一个数据成员放在offset为0的位置；对于其他的数据成员（假设该数据成员对齐字节数为k），他们放置的起始位置offset应该是 min(k, n) 的整数倍</li>
-<li>整体对齐规则：最后整个类的大小应该是n的整数倍</li>
-<li>当设置的对齐字节数大于类中最大成员对齐字节数时，这个设置实际上不产生任何效果（实例2）；当设置对齐字节数为1时，类的大小就是简单的把所有成员大小相加</li>
-</ol>
-<p>我们通过以下几个实例来分析</p>
-<p><strong>实例1：（没有指定对齐字节，则n = 最大成员（int i）的大小4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;   <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i;      <span class="comment">//4 = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~7]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即8，位置区间为[8~9]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~9]10个字节，还要整体对齐，大小应该是4的倍数，即12</p>
-</blockquote>
-<p><strong>实例2：（假设指定对齐字节为8，那么n = min(8,4) = 4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//放在位置0，位置区间[0~3]</span></span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//1 &lt; n, 那么放置起始位置应该是1的倍数，即4，位置区间为[4]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   成员共占据[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
-</blockquote>
-<p><strong>实例3：（假设指定对齐字节是2，则n = min(2,4) = 2）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//4 &gt; n, 那么放置起始位置应该是2的倍数，即2，位置区间为[2~5]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 = n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
-</blockquote>
-<p><strong>实例4：（按照默认设置）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> temp </span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">    <span class="keyword">int</span> i; </span><br><span class="line">    <span class="keyword">short</span> s1; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   由实例1可知，默认对齐情况下，temp的大小是12，temp的对齐字节数是：三个成员取最大的，即为4；</p>
-</blockquote>
-<p>对于node，n = 其三个成员对齐字节数取最大，即等于t的对齐字节数，也就是 4。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	temp t; <span class="comment">//4（temp的对齐字节数） = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~15]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即16，位置区间为[16~17]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~17]18个字节，还要整体对齐，大小应该是4的倍数，因此大小是20</p>
-</blockquote>
-<p><strong>实例5：（默然设置）</strong></p>
-<p>对于node，n = 其三个成员对齐字节数取最大，即等于d的对齐字节数，也就是 8。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	temp t; <span class="comment">//放在位置0，位置区间[0~11]</span></span><br><span class="line">	<span class="keyword">double</span> d; <span class="comment">//8（temp的对齐字节数） = n, 那么放置起始位置应该是8的倍数，即16，位置区间为[16~23]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即24，位置区间为[24~25]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<blockquote>
-<p>   此时成员共占用[0~25]26个字节，还要整体对齐，大小应该是8的倍数，因此大小是32.</p>
-</blockquote>
-<h2 id="类继承时的内存对齐">类继承时的内存对齐</h2><p>考虑如下类<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> B:<span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> C:<span class="keyword">public</span> B</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>sizeof(C)结果是多少呢，gcc和vs给出了不同的结果，分别是8、16</p>
-<p>gcc中：C相当于把所有成员i、c1、c2、c3当作是在一个class内部，(先继承后对齐)</p>
-<p>vs中：对于A，对齐后其大小是8；对于B，c2加上对齐后的A的大小是9，对齐后就是12；对于C，c3加上对齐后的B大小是13，再对齐就是16 (先对齐后继承)</p>
-<p>关于c++对象继承后的内存布局，更详细的分析可以《深度探索参考c++对象模型》第三章</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2014/11/18/golang/golang反射实战/">
                 golang反射实战
               </a>
@@ -769,6 +1043,130 @@
           
           
             
+              <a class="post-title-link" href="/2014/11/18/cpp/内存对齐基础/">
+                C++对象对齐基础
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-18
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/cpp/">cpp</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/18/cpp/内存对齐基础/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/18/cpp/内存对齐基础/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h1 id="内存布局基础讲解">内存布局基础讲解</h1><blockquote>
+<p>   注：本文代码测试环境为win7 X64 cpu, 编译器为gcc4.7.1 和 vs2010</p>
+</blockquote>
+<h2 id="内存对齐是编译器为了便于CPU快速访问而采用的一项技术">内存对齐是编译器为了便于CPU快速访问而采用的一项技术</h2><p>我们先从一个例子开始，对下面的类(或者结构体)</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">short</span> s;</span><br><span class="line">&#125;no;</span><br></pre></td></tr></table></figure>
+<p>sizeof(no)的值是多少呢，如果你的回答是7(1+4+2)，那么你应该认真阅读下面的内容。可以在编译器上试试，输出的结果是12，这就是内存对齐的结果。</p>
+<h2 id="为什么要进行内存对齐呢？">为什么要进行内存对齐呢？</h2><ol>
+<li>平台原因(移植原因)：不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。</li>
+<li>性能原因：数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问.</li>
+</ol>
+<p>编译器一般按照几个字节对齐呢？本文中两个<strong>编译器默认按照类中最大类型长度来对齐</strong>，我么也可以使用语句#pragma pack(i)(i = 1,2,4,8,16)来设置对齐字节数目，vs还可以在项目属性-配置属性-c/c++-代码生成-结构成员对齐设置。</p>
+<h2 id="对齐规则如下：">对齐规则如下：</h2><ol>
+<li>如果设置了内存对齐为 i 字节，类中最大成员对齐字节数为j，那么整体对齐字节n = min(i, j)  （某个成员的对齐字节数定义：如果该成员是c++自带类型如int、char、double等，那么其对齐字节数=该类型在内存中所占的字节数；如果该成员是自定义类型如某个class或者struct，那个它的对齐字节数 = 该类型内最大的成员对齐字节数《详见实例4》）</li>
+<li>每个成员对齐规则：类中第一个数据成员放在offset为0的位置；对于其他的数据成员（假设该数据成员对齐字节数为k），他们放置的起始位置offset应该是 min(k, n) 的整数倍</li>
+<li>整体对齐规则：最后整个类的大小应该是n的整数倍</li>
+<li>当设置的对齐字节数大于类中最大成员对齐字节数时，这个设置实际上不产生任何效果（实例2）；当设置对齐字节数为1时，类的大小就是简单的把所有成员大小相加</li>
+</ol>
+<p>我们通过以下几个实例来分析</p>
+<p><strong>实例1：（没有指定对齐字节，则n = 最大成员（int i）的大小4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c;   <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i;      <span class="comment">//4 = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~7]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即8，位置区间为[8~9]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~9]10个字节，还要整体对齐，大小应该是4的倍数，即12</p>
+</blockquote>
+<p><strong>实例2：（假设指定对齐字节为8，那么n = min(8,4) = 4）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//放在位置0，位置区间[0~3]</span></span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//1 &lt; n, 那么放置起始位置应该是1的倍数，即4，位置区间为[4]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   成员共占据[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
+</blockquote>
+<p><strong>实例3：（假设指定对齐字节是2，则n = min(2,4) = 2）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	<span class="keyword">int</span> i; <span class="comment">//4 &gt; n, 那么放置起始位置应该是2的倍数，即2，位置区间为[2~5]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 = n，那么放置起始位置应该是2的倍数，即6，位置区间为[6~7]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~7]8个字节，刚好是4的倍数，因此大小是8</p>
+</blockquote>
+<p><strong>实例4：（按照默认设置）</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> temp </span><br><span class="line">&#123; </span><br><span class="line">    <span class="keyword">char</span> c; </span><br><span class="line">    <span class="keyword">int</span> i; </span><br><span class="line">    <span class="keyword">short</span> s1; </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   由实例1可知，默认对齐情况下，temp的大小是12，temp的对齐字节数是：三个成员取最大的，即为4；</p>
+</blockquote>
+<p>对于node，n = 其三个成员对齐字节数取最大，即等于t的对齐字节数，也就是 4。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c; <span class="comment">//放在位置0，位置区间[0]</span></span><br><span class="line">	temp t; <span class="comment">//4（temp的对齐字节数） = n, 那么放置起始位置应该是4的倍数，即4，位置区间为[4~15]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即16，位置区间为[16~17]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~17]18个字节，还要整体对齐，大小应该是4的倍数，因此大小是20</p>
+</blockquote>
+<p><strong>实例5：（默然设置）</strong></p>
+<p>对于node，n = 其三个成员对齐字节数取最大，即等于d的对齐字节数，也就是 8。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> node</span><br><span class="line">&#123;</span><br><span class="line">	temp t; <span class="comment">//放在位置0，位置区间[0~11]</span></span><br><span class="line">	<span class="keyword">double</span> d; <span class="comment">//8（temp的对齐字节数） = n, 那么放置起始位置应该是8的倍数，即16，位置区间为[16~23]</span></span><br><span class="line">	<span class="keyword">short</span> s; <span class="comment">//2 &lt; n，那么放置起始位置应该是2的倍数，即24，位置区间为[24~25]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>   此时成员共占用[0~25]26个字节，还要整体对齐，大小应该是8的倍数，因此大小是32.</p>
+</blockquote>
+<h2 id="类继承时的内存对齐">类继承时的内存对齐</h2><p>考虑如下类<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> c1;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> B:<span class="keyword">public</span> A</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c2;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> C:<span class="keyword">public</span> B</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">char</span> c3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>sizeof(C)结果是多少呢，gcc和vs给出了不同的结果，分别是8、16</p>
+<p>gcc中：C相当于把所有成员i、c1、c2、c3当作是在一个class内部，(先继承后对齐)</p>
+<p>vs中：对于A，对齐后其大小是8；对于B，c2加上对齐后的A的大小是9，对齐后就是12；对于C，c3加上对齐后的B大小是13，再对齐就是16 (先对齐后继承)</p>
+<p>关于c++对象继承后的内存布局，更详细的分析可以《深度探索参考c++对象模型》第三章</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/11/18/golang/unsafe简介/">
                 利用unsafe操作未导出变量
               </a>
@@ -866,411 +1264,11 @@
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/11/12/linux/centos7一些变更/">
-                centos7变更后的修改
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-12
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/linux/">linux</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/12/linux/centos7一些变更/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/12/linux/centos7一些变更/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="centos7_修改selinux_开机导致_faild_to_load_SELinux_policy_freezing_错误">centos7 修改selinux 开机导致 faild to load SELinux policy  freezing 错误</h2><p>之前把selinux关闭了，这次想打开selinux，于是修改了 /etc/selinux/config 文件，然后重启时，就开不了机了，</p>
-<p>出现错误：faild to load SELinux policy  freezing，查了一些资料，完善方案</p>
-<ol>
-<li><p>重启时在启动页面 按 E， 进入 grub 编辑页面；</p>
-</li>
-<li><p>找到 linux 那一行，在最后 language 后面，空格 加上 selinux=0</p>
-</li>
-<li><p>然后 ctrl + x 重新运行，即可了</p>
-</li>
-<li><p>重新启动之前，ls /etc/selinux 发现多了一个 config~的文件，，应该就是这个文件的问题了，把 config～文件删除；</p>
-</li>
-<li><p>reboot重新启动</p>
-</li>
-</ol>
-<h2 id="修改计算机名">修改计算机名</h2><p>hostnamectl</p>
-<h2 id="systemctl">systemctl</h2><p>运行一个服务：<br>systemctl start network.service 关闭网络服务：<br>systemctl stop network.service 重启网络服务：<br>systemctl restart network.service<br>显示一个服务（无论运行与否）的状态： systemctl status network.service<br>在开机时启用一个服务： systemctl enable network.service<br>在开机时禁用一个服务： systemctl disable network.service<br>查看服务开机是否启动：systemctl is-enabled network.service;echo $?  或者是chkconfig<br>使用systemctl命令，要记住start,stop,restart,status,enable,disable,is-enabled。就可以很好的使用！</p>
-<h2 id="其它项">其它项</h2><ul>
-<li>如果发现/etc/init.d/rc.local不能启动,请给予chmod +x 权限</li>
-</ul>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/11/05/golang/Go中error类型的nil值和nil/">
-                Go中error类型的nil值和nil
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-11-05
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/11/05/golang/Go中error类型的nil值和nil/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/05/golang/Go中error类型的nil值和nil/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="概念">概念</h2><p>先看C语言中的类似问题：空字符串。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* empty_str0 = <span class="string">""</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* empty_str1 = <span class="string">"\0empty"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* empty_str2 = NULL;</span><br></pre></td></tr></table></figure>
-<p>以上3个字符串并不相等，但是从某种角度看，它们都是对应空的字符串。</p>
-<ul>
-<li>empty_str0 指向一个空的字符串，但是empty_str0本身的值是有效的。</li>
-<li>empty_str1 指向一个非空的字符串，但是字符串的第一个字符是’\0’。</li>
-<li>empty_str2 本身是一个空的指针。</li>
-</ul>
-<p>Go的error是一个interface类型，error的nil问题和C语言的字符串类似。</p>
-<p>在底层，interface作为两个成员实现：一个类型和一个值。该值被称为接口的动态值， 它是一个任意的具体值，而该接口的类型则为该值的类型。对于 int 值3， 一个接口值示意性地包含(int, 3)。</p>
-<p>只有在内部值和类型都未设置时(nil, nil)，一个接口的值才为 nil。特别是，一个 nil 接口将总是拥有一个 nil 类型。若我们在一个接口值中存储一个 int 类型的指针，则内部类型将为 int，无论该指针的值是什么：(*int, nil)。 因此，这样的接口值会是非 nil 的，即使在该指针的内部为 nil。</p>
-<p>下面是一个错误的错误返回方式：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> returnsError() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *MyError = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> bad() &#123;</span><br><span class="line">        p = ErrBad</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p <span class="comment">// Will always return a non-nil error.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里 p 返回的是一个有效值（非nil），值为 nil。<br>类似上面的 empty_str0。</p>
-<p>因此，下面判断错误的代码会有问题：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">if</span> err := returnsError(); err != <span class="constant">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="constant">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>针对 returnsError 的问题，可以这样处理（不建议的方式）：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">if</span> err := returnsError(); err.(*MyError) != <span class="constant">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="constant">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>在判断前先将err转型为*MyError，然后再判断err的值。<br>类似的C语言空字符串可以这样判断：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsEmptyStr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !(str &amp;&amp; str[<span class="number">0</span>] != <span class="string">'\0'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>但是Go语言中标准的错误返回方式不是returnsError这样。<br>下面是改进的returnsError：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> returnsError() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *MyError = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> bad() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="constant">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p <span class="comment">// Will always return a non-nil error.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="详解">详解</h2><p>我们来看一下如下例子:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> val <span class="keyword">interface</span>&#123;&#125; = <span class="typename">int64</span>(<span class="number">58</span>)</span><br><span class="line">    fmt.Println(reflect.TypeOf(val))</span><br><span class="line">    val = <span class="number">50</span></span><br><span class="line">    fmt.Println(reflect.TypeOf(val))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>我们已经知道接口类型的变量底层是作为两个成员来实现，一个是type，一个是data。type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。</p>
-<h3 id="接下来说说interface类型的值和nil的比较问题。这是个比较经典的问题，也算是golang的一个坑。">接下来说说interface类型的值和nil的比较问题。这是个比较经典的问题，也算是golang的一个坑。</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> val <span class="keyword">interface</span>&#123;&#125; = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> val == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	val is <span class="constant">nil</span></span><br></pre></td></tr></table></figure>
-<p>变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。</p>
-<p>对于将任何其它有意义的值类型赋值给val，都导致val持有一个有效的类型和数据。也就是说变量val的底层结构肯定不为(nil, nil)，因此它和nil的相等比较总是为false。</p>
-<p>上面的讨论都是在围绕值类型来进行的。在继续讨论之前，让我们来看一种特例：(*interface{})(nil)。将nil转成interface类型的指针，其实得到的结果仅仅是空接口类型指针并且它指向无效的地址。注意是空接口类型指针而不是空指针，这两者的区别蛮大的，学过C的童鞋都知道空指针是什么概念。</p>
-<p>关于(<em>interface{})(nil)还有一些要注意的地方。这里仅仅是拿(</em>interface{})(nil)来举例，对于(<em>int)(nil)、(</em>byte)(nil)等等来说是一样的。上面的代码定义了接口指针类型变量val，它指向无效的地址(0x0)，因此val持有无效的数据。但它是有类型的(<em>interface{})。所以val的底层结构应该是：(</em>interface{}, nil)。有时候您会看到(<em>interface{})(nil)的应用，比如var ptrIface = (</em>interface{})(nil)，如果您接下来将ptrIface指向其它类型的指针，将通不过编译。或者您这样赋值：*ptrIface = 123，那样的话编译是通过了，但在运行时还是会panic的，这是因为ptrIface指向的是无效的内存地址。其实声明类似ptrIface这样的变量，是因为使用者只是关心指针的类型，而忽略它存储的值是什么。还是以例子来说明：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> val <span class="keyword">interface</span>&#123;&#125; = (*<span class="keyword">interface</span>&#123;&#125;)(<span class="constant">nil</span>)</span><br><span class="line">    <span class="comment">// val = (*int)(nil)</span></span><br><span class="line">    <span class="keyword">if</span> val == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	val is not <span class="constant">nil</span></span><br></pre></td></tr></table></figure>
-<p> interface类型的变量和nil的相等比较出现最多的地方应该是error接口类型的值与nil的比较。有时候您想自定义一个返回错误的函数来做这个事，可能会写出以下代码：</p>
- <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> data <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this *data) Error() <span class="typename">string</span> &#123; <span class="keyword">return</span> <span class="string">""</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> test() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *data = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> e error = test()</span><br><span class="line">    <span class="keyword">if</span> e == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	e is not <span class="constant">nil</span></span><br></pre></td></tr></table></figure>
-<p>我们可以来分析一下。error是一个接口类型，test方法中返回的指针p虽然数据是nil，但是由于它被返回成包装的error类型，也即它是有类型的。所以它的底层结构应该是(*data, nil)，很明显它是非nil的。</p>
-<p>可以打印观察下底层结构数据：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> data <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this *data) Error() <span class="typename">string</span> &#123; <span class="keyword">return</span> <span class="string">""</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> test() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *data = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> e error = test()</span><br><span class="line"> </span><br><span class="line">    d := (*<span class="keyword">struct</span> &#123;</span><br><span class="line">        itab <span class="typename">uintptr</span></span><br><span class="line">        data <span class="typename">uintptr</span></span><br><span class="line">    &#125;)(unsafe.Pointer(&amp;e))</span><br><span class="line"> </span><br><span class="line">    fmt.Println(d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	&amp;&#123;<span class="number">3078907912</span> <span class="number">0</span>&#125;</span><br></pre></td></tr></table></figure>
-<p>正确的做法应该是：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> data <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this *data) Error() <span class="typename">string</span> &#123; <span class="keyword">return</span> <span class="string">""</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> bad() <span class="typename">bool</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="constant">true</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> test() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *data = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> bad() &#123;</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="constant">nil</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> e error = test()</span><br><span class="line">    <span class="keyword">if</span> e == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/31/golang/golang反射的坑/">
-                golang反射的坑
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-31
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/31/golang/golang反射的坑/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/31/golang/golang反射的坑/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="Type和Value">Type和Value</h2><p>首先，reflect包有两个数据类型我们必须知道，一个是Type，一个是Value。<br>Type就是定义的类型的一个数据类型，Value是值的类型<br>具体的Type和Value里面包含的方法就要看文档了.</p>
-<p>这里我写了个程序来理解Type和Value：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyStruct <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (this *MyStruct) GetName() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> this.name</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	s := <span class="string">"this is string"</span></span><br><span class="line">	fmt.Println(reflect.TypeOf(s))</span><br><span class="line">	fmt.Println(<span class="string">"-------------------"</span>)</span><br><span class="line">	fmt.Println(reflect.ValueOf(s))</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	fmt.Println(reflect.ValueOf(x))</span><br><span class="line">	fmt.Println(<span class="string">"-------------------"</span>)</span><br><span class="line">	a := <span class="built_in">new</span>(MyStruct)</span><br><span class="line">	a.name = <span class="string">"yejianfeng"</span></span><br><span class="line">	typ := reflect.TypeOf(a)</span><br><span class="line">	fmt.Println(typ.NumMethod())</span><br><span class="line">	fmt.Println(<span class="string">"-------------------"</span>)</span><br><span class="line">	b := reflect.ValueOf(a).MethodByName(<span class="string">"GetName"</span>).Call([]reflect.Value&#123;&#125;)</span><br><span class="line">	fmt.Println(b[<span class="number">0</span>])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:		<span class="typename">string</span></span><br><span class="line">			-------------------</span><br><span class="line">			this is <span class="typename">string</span></span><br><span class="line">			&lt;<span class="typename">float64</span> Value&gt;</span><br><span class="line">			-------------------</span><br><span class="line">			<span class="number">1</span></span><br><span class="line">			-------------------</span><br><span class="line">			yejianfeng</span><br></pre></td></tr></table></figure></p>
-<p>这个程序看到几点：</p>
-<ol>
-<li>TypeOf和ValueOf是获取Type和Value的方法</li>
-<li>ValueOf返回的<float64 value="">是为了说明这里的value是float64</float64></li>
-<li>第三个b的定义实现了php中的string-&gt;method的方法，为什么返回的是reflect.Value[]数组呢？当然是因为Go的函数可以返回多个值的原因了。</li>
-</ol>
-<h2 id="Value的方法和属性">Value的方法和属性</h2><p>我们看到Value的Type定义了这么多Set方法：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> (v Value) SetBool(x <span class="typename">bool</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetInt(x <span class="typename">int64</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetUint(x <span class="typename">uint64</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetFloat(x <span class="typename">float64</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetComplex(x <span class="typename">complex128</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetBytes(x []<span class="typename">byte</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetString(x <span class="typename">string</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetPointer(x unsafe.Pointer)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetCap(n <span class="typename">int</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetLen(n <span class="typename">int</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetMapIndex(key, val Value)</span><br><span class="line"><span class="keyword">func</span> (v Value) Set(x Value)</span><br></pre></td></tr></table></figure>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyStruct <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (this *MyStruct) GetName() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> this.name</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	<span class="keyword">var</span> a MyStruct</span><br><span class="line">	b := <span class="built_in">new</span>(MyStruct)</span><br><span class="line">	fmt.Println(reflect.ValueOf(a))</span><br><span class="line">	fmt.Println(reflect.ValueOf(b))</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	a.name = <span class="string">"yejianfeng"</span></span><br><span class="line">	b.name = <span class="string">"yejianfeng"</span></span><br><span class="line">	val := reflect.ValueOf(a).FieldByName(<span class="string">"name"</span>)</span><br><span class="line">	<span class="comment">//painc: val := reflect.ValueOf(b).FieldByName("name")</span></span><br><span class="line">	fmt.Println(val)</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	fmt.Println(reflect.ValueOf(a).FieldByName(<span class="string">"name"</span>).CanSet())</span><br><span class="line">	fmt.Println(reflect.ValueOf(&amp;(a.name)).Elem().CanSet())</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	<span class="keyword">var</span> c <span class="typename">string</span> = <span class="string">"yejianfeng"</span></span><br><span class="line">	p := reflect.ValueOf(&amp;c)</span><br><span class="line">	fmt.Println(p.CanSet())        <span class="comment">//false</span></span><br><span class="line">	fmt.Println(p.Elem().CanSet()) <span class="comment">//true</span></span><br><span class="line">	p.Elem().SetString(<span class="string">"newName"</span>)</span><br><span class="line">	fmt.Println(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:		--------------</span><br><span class="line">			&lt;main.MyStruct Value&gt;</span><br><span class="line">			&lt;*main.MyStruct Value&gt;</span><br><span class="line">			--------------</span><br><span class="line">			yejianfeng</span><br><span class="line">			--------------</span><br><span class="line">			<span class="constant">false</span></span><br><span class="line">			<span class="constant">true</span></span><br><span class="line">			--------------</span><br><span class="line">			<span class="constant">false</span></span><br><span class="line">			<span class="constant">true</span></span><br><span class="line">			newName</span><br></pre></td></tr></table></figure>
-<p>这段代码能有一些事情值得琢磨：</p>
-<ol>
-<li>为什么a和b的ValueOf返回的是不一样的？<br>a是一个结构，b是一个指针。好吧，在Go中，指针的定义和C中是一样的。</li>
-<li>reflect.ValueOf(a).FieldByName(“name”)<br>这是一个绕路的写法，其实和a.name是一样的意思，主要是要说明一下Value.FieldByName的用法</li>
-<li>val := reflect.ValueOf(b).FieldByName(“name”) 是有error的，为什么？<br>b是一个指针，指针的ValueOf返回的是指针的Type，它是没有Field的，所以也就不能使用FieldByName</li>
-<li>fmt.Println(reflect.ValueOf(a).FieldByName(“name”).CanSet())为什么是false?<br>看文档中的解释：<br>  func (v Value) CanSet() bool<br>  如果v持有的值可以被修改，CanSet就会返回真。只有一个Value持有值可以被寻址同时又不是来自非导出字段时，它才可以被修改。如果CanSet返回假，调用Set或任何限定类型的设置函数（如SetBool、SetInt64）都会panic。</li>
-</ol>
-<p>好吧，什么是addressable，and was not obtained by the use of unexported struct fields?<br>CanSet当Value是可寻址的时候，返回true，否则返回false<br>看到第二个c和p的例子，我们可以这么理解：<br>当前面的CanSet是一个指针的时候（p）它是不可寻址的，但是当是p.Elem()(实际上就是*p)，它就是可以寻址的<br>这个确实有点绕。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/10/30/golang/xml_json解析tag详解/">
-                xml,json解析tag详解
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-10-30
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/golang/">golang</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/10/30/golang/xml_json解析tag详解/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/30/golang/xml_json解析tag详解/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h2 id="xml">xml</h2><p>demo:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/xml"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"io/ioutil"</span></span><br><span class="line">    <span class="string">"os"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Recurlyservers <span class="keyword">struct</span> &#123;</span><br><span class="line">    XMLName     xml.Name <span class="string">`xml:"servers"`</span></span><br><span class="line">    Version     <span class="typename">string</span>   <span class="string">`xml:"version,attr"`</span></span><br><span class="line">    Svs         []server <span class="string">`xml:"server"`</span></span><br><span class="line">    Description <span class="typename">string</span>   <span class="string">`xml:",innerxml"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> server <span class="keyword">struct</span> &#123;</span><br><span class="line">    XMLName    xml.Name <span class="string">`xml:"server"`</span></span><br><span class="line">    ServerName <span class="typename">string</span>   <span class="string">`xml:"serverName"`</span></span><br><span class="line">    ServerIP   <span class="typename">string</span>   <span class="string">`xml:"serverIP"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    file, err := os.Open(<span class="string">"servers.xml"</span>) <span class="comment">// For read access.     </span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"error: %v"</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> file.Close()</span><br><span class="line">    data, err := ioutil.ReadAll(file)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"error: %v"</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    v := Recurlyservers&#123;&#125;</span><br><span class="line">    err = xml.Unmarshal(data, &amp;v)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"error: %v"</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>解析XML到struct的时候遵循如下的规则：</p>
-<ol>
-<li>如果struct的一个字段是string或者[]byte类型且它的tag含有”,innerxml”，Unmarshal将会将此字段所对应的元素内所有内嵌的原始xml累加到此字段上.</li>
-<li>如果struct中有一个叫做XMLName，且类型为xml.Name字段，那么在解析的时候就会保存这个element的名字到该字段,如上面例子中的servers。</li>
-<li>如果某个struct字段的tag定义中含有XML结构中element的名称，那么解析的时候就会把相应的element值赋值给该字段，如上servername和serverip定义。</li>
-<li>如果某个struct字段的tag定义了中含有”,attr”，那么解析的时候就会将该结构所对应的element的与字段同名的属性的值赋值给该字段，如上version定义。</li>
-<li>如果某个struct字段的tag定义 型如”a&gt;b&gt;c”,则解析的时候，会将xml结构a下面的b下面的c元素的值赋值给该字段。</li>
-<li>如果某个struct字段的tag定义了”-“,那么不会为该字段解析匹配任何xml数据。</li>
-<li>如果struct字段后面的tag定义了”,any”，如果他的子元素在不满足其他的规则的时候就会匹配到这个字段。</li>
-<li>如果某个XML元素包含一条或者多条注释，那么这些注释将被累加到第一个tag含有”,comments”的字段上，这个字段的类型可能是[]byte或string,如果没有这样的字段存在，那么注释将会被抛弃。</li>
-</ol>
-<p>上面详细讲述了如何定义struct的tag。 只要设置对了tag，那么XML解析就如上面示例般简单，tag和XML的element是一一对应的关系，如上所示，我们还可以通过slice来表示多个同级元素。</p>
-<blockquote>
-<p>   注意： 为了正确解析，go语言的xml包要求struct定义中的所有字段必须是可导出的（即首字母大写）</p>
-</blockquote>
-<h2 id="json">json</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// ID 不会导出到JSON中</span></span><br><span class="line">    ID <span class="typename">int</span> <span class="string">`json:"-"`</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ServerName 的值会进行二次JSON编码</span></span><br><span class="line">    ServerName  <span class="typename">string</span> <span class="string">`json:"serverName"`</span></span><br><span class="line">    ServerName2 <span class="typename">string</span> <span class="string">`json:"serverName2,string"`</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果 ServerIP 为空，则不输出到JSON串中</span></span><br><span class="line">    ServerIP   <span class="typename">string</span> <span class="string">`json:"serverIP,omitempty"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">s := Server &#123;</span><br><span class="line">    ID:         <span class="number">3</span>,</span><br><span class="line">    ServerName:  <span class="string">`Go "1.0" `</span>,</span><br><span class="line">    ServerName2: <span class="string">`Go "1.0" `</span>,</span><br><span class="line">    ServerIP:   <span class="string">``</span>,</span><br><span class="line">&#125;</span><br><span class="line">b, _ := json.Marshal(s)</span><br><span class="line">os.Stdout.Write(b)</span><br></pre></td></tr></table></figure>
-<ol>
-<li>字段的tag是”-“，那么这个字段不会输出到JSON</li>
-<li>tag中带有自定义名称，那么这个自定义名称会出现在JSON的字段名中，例如上面例子中serverName</li>
-<li>tag中如果带有”omitempty”选项，那么如果该字段值为空，就不会输出到JSON串中</li>
-<li>如果字段类型是bool, string, int, int64等，而tag中带有”,string”选项，那么这个字段在输出到JSON的时候会把该字段对应的值转换成JSON字符串</li>
-</ol>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/6/">&raquo;</a>
   </div>
 
 
@@ -1304,21 +1302,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">80</span>
+              <span class="site-state-item-count">84</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">56</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

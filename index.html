@@ -117,6 +117,626 @@
           
           
             
+              <a class="post-title-link" href="/2015/10/11/protobuf/protobuf编码样式指南/">
+                protobuf编码风格
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-10-11
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/protobuf/">protobuf</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/11/protobuf/protobuf编码样式指南/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/11/protobuf/protobuf编码样式指南/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="本文档提供了-proto文件的书写风格指南。通过遵守这些约定，你的protocol_buffer消息定义和它们的对应类将会风格一致且易于阅读。">本文档提供了.proto文件的书写风格指南。通过遵守这些约定，你的protocol buffer消息定义和它们的对应类将会风格一致且易于阅读。</h2><h3 id="消息和字段名">消息和字段名</h3><p>消息名使用驼峰格式（<strong>每个单词首字母大写</strong>）来书写——例如<code>SongServerRequest</code>。字段名使用小写的下划线分隔式（<code>underscore_separated_names</code>）来书写——例如:</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SongServerRequest</span> </span>&#123;</span><br><span class="line"> <span class="keyword">required</span> <span class="built_in">string</span> song_name = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>字段名使用这种形式的命名约定的话，生成的访问类中的函数就有如下形式：<br>C++:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">conststring&amp; song_name()&#123;...&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_song_name</span><span class="params">(conststring&amp; x)</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Java:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getSongName</span><span class="params">()</span></span>&#123;...&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> Builder <span class="title">setSongName</span><span class="params">(String v)</span></span>&#123;...&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="枚举">枚举</h3><p>枚举名使用驼峰格式（<strong>每个单词首字母大写</strong>）来书写，值名使用大写的下划线分隔式（<code>CAPITALS_WITH_UNDERSCORES</code>）来书写：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line"><span class="constant">  FIRST_VALUE</span> =<span class="number">1</span>;</span><br><span class="line"><span class="constant">  SECOND_VALUE</span> =<span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>每一个枚举值都应该以分号结尾，而不是逗号。</p>
+</blockquote>
+<h3 id="服务">服务</h3><p>如果你的.proto文件定义了一个RPC服务，那么服务名和任何RPC函数名都应该使用驼峰格式（每个单词首字母大写）来书写：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">FooService</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">rpc</span> GetSomething(FooRequest) <span class="keyword">returns</span> (FooResponse)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/10/11/protobuf/protobuf_base_cpp/">
+                protobuf基础C++篇
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-10-11
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/protobuf/">protobuf</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/11/protobuf/protobuf_base_cpp/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/11/protobuf/protobuf_base_cpp/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="本教程提供了面向C++程序员的protocol_buffers的基本介绍。">本教程提供了面向C++程序员的protocol buffers的基本介绍。</h2><p>通过创建一个简单的示例程序，它教你如何：</p>
+<ul>
+<li>定义.proto文件的消息格式。</li>
+<li>使用protocol buffer的编译器。</li>
+<li>使用protoco buffer的C++ API来读写消息。</li>
+</ul>
+<h3 id="定义你自己的协议格式">定义你自己的协议格式</h3><p>要创建你的地址薄应用程序，你需要从编写一个.proto文件开始。.proto文件的定义是比较简单的：为每一个你需要序列化的数据结构添加一个消息（message），然后为消息（message）中的每一个字段（field）指定一个名字和一个类型。下面就是一个定义你的多个消息（messages）的文件addressbook.proto：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> tutorial;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> name = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">int32</span> id = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">string</span> email = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> <span class="title">PhoneType</span> </span>&#123;</span><br><span class="line"><span class="constant">    MOBILE</span> = <span class="number">0</span>;</span><br><span class="line"><span class="constant">    HOME</span> = <span class="number">1</span>;</span><br><span class="line"><span class="constant">    WORK</span> = <span class="number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">message</span> <span class="title">PhoneNumber</span> </span>&#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="built_in">string</span> number = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">optional</span> PhoneType type = <span class="number">2</span> [default = HOME];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">repeated</span> PhoneNumber phone = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">AddressBook</span> </span>&#123;</span><br><span class="line">  <span class="keyword">repeated</span> Person person = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>正如你所看到的一样，该语法类似于C++或Java的语法。让我们依次来看看文件的每一部分的作用。</li>
+<li>.proto文件以一个package声明开始。这个声明是为了防止不同项目之间的命名冲突。对应到C++中去，你用这个.proto文件生成的类将被放置在一个与package名相同的命名空间中。</li>
+<li>再往下看，就是若干消息（message）定义了。一个消息就是某些类型的字段的集合。许多标准的、简单的数据类型都可以用作字段类型，包括bool，int32，float，double，以及string。你也可以使用其他的消息（message）类型来作为你的字段类型——在上面的例子中，消息Person就是一个被用作字段类型的例子。</li>
+<li>在每一项后面的、类似于“= 1”，“= 2”的标志指出了该字段在二进制编码中使用的唯一“标识（tag）”。标识号1~15编码所需的字节数比更大的标识号使用的字节数要少1个，所以，如果你想寻求优化，可以为经常使用或者重复的项采用1~15的标识（tag），其他经常使用的optional项采用≥16的标识（tag）。在重复的字段中，每一项都要求重编码标识号（tag number），所以重复的字段特别适用于这种优化情况。</li>
+<li>每一个字段都必须用以下之一的修饰符来修饰：<ul>
+<li><strong>required</strong>：必须提供字段值，否则对应的消息就会被认为是“未初始化的”。如果libprotobuf是以debug模式编译的，序列化一个未初始化的消息（message）将会导致一个断言错误。在优化过的编译情况下（译者注：例如release），该检查会被跳过，消息会被写入。然而，解析一个未初始化的消息仍然会失败（解析函数会返回false）。除此之外，一个required的字段与一个optional的字段就没有区别了。</li>
+<li><strong>optional</strong>：字段值指定与否都可以。如果没有指定一个optional的字段值，它就会使用默认值。对简单类型来说，你可以指定你自己的默认值，就像我们在上面的例子中对phone number的type字段所做的一样。如果你不指定默认值，就会使用系统默认值：数据类型的默认值为0，string的默认值为空字符串，bool的默认值为false。对嵌套消息（message）来说，其默认值总是消息的“默认实例”或“原型”，即：没有任何一个字段是指定了值的。调用访问类来取一个未显式指定其值的optional（或者required）的字段的值，总是会返回字段的默认值。</li>
+<li><strong>repeated</strong>：字段会重复N次（N可以为0）。重复的值的顺序将被保存在protocol buffer中。你只要将重复的字段视为动态大小的数组就可以了。</li>
+</ul>
+</li>
+<li>required是永久性的：在把一个字段标识为required的时候，你应该特别小心。如果在某些情况下你不想写入或者发送一个required的字段，那么将该字段更改为optional可能会遇到问题——旧版本的读者（译者注：即读取、解析消息的一方）会认为不含该字段的消息（message）是不完整的，从而有可能会拒绝解析。在这种情况下，你应该考虑编写特别针对于应用程序的、自定义的消息校验函数。Google的一些工程师得出了一个结论：使用required弊多于利；他们更愿意使用optional和repeated而不是required。当然，这个观点并不具有普遍性。</li>
+<li>你可以在<a href="/2015/10/11/protobuf/protobuf语言指南/">Protocol Buffer Language Guide</a>一文中找到编写.proto文件的完整指南（包括所有可能的字段类型）。但是，不要想在里面找到与类继承相似的特性，因为protocol buffers不是拿来做这个的。</li>
+</ul>
+<h3 id="编译你的protocol_buffers">编译你的protocol buffers</h3><p>在得到了一个.proto文件之后，下一步你就要生成可以读写AddressBook消息（当然也就包括了Person以及PhoneNumber消息）的类了。此时你需要运行protocol buffer编译器来编译你的.proto文件：</p>
+<ol>
+<li>如果你还没有安装该编译器，下载安装包 并参照README文件中的说明来安装。</li>
+<li><p>安装了之后，就可以运行编译器了。指定源目录（即你的应用程序源代码所在的目录——如果不指定的话，就使用当前目录）、目标目录（即生成的代码放置的目录，通常与$SRC_DIR是一样的），以及你的.proto文件所在的目录。在我们这里，可以这样用：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc -I=$SRC_DIR --cpp_out=$DST_DIR $SRC_DIR/addressbook.proto</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>因为需要生成的是C++类，所以使用了—cpp_out选项参数——protocol buffers也为其他支持的语言提供了类似的选项参数。这样就可以在你指定的目标目录下生成如下文件：</p>
+<ul>
+<li><code>addressbook.pb.h</code>：声明你生成的类的头文件。</li>
+<li><code>addressbook.pb.cc</code>：你生成的类的实现文件。</li>
+</ul>
+</li>
+</ol>
+<h3 id="The_Protocol_Buffer_API">The Protocol Buffer API</h3><p>让我们看一下生成的代码，了解一下编译器为你创建了什么样的类和函数。如果你看了tutorial.pb.h文件，就会发现你得到了一个类，它对应于tutorial.proto文件中写的每一个消息（message）。更深入一步，看看Person 类：编译器为每一个字段生成了读写函数。例如，对name，id，email以及phone字段，分别有如下函数：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// name</span></span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">has_name</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">clear_name</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="keyword">inline</span> <span class="keyword">const</span> ::<span class="built_in">std</span>::<span class="built_in">string</span>&amp; name() <span class="keyword">const</span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">set_name</span><span class="params">(<span class="keyword">const</span> ::<span class="built_in">std</span>::<span class="built_in">string</span>&amp; value)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">set_name</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* value)</span></span>;</span><br><span class="line">  <span class="keyword">inline</span> ::<span class="built_in">std</span>::<span class="built_in">string</span>* mutable_name();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// id</span></span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">has_id</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">clear_id</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> int32_t <span class="title">id</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">set_id</span><span class="params">(int32_t value)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// email</span></span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">has_email</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">clear_email</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="keyword">inline</span> <span class="keyword">const</span> ::<span class="built_in">std</span>::<span class="built_in">string</span>&amp; email() <span class="keyword">const</span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">set_email</span><span class="params">(<span class="keyword">const</span> ::<span class="built_in">std</span>::<span class="built_in">string</span>&amp; value)</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">set_email</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* value)</span></span>;</span><br><span class="line">  <span class="keyword">inline</span> ::<span class="built_in">std</span>::<span class="built_in">string</span>* mutable_email();</span><br><span class="line"></span><br><span class="line">  <span class="comment">// phone</span></span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">phone_size</span><span class="params">()</span> <span class="keyword">const</span></span>;</span><br><span class="line">  <span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">clear_phone</span><span class="params">()</span></span>;</span><br><span class="line">  <span class="keyword">inline</span> <span class="keyword">const</span> ::google::protobuf::RepeatedPtrField&lt; ::tutorial::Person_PhoneNumber &gt;&amp; phone() <span class="keyword">const</span>;</span><br><span class="line">  <span class="keyword">inline</span> ::google::protobuf::RepeatedPtrField&lt; ::tutorial::Person_PhoneNumber &gt;* mutable_phone();</span><br><span class="line">  <span class="keyword">inline</span> <span class="keyword">const</span> ::tutorial::Person_PhoneNumber&amp; phone(<span class="keyword">int</span> index) <span class="keyword">const</span>;</span><br><span class="line">  <span class="keyword">inline</span> ::tutorial::Person_PhoneNumber* mutable_phone(<span class="keyword">int</span> index);</span><br><span class="line">  <span class="keyword">inline</span> ::tutorial::Person_PhoneNumber* add_phone();</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li><p>正如你所看到的，getter函数具有与字段名一模一样的名字，并且是小写的，而setter函数都是以set<em>前缀开头。此外，还有has</em>前缀的函数，对每一个单一的（required或optional的）字段（译者注：此处估计是“非repeated字段”的意思）来说，如果字段被置（set）了值，该函数会返回true。最后，每一个字段还有一个clear_前缀的函数，用来将字段重置（un-set）到空状态（empty state）。</p>
+</li>
+<li><p>然而，数值类型的字段id就只有如上所述的基本读写函数，name和email字段则有一些额外的函数，因为它们是string——前缀为mutable<em>的函数返回string的直接指针（direct pointer）。除此之外，还有一个额外的setter函数。注意：你甚至可以在email还没有被置（set）值的时候就调用mutable_email()，它会被自动初始化为一个空字符串。在此例中，如果有一个单一消息字段，那么它也会有一个mutable</em> 前缀的函数，但是没有一个set_ 前缀的函数。</p>
+</li>
+<li><p>重复的字段也有一些特殊的函数——如果你看一下重复字段phone 的那些函数，就会发现你可以：</p>
+<ul>
+<li>得到重复字段的_size（换句话说，这个Person关联了多少个电话号码）。</li>
+<li>通过索引（index）来获取一个指定的电话号码。</li>
+<li>通过指定的索引（index）来更新一个已经存在的电话号码。</li>
+<li>向消息（message）中添加另一个电话号码，然后你可以编辑它（重复的标量类型有一个add_前缀的函数，允许你传新值进去）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="枚举和嵌套类">枚举和嵌套类</h3><ul>
+<li><p>生成的代码中包含了一个PhoneType 枚举，它对应于.proto文件中的那个枚举。你可以把这个类型当作Person::PhoneType，其值为Person::MOBILE，Person::HOME和Person::WORK（实现的细节稍微复杂了点，但是没关系，不理解它也不会影响你使用该枚举）</p>
+</li>
+<li><p>编译器还生成了一个名为Person::PhoneNumber的嵌套类。如果你看看代码，就会发现“真实的”类实际上是叫做Person_PhoneNumber，只不过Person 内部的一个typedef允许你像一个嵌套类一样来对待它。这一点所造成的唯一一个区别就是：如果你想在另一个文件中对类进行前向声明（forward-declare）的话，你就不能在C++中对嵌套类型进行前向声明了，但是你可以对Person_PhoneNumber进行前向声明。</p>
+</li>
+</ul>
+<h3 id="标准消息函数">标准消息函数</h3><ul>
+<li>每一个消息（message）还包含了其他一系列函数，用来检查或管理整个消息，包括：<ul>
+<li>bool IsInitialized() const;：检查是否全部的required字段都被置（set）了值。</li>
+<li>string DebugString() const;：返回一个易读的消息表示形式，对调试特别有用。</li>
+<li>void CopyFrom(const Person&amp; from);：用外部消息的值，覆写调用者消息内部的值。</li>
+<li>void Clear();：将所有项复位到空状态（empty state）。</li>
+</ul>
+</li>
+<li>这些函数以及后面章节将要提到的I/O函数实现了Message 的接口，它们被所有C++ protocol buffer类共享。更多信息，请查看文章 complete API documentation for Message。</li>
+</ul>
+<h3 id="解析&amp;序列化">解析&amp;序列化</h3><ul>
+<li>最后，每一个protocol buffer类都有读写你所选择的消息类型的函数。它们包括：<ul>
+<li>bool SerializeToString(string* output) const;：将消息序列化并储存在指定的string中。注意里面的内容是二进制的，而不是文本；我们只是使用string作为一个很方便的容器。</li>
+<li>bool ParseFromString(const string&amp; data);：从给定的string解析消息。</li>
+<li>bool SerializeToOstream(ostream* output) const;：将消息写入到给定的C++ ostream中。</li>
+<li>bool ParseFromIstream(istream* input);：从给定的C++ istream解析消息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="protocol_buffers和面向对象的设计">protocol buffers和面向对象的设计</h3><p>protocol buffer类通常只是纯粹的数据存储器（就像C++中的结构体一样）；它们在对象模型中并不是一等公民。如果你想向生成的类中添加更丰富的行为，最好的方法就是在应用程序中对它进行封装。如果你无权控制.proto文件的设计的话，封装protocol buffers也是一个好主意（例如，你从另一个项目中重用一个.proto文件）。在那种情况下，你可以用封装类来设计接口，以更好地适应你的应用程序的特定环境：隐藏一些数据和方法，暴露一些便于使用的函数，等等。但是你绝对不要通过继承生成的类来添加行为。这样做的话，会破坏其内部机制，并且不是一个好的面向对象的实践。</p>
+<h3 id="写消息">写消息</h3><p>现在让我们尝试使用你的protocol buffer类。你想让你的address book程序完成的第一件事情就是向你的address book文件写入详细的个人信息。要实现这一点，你需要创建protocol buffer类的实例并将它们写入到一个输出流（output stream）中。</p>
+<p>下面的这个程序从一个文件中读取AddressBook ，然后根据用户的输入向其中添加一个新的Person ，然后再将新的AddressBook 写回文件中。由protocol buffer编译器生成的代码或者直接调用的代码都被突出显示了。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;iostream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;fstream&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> &lt;string&gt;</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">include</span> "addressbook.pb.h"</span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// This function fills in a Person message based on user input.</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">PromptForAddress</span><span class="params">(tutorial::Person* person)</span> </span>&#123;</span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter person ID number: "</span>;</span><br><span class="line">  <span class="keyword">int</span> id;</span><br><span class="line">  <span class="built_in">cin</span> &gt;&gt; id;</span><br><span class="line">  person-&gt;set_id(id);</span><br><span class="line">  <span class="built_in">cin</span>.ignore(<span class="number">256</span>, <span class="string">'\n'</span>);           <span class="comment">// cin.ignore(a,ch)方法是从输入流（cin）中提取字符，提取的字符被忽略（ignore），不被使用。每抛弃一个字符，它都要计数和比较字符：如果计数值达到a或者被抛弃的字符是ch，则cin.ignore()函数执行终止；否则，它继续等待。它的一个常用功能就是用来清除以回车结束的输入缓冲区的内容，消除上一次输入对下一次输入的影响。比如可以这么用：cin.ignore(1024,'\n')，通常把第一个参数设置得足够大，这样实际上总是只有第二个参数'\n'起作用，所以这一句就是把回车（包括回车）之前的所以字符从输入缓冲（流）中清除出去。</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter name: "</span>;</span><br><span class="line">  getline(<span class="built_in">cin</span>, *person-&gt;mutable_name());</span><br><span class="line"></span><br><span class="line">  <span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter email address (blank for none): "</span>;</span><br><span class="line">  <span class="built_in">string</span> email;</span><br><span class="line">  getline(<span class="built_in">cin</span>, email);</span><br><span class="line">  <span class="keyword">if</span> (!email.empty()) &#123;</span><br><span class="line">    person-&gt;set_email(email);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter a phone number (or leave blank to finish): "</span>;</span><br><span class="line">    <span class="built_in">string</span> number;</span><br><span class="line">    getline(<span class="built_in">cin</span>, number);</span><br><span class="line">    <span class="keyword">if</span> (number.empty()) &#123;</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    tutorial::Person::PhoneNumber* phone_number = person-&gt;add_phone();</span><br><span class="line">    phone_number-&gt;set_number(number);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"Is this a mobile, home, or work phone? "</span>;</span><br><span class="line">    <span class="built_in">string</span> type;</span><br><span class="line">    getline(<span class="built_in">cin</span>, type);</span><br><span class="line">    <span class="keyword">if</span> (type == <span class="string">"mobile"</span>) &#123;</span><br><span class="line">      phone_number-&gt;<span class="keyword">set_t</span>ype(tutorial::Person::MOBILE);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == <span class="string">"home"</span>) &#123;</span><br><span class="line">      phone_number-&gt;<span class="keyword">set_t</span>ype(tutorial::Person::HOME);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (type == <span class="string">"work"</span>) &#123;</span><br><span class="line">      phone_number-&gt;<span class="keyword">set_t</span>ype(tutorial::Person::WORK);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; <span class="string">"Unknown phone type.  Using default."</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Main function:  Reads the entire address book from a file,</span></span><br><span class="line"><span class="comment">//   adds one person based on user input, then writes it back out to the same</span></span><br><span class="line"><span class="comment">//   file.</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[])</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Verify that the version of the library that we linked against is</span></span><br><span class="line">  <span class="comment">// compatible with the version of the headers we compiled against.</span></span><br><span class="line">  GOOGLE_PROTOBUF_VERIFY_VERSION;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (argc != <span class="number">2</span>) &#123;</span><br><span class="line">    <span class="built_in">cerr</span> &lt;&lt; <span class="string">"Usage:  "</span> &lt;&lt; argv[<span class="number">0</span>] &lt;&lt; <span class="string">" ADDRESS_BOOK_FILE"</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  tutorial::AddressBook address_book;</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// Read the existing address book.</span></span><br><span class="line">    <span class="function">fstream <span class="title">input</span><span class="params">(argv[1], ios::in | ios::binary)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (!input) &#123;</span><br><span class="line">      <span class="built_in">cout</span> &lt;&lt; argv[<span class="number">1</span>] &lt;&lt; <span class="string">": File not found.  Creating a new file."</span> &lt;&lt; endl;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!address_book.ParseFromIstream(&amp;input)) &#123;</span><br><span class="line">      <span class="built_in">cerr</span> &lt;&lt; <span class="string">"Failed to parse address book."</span> &lt;&lt; endl;</span><br><span class="line">      <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Add an address.</span></span><br><span class="line">  PromptForAddress(address_book.add_person());</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="comment">// Write the new address book back to disk.</span></span><br><span class="line">    <span class="function">fstream <span class="title">output</span><span class="params">(argv[1], ios::out | ios::trunc | ios::binary)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (!address_book.SerializeToOstream(&amp;output)) &#123;</span><br><span class="line">      <span class="built_in">cerr</span> &lt;&lt; <span class="string">"Failed to write address book."</span> &lt;&lt; endl;</span><br><span class="line">      <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Optional:  Delete all global objects allocated by libprotobuf.</span></span><br><span class="line">  google::protobuf::ShutdownProtobufLibrary();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>注意GOOGLE_PROTOBUF_VERIFY_VERSION宏。你最好像这样——尽管这不是严格要求的——在使用C++ Protocol Buffer库之前执行该宏。它会检查你是不是在无意中链接到了与你使用的头文件不兼容的protocol buffer库。如果检测到了不匹配情况，程序会中止运行下去。注意：每一个.pb.cc文件在开始的时候都会自动调用该宏。</p>
+</blockquote>
+<h3 id="读消息">读消息</h3><p>当然，如果你不能从一个address book中取出信息的话，那么它也就没什么用了！下面的例子展示了如何读取上面的程序创建的文件，并将读到的所有信息打印出来。</p>
+<figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;iostream&gt;</span><br><span class="line">#include &lt;fstream&gt;</span><br><span class="line">#include &lt;string&gt;</span><br><span class="line">#include <span class="string">"addressbook.pb.h"</span></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">// Iterates though all people in the AddressBook and prints info about them.</span><br><span class="line">void ListPeople(const tutorial::AddressBook&amp; address_book) &#123;</span><br><span class="line">  for (int i = 0; i &lt; address_book.person_size(); i++) &#123;</span><br><span class="line">    const tutorial::<span class="keyword">Person</span>&amp; <span class="keyword">person</span> = address_book.<span class="keyword">person</span>(i);</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">"Person ID: "</span> &lt;&lt; <span class="keyword">person</span>.id() &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">"  Name: "</span> &lt;&lt; <span class="keyword">person</span>.name() &lt;&lt; endl;</span><br><span class="line">    if (<span class="keyword">person</span>.has_email()) &#123;</span><br><span class="line">      cout &lt;&lt; <span class="string">"  E-mail address: "</span> &lt;&lt; <span class="keyword">person</span>.email() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for (int j = 0; j &lt; <span class="keyword">person</span>.phone_size(); j++) &#123;</span><br><span class="line">      const tutorial::<span class="keyword">Person</span>::PhoneNumber&amp; phone_number = <span class="keyword">person</span>.phone(j);</span><br><span class="line"></span><br><span class="line">      switch (phone_number.type()) &#123;</span><br><span class="line">        case tutorial::<span class="keyword">Person</span>::MOBILE:</span><br><span class="line">          cout &lt;&lt; <span class="string">"  Mobile phone #: "</span>;</span><br><span class="line">          break;</span><br><span class="line">        case tutorial::<span class="keyword">Person</span>::HOME:</span><br><span class="line">          cout &lt;&lt; <span class="string">"  Home phone #: "</span>;</span><br><span class="line">          break;</span><br><span class="line">        case tutorial::<span class="keyword">Person</span>::WORK:</span><br><span class="line">          cout &lt;&lt; <span class="string">"  Work phone #: "</span>;</span><br><span class="line">          break;</span><br><span class="line">      &#125;</span><br><span class="line">      cout &lt;&lt; phone_number.number() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Main function:  Reads the entire address book from a file and prints all</span><br><span class="line">//   the information <span class="keyword">inside</span>.</span><br><span class="line">int main(int argc, char* argv<span class="comment">[]</span>) &#123;</span><br><span class="line">  // Verify that the version <span class="keyword">of</span> the library that we linked against <span class="keyword">is</span></span><br><span class="line">  // compatible with the version <span class="keyword">of</span> the headers we compiled against.</span><br><span class="line">  GOOGLE_PROTOBUF_VERIFY_VERSION;</span><br><span class="line"></span><br><span class="line">  if (argc != 2) &#123;</span><br><span class="line">    cerr &lt;&lt; <span class="string">"Usage:  "</span> &lt;&lt; argv<span class="comment">[0]</span> &lt;&lt; <span class="string">" ADDRESS_BOOK_FILE"</span> &lt;&lt; endl;</span><br><span class="line">    return -1;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  tutorial::AddressBook address_book;</span><br><span class="line"></span><br><span class="line">  &#123;</span><br><span class="line">    // Read the existing address book.</span><br><span class="line">    fstream input(argv<span class="comment">[1]</span>, ios::in | ios::binary);</span><br><span class="line">    if (!address_book.ParseFromIstream(&amp;input)) &#123;</span><br><span class="line">      cerr &lt;&lt; <span class="string">"Failed to parse address book."</span> &lt;&lt; endl;</span><br><span class="line">      return -1;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ListPeople(address_book);</span><br><span class="line"></span><br><span class="line">  // Optional:  Delete all global objects allocated by libprotobuf.</span><br><span class="line">  google::protobuf::ShutdownProtobufLibrary();</span><br><span class="line"></span><br><span class="line">  return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="扩展一个protocol_buffer">扩展一个protocol buffer</h3><ul>
+<li>无论或早或晚，在你放出你那使用protocol buffer的代码之后，你必定会想“改进”protocol buffer的定义。如果你想让你的新buffer向后兼容（backwards-compatible），并且旧的buffer能够向前兼容（forward-compatible）——你一定希望如此——那么你在新的protocol buffer中就要遵守其他的一些规则了：<ul>
+<li>对已存在的任何字段，你都不能更改其标识（tag）号。</li>
+<li>你绝对不能添加或删除任何required的字段。</li>
+<li>你可以添加新的optional或repeated的字段，但是你必须使用新的标识（tag）号（例如，在这个protocol buffer中从未使用过的标识号——甚至于已经被删除过的字段使用过的标识号也不行）。</li>
+</ul>
+</li>
+<li>如果你遵守这些规则，老的代码将能很好地解析新的消息（message），并忽略掉任何新的字段。对老代码来说，已经被删除的optional字段将被赋予默认值，已被删除的repeated字段将是空的。新的代码也能够透明地读取旧的消息。但是，请牢记心中：新的optional字段将不会出现在旧的消息中，所以你要么需要显式地检查它们是否由has<em>前缀的函数置（set）了值，要么在你的.proto文件中，在标识（tag）号的后面用[default = value]提供一个合理的默认值。如果没有为一个optional项指定默认值，那么就会使用与特定类型相关的默认值：对string来说，默认值是空字符串。对boolean来说，默认值是false。对数值类型来说，默认值是0。还要注意：如果你添加了一个新的repeated字段，你的新代码将无法告诉你它是否被留空了（被新代码），或者是否从未被置（set）值（被旧代码），这是因为它没有has</em>标志。</li>
+</ul>
+<h3 id="优化小技巧">优化小技巧</h3><ul>
+<li>Protocol Buffer 的C++库已经做了极度优化。但是，正确的使用方法仍然会提高很多性能。下面是一些小技巧，用来提升protocol buffer库的最后一丝速度能力：<ul>
+<li>如果有可能，重复利用消息（message）对象。即使被清除掉，消息（message）对象也会尽量保存所有被分配来重用的内存。这样的话，如果你正在处理很多类型相同的消息以及一系列相似的结构，有一个好办法就是重复使用同一个消息（message）对象，从而使内存分配的压力减小一些。然而，随着时间的流逝，对象占用的内存也有可能变得越来越大，尤其是当你的消息尺寸（译者注：各消息内容不同，有些消息内容多一些，有些消息内容少一些）不同的时候，或者你偶尔创建了一个比平常大很多的消息（message）的时候。你应该自己监测消息（message）对象的大小——通过调用SpaceUsed函数——并在它太大的时候删除它。</li>
+<li>在多线程中分配大量小对象的内存的时候，你的操作系统的内存分配器可能优化得不够好。在这种情况下，你可以尝试用一下<a href="https://github.com/gperftools/gperftools" target="_blank" rel="external">Google’s tcmalloc</a>。</li>
+</ul>
+</li>
+</ul>
+<h3 id="高级使用">高级使用</h3><ul>
+<li>Protocol Buffers的作用绝不仅仅是简单的数据存取以及序列化。请阅读C++ API reference全文来看看你还能用它来做什么。</li>
+<li>protocol消息类所提供的一个关键特性就是反射。你不需要编写针对一个特殊的消息（message）类型的代码，就可以遍历一个消息的字段，并操纵它们的值，就像XML和JSON一样。“反射”的一个更高级的用法可能就是可以找出两个相同类型的消息之间的区别，或者开发某种“协议消息的正则表达式”，利用正则表达式，你可以对某种消息内容进行匹配。只要你发挥你的想像力，就有可能将Protocol Buffers应用到一个更广泛的、你可能一开始就期望解决的问题范围上。</li>
+<li>“反射”是由<code>Message::Reflection</code> interface提供的。</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/10/11/protobuf/protobuf语言指南/">
+                protobuf语法指南
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-10-11
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/protobuf/">protobuf</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/11/protobuf/protobuf语言指南/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/11/protobuf/protobuf语言指南/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="本指南描述了怎样使用protocol_buffer语言来构造你的protocol_buffer数据，包括-proto文件语法以及怎样生成-proto文件的数据访问类。">本指南描述了怎样使用protocol buffer语言来构造你的protocol buffer数据，包括.proto文件语法以及怎样生成.proto文件的数据访问类。</h2><h3 id="定义一个消息类型">定义一个消息类型</h3><p>首先看一个非常简单的例子。假设你想定义一个“搜索请求”（search request）的消息格式，每一个搜索请求含有一个查询字符串、你感兴趣的查询结果所在的页数，以及每一页多少条查询结果。那么下面这个就是用来定义消息类型的.proto文件了：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>SearchRequest消息类型指定了3个字段（名/值 对），你想在消息中承载的数据分别对应于每一个字段。每个字段都有一个名字（name）和一个类型（type）。</p>
+<h3 id="指定字段类型">指定字段类型</h3><p>在上面的例子中，所有字段都是标量类型（<code>scalar types</code>）:两个整型（<code>page_number</code>和<code>result_per_page</code>），一个string（<code>query</code>）。然而，你也可以为字段指定合成的类型，包括枚举（<code>enumerations</code>）以及其他消息类型。</p>
+<h3 id="分配标识号">分配标识号</h3><p>如你所见，在消息定义中，每一个字段都有一个<em>独一无二的标识号</em>（unique numbered tag）。这些标识号是用来在<em>消息二进制格式</em>（message binary format）中识别你的字段的。注意：[1,15]之内的标识号在编码的时候会占用一个字节。[16,2047]之内的标识号则占用2个字节。所以你应该为那些频繁出现的消息元素保留[1,15]之内的标识号。切记：要为将来有可能添加的、频繁出现的标识号预留一些标识号。</p>
+<blockquote>
+<p>19000~19999是protobuf的保留字段,请不要使用.</p>
+</blockquote>
+<h3 id="指定字段规则">指定字段规则</h3><ul>
+<li>你所指定的消息字段必须是如下之一：<ul>
+<li><strong>required</strong>：一个格式良好的消息一定要含有1个这种字段。</li>
+<li><strong>optional</strong>：一个格式良好的消息可以有0个或1个这种字段（但不超过1个）。</li>
+<li><strong>repeated</strong>：在一个格式良好的消息中，这种字段可以重复任意多次（包括0次）。重复的值的顺序会被保留。</li>
+</ul>
+</li>
+<li>由于历史原因，基本数值类型的repeated的字段并没有被尽可能地高效编码。在新的代码（译者注：这里是指.proto文件的内容）中，用户应该使用特殊选项[packed=true]来保证更高效的编码。例如：<ul>
+<li><code>repeated int32 samples = 4 [packed=true];</code></li>
+</ul>
+</li>
+<li><strong>required</strong>是永久性的：在把一个字段标识为required的时候，你应该特别小心。如果在某些情况下你不想写入或者发送一个required的字段，那么将该字段更改为optional可能会遇到问题——旧版本的读者（译者注：即读取、解析消息的一方）会认为不含该字段的消息（message）是不完整的，从而有可能会拒绝解析。在这种情况下，你应该考虑编写特别针对于应用程序的、自定义的消息校验函数。Google的一些工程师得出了一个结论：使用required弊多于利；他们更愿意使用optional和repeated而不是required。当然，这个观点并不具有普遍性。</li>
+</ul>
+<h3 id="添加更多消息类型">添加更多消息类型</h3><p>在一个.proto文件中可以定义多个消息类型。在定义多个相关的消息的时候，这一点特别有用——例如，如果你想定义与你的SearchResponse消息类型对应的回复消息格式的话，你可以将它添加到相同的.proto文件中：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line"> <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="添加注释">添加注释</h3><p>向.proto文件添加注释，可以使用C/C++风格的双斜杠（<code>//</code>） 语法格式。<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> page_number = <span class="number">2</span>;<span class="comment">// Which page number do we want?</span></span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> result_per_page = <span class="number">3</span>;<span class="comment">// Number of results to return per page.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="从你的-proto文件生成了什么？">从你的.proto文件生成了什么？</h3><p>当你对.proto文件运行protocol buffer编译器（protocol buffer compiler）的时候，编译器生成你所选择的语言的代码，这些代码可以操作你在.proto文件中定义的消息类型，包括获取、设置字段值，将你的消息序列化到一个输出流中，以及从一个输入流中解析你的消息。</p>
+<p>对C++来说，编译器为每一个.proto文件生成了一个.h文件和一个.cc文件，.proto文件中的每一个消息有一个对应的类。</p>
+<p>对Java来说，编译器为每一个消息类型生成了一个.java文件，以及一个特殊的Builder类（这个类是用来创建消息类接口的）。</p>
+<p>对Python来说，有点不一样——Python编译器为.proto文件中的每个消息类型生成一个模型，其含有一个静态描述符（static descriptor，译者注：没用过Python，不清楚这样翻译正确与否），该模型与一个元类（metaclass）在运行时（runtime）被用来创建必需的Python数据访问类。</p>
+<h3 id="标量数值类型">标量数值类型</h3><p>一个标量消息字段可以含有一个如下的类型——该表格展示了定义于.proto文件中的类型，以及与之对应的、在自动生成的访问类中定义的类型：</p>
+<table>
+<thead>
+<tr>
+<th>.proto Type</th>
+<th>Notes</th>
+<th>C++ Type</th>
+<th>Java Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>double</td>
+<td>-</td>
+<td>double</td>
+<td>double</td>
+</tr>
+<tr>
+<td>float</td>
+<td>-</td>
+<td>float</td>
+<td>float</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>-</td>
+<td>bool</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>int32</td>
+<td>使用可变长编码方式。编码负数时不够高效——如果你的字段可能含有负数，那么请使用sint32。</td>
+<td>int32</td>
+<td>int32</td>
+</tr>
+<tr>
+<td>int64</td>
+<td>使用可变长编码方式。编码负数时不够高效——如果你的字段可能含有负数，那么请使用sint64。</td>
+<td>int64</td>
+<td>long</td>
+</tr>
+<tr>
+<td>uint32</td>
+<td>使用可变长编码方式</td>
+<td>uint32</td>
+<td>int</td>
+</tr>
+<tr>
+<td>uint64</td>
+<td>使用可变长编码方式</td>
+<td>uint64</td>
+<td>long</td>
+</tr>
+<tr>
+<td>sint32</td>
+<td>使用可变长编码方式。有符号的整型值。编码时比通常的int32高效。</td>
+<td>sint32</td>
+<td>int</td>
+</tr>
+<tr>
+<td>fixed32</td>
+<td>总是4个字节。如果数值总是比总是比2^28大的话，这个类型会比uint32高效。</td>
+<td>uint32</td>
+<td>int</td>
+</tr>
+<tr>
+<td>fixed64</td>
+<td>总是8个字节。如果数值总是比总是比2^56大的话，这个类型会比uint64高效。</td>
+<td>uint64</td>
+<td>long</td>
+</tr>
+<tr>
+<td>sfixed32</td>
+<td>总是4个字节。</td>
+<td>int32</td>
+<td>int</td>
+</tr>
+<tr>
+<td>sfixed64</td>
+<td>总是8个字节。</td>
+<td>int64</td>
+<td>long</td>
+</tr>
+<tr>
+<td>string</td>
+<td>一个字符串必须是UTF-8编码或者7-bit ASCII编码的文本。</td>
+<td>std::string</td>
+<td>string</td>
+</tr>
+<tr>
+<td>bytes</td>
+<td>可能包含任意顺序的字节数据。</td>
+<td>string</td>
+<td>ByteString</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Optional的字段和默认值">Optional的字段和默认值</h3><p>如上所述，消息描述中的一个元素可以被标记为“可选的”（optional）。一个格式良好的消息可以包含一个optional的元素，也可以不包含。当解析一个消息的时候，如果它不包含optional的元素，那么解析出来的对象中的对应字段就被置为默认值。默认值可以在消息描述文件中指定。例如，要为SearchRequest消息的result_per_page字段指定默认值10，可以这样做：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">optional</span> <span class="built_in">int32</span> result_per_page = <span class="number">3</span> [default = <span class="number">10</span>];</span><br></pre></td></tr></table></figure></p>
+<p>如果没有为optional的元素指定默认值，那么就会使用与特定类型相关的默认值：对string来说，默认值是空字符串。对bool来说，默认值是false。对数值类型来说，默认值是0。对枚举来说，默认值是枚举类型定义中的第一个值。</p>
+<h3 id="枚举">枚举</h3><p>当你定义一个消息类型的时候，你可能想为一个字段指定某“预定义值序列”（<code>pre-defined list of values</code>）中的一个值。例如，假设你想为每一个<strong>SearchRequest</strong>消息添加一个<code>corpus</code>字段，而<code>corpus</code>的值可能是<em>UNIVERSAL</em>，<em>WEB</em>，<em>IMAGES</em>，<em>LOCAL</em>，<em>NEWS</em>，<em>PRODUCTS</em>或<em>VIDEO</em>中的一个。你可以很容易地实现这一点：通过向你的消息定义中添加一个枚举（enum）就可以了。一个enum类型的字段只能用指定的常量集（<code>specified set of constants</code>）中的一个值作为其值（如果你尝试指定不同的值，解析器就会把它当作一个未知的字段来对待）。在下面的例子中，我们已经添加了一个叫做Corpus的枚举（enum）——它含有所有可能的值——以及一个类型为Corpus的字段：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> query = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> page_number = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> result_per_page = <span class="number">3</span> [default = <span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">enum</span> <span class="title">Corpus</span> </span>&#123;</span><br><span class="line"><span class="constant">    UNIVERSAL</span> = <span class="number">0</span>;</span><br><span class="line"><span class="constant">    WEB</span> = <span class="number">1</span>;</span><br><span class="line"><span class="constant">    IMAGES</span> = <span class="number">2</span>;</span><br><span class="line"><span class="constant">    LOCAL</span> = <span class="number">3</span>;</span><br><span class="line"><span class="constant">    NEWS</span> = <span class="number">4</span>;</span><br><span class="line"><span class="constant">    PRODUCTS</span> = <span class="number">5</span>;</span><br><span class="line"><span class="constant">    VIDEO</span> = <span class="number">6</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">optional</span> Corpus corpus = <span class="number">4</span> [default = UNIVERSAL];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>枚举常量必须在32位整型值的范围内。因为enum值是使用可变编码方式的，对负数不够高效，因此不推荐在enum中使用负数。如上例所示，你可以在一个消息定义的内部或外部定义枚举——这些枚举可以在你的.proto文件中的任何消息定义里重用。你也可以在一个消息中声明一个枚举类型，而在另一个不同的消息中使用它——采用<code>MessageType.EnumType</code>的语法格式。</li>
+<li>当你对一个使用了枚举的.proto文件运行protocol buffer编译器的时候，生成的代码中将有一个对应的enum（对Java或C++来说），或者一个特殊的<code>EnumDescriptor</code>类（对Python来说），它被用来在运行时生成的类中创建一系列的整型值符号常量（symbolic constants）。</li>
+</ul>
+<h3 id="使用其他消息类型">使用其他消息类型</h3><p>你可以将其他消息类型用作字段类型。例如，假设你想在每一个<code>SearchResponse</code>消息中包含<code>Result</code>消息，你可以这样做——在相同的.proto文件中定义一个<code>Result</code>消息类型，然后在<code>SearchResponse</code>消息中指定一个<code>Result</code>类型的字段：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line">  <span class="keyword">repeated</span> Result result = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Result</span> </span>&#123;</span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> url = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">string</span> title = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">repeated</span> <span class="built_in">string</span> snippets = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="导入定义">导入定义</h3><ul>
+<li>在上面的例子中，<code>Result</code>消息类型与<code>SearchResponse</code>是定义在同一文件中的——如果你要使用的消息类型已经在其他.proto文件中已经定义过了呢？</li>
+<li>你可以通过导入（importing）其他.proto文件中的定义来使用它们。要导入其他.proto文件的定义，你需要在你的文件中添加一个导入声明：<ul>
+<li><code>import &quot;myproject/other_protos.proto&quot;;</code></li>
+</ul>
+</li>
+<li>然后，protocol编译器就会在一系列目录中查找需要被导入的文件，这些目录通过protocol编译器的命令行参数<code>-I/--import_path</code>指定。如果不提供参数，编译器就在其调用目录下查找。</li>
+</ul>
+<h3 id="嵌套类型">嵌套类型</h3><p>你可以在其他消息类型中定义、使用消息类型，在下面的例子中，<code>Result</code>消息就定义在<code>SearchResponse</code>消息内：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">message</span> <span class="title">Result</span> </span>&#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="built_in">string</span> url = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">optional</span> <span class="built_in">string</span> title = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">repeated</span> <span class="built_in">string</span> snippets = <span class="number">3</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">repeated</span> Result result = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你想在它的父消息类型的外部重用这个消息类型，你需要以Parent.Type的形式使用它：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SomeOtherMessage</span> </span>&#123;</span><br><span class="line">  <span class="keyword">optional</span> SearchResponse.Result result = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你可以将消息嵌套任意多层：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Outer</span> </span>&#123;                  <span class="comment">// Level 0</span></span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">message</span> <span class="title">MiddleAA</span> </span>&#123;  <span class="comment">// Level 1</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">Inner</span> </span>&#123;   <span class="comment">// Level 2</span></span><br><span class="line">      <span class="keyword">required</span> <span class="built_in">int64</span> ival = <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">optional</span> <span class="built_in">bool</span>  booly = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="class"><span class="keyword">message</span> <span class="title">MiddleBB</span> </span>&#123;  <span class="comment">// Level 1</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">Inner</span> </span>&#123;   <span class="comment">// Level 2</span></span><br><span class="line">      <span class="keyword">required</span> <span class="built_in">int32</span> ival = <span class="number">1</span>;</span><br><span class="line">      <span class="keyword">optional</span> <span class="built_in">bool</span>  booly = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="更新一个消息类型">更新一个消息类型</h3><p>如果一个已有的消息无法再满足你的需求——例如，你想在消息中添加一个额外的字段——但是你同时还想让为旧版本写的代码仍然可用，不用怕！更新消息而不破坏已有代码是非常简单的。只要你记住下面的规则：</p>
+<ul>
+<li>不要更改任何已有的字段的数值标识（tag）。</li>
+<li>你添加的任何字段都必须是<strong>optional</strong>或<strong>repeated</strong>的。这就意味着任何使用你的“旧”消息格式的代码序列化的消息可以被你的新代码所解析，因为它们不会丢掉任何required的元素。你应该为这些元素设置合理的默认值（default values），这样新的代码就能够正确地与老代码生成的消息交互了。类似地，你的新代码创建的消息也能被你的老代码解析：老的二进制程序在解析的时候只是简单地将新字段忽略。然而，未知的字段是没有被抛弃的，此后，如果消息被序列化，未知的字段会随之一起被序列化——所以，如果消息传到了新代码那里，则新的字段仍然可用。注意：对Python来说，对未知字段的保留策略是无效的。</li>
+<li>非required的字段可以移除——只要它们的标识号（tag number）在你的新消息类型中不再使用（更好的做法可能是重命名那个字段，例如在字段前添加“OBSOLETE_”前缀，那样的话，你的.proto文件的用户将来就不会无意中重新使用了那些不该使用的标识号）。</li>
+<li><em>int32</em>, <em>uint32</em>, <em>int64</em>, <em>uint64</em>,和<em>bool</em>是全部兼容的，这意味着你可以将这些类型中的一个转换为另外一个，而不会破坏前向、后向的兼容性。如果解析出来的数字与对应的类型不相符，那么结果就像在C++中对它进行了强制类型转换一样（例如，如果把一个64位数字当作int32来读取，那么它就会被截断为32位的数字）。</li>
+<li><em>sint32</em>和<em>sint64</em>是互相兼容的，但是它们与其他整数类型<strong>不兼容</strong></li>
+<li><em>string</em>和<em>bytes</em>是兼容的——只要bytes是有效的UTF-8编码。</li>
+<li><em>嵌套消息</em>与<em>bytes</em>是兼容的——只要bytes包含该消息的一个编码过的版本。</li>
+<li><em>fixed32</em>与<em>sfixed32</em>是兼容的，<em>fixed64</em>与<em>sfixed64</em>是兼容的。</li>
+</ul>
+<h3 id="扩展">扩展</h3><p>通过扩展，你可以将一个范围内的字段标识号声明为可被第三方扩展所用。然后，其他人就可以在他们自己的.proto文件中为你的消息类型声明新的字段，而不必去编辑原始文件了。让我们看个例子：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  extensions <span class="number">100</span> to <span class="number">199</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个例子表明：在消息Foo中，范围[100,199]之内的字段标识号被保留为扩展用。现在，其他人就可以在他们自己的.proto文件中添加新字段到Foo里了，但是添加的字段标识号要在指定的范围内——例如：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">extend Foo &#123;</span><br><span class="line">  <span class="keyword">optional</span> <span class="built_in">int32</span> bar = <span class="number">126</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>这个例子表明：消息Foo现在有一个名为bar的optional int32字段。</li>
+<li>当用户的Foo消息被编码的时候，数据的传输格式与用户在Foo里定义新字段的效果是完全一样的。</li>
+<li><p>然而，你在程序代码中访问扩展字段的方法与访问普通的字段稍有不同——你生成的数据访问代码为扩展准备了特殊的访问函数来访问它。例如，下面是你如何在C++中设置bar的值：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Foo foo;</span><br><span class="line">foo.SetExtension(bar, <span class="number">15</span>);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>类似地，Foo类也定义了模板函数HasExtension()，ClearExtension()，GetExtension()，MutableExtension()，以及AddExtension()。这些函数的语义都与对应的普通字段的访问函数相符。要查看更多使用扩展的信息，请参考相应语言的代码生成指南。</p>
+</li>
+</ul>
+<blockquote>
+<p>注意：扩展可以是任何字段类型，包括消息类型。</p>
+</blockquote>
+<h3 id="嵌套的扩展">嵌套的扩展</h3><p>你可以在另一个类型的范围内声明扩展：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Baz</span> </span>&#123;</span><br><span class="line">  extend Foo &#123;</span><br><span class="line">    <span class="keyword">optional</span> <span class="built_in">int32</span> bar = <span class="number">126</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在此例中，访问此扩展的C++代码是：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Foo foo;</span><br><span class="line">foo.SetExtension(Baz::bar, <span class="number">15</span>);</span><br></pre></td></tr></table></figure></p>
+<p>换句话说，唯一的效果就是bar被定义在Baz的范围内。<br>这是个引起混淆的来源：在一个消息类型中嵌套声明一个<em>extend</em>块并没有暗示外部类型（outer type）与扩展类型（extended type）之间有任何联系。特别地，上面的例子没有表明<code>Baz</code>是<code>Foo</code>的任何类型的子类。它所表明的仅仅是：符号<code>bar</code>是在<code>Baz</code>的内部声明的；它只是一个静态成员罢了。</p>
+<p>一个通常的设计模式就是：在扩展的字段类型的范围内定义该扩展——例如，下面是一个Foo的扩展（该扩展是Baz类型的），其中，扩展被定义为了Baz的一部分：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Baz</span> </span>&#123;</span><br><span class="line">  extend Foo &#123;</span><br><span class="line">    <span class="keyword">optional</span> Baz foo_ext = <span class="number">127</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然而，并没有强制要求一个消息类型的扩展一定要定义在那个消息中。你也可以这样做：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Baz</span> </span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// This can even be in a different file.</span></span><br><span class="line">extend Foo &#123;</span><br><span class="line">  <span class="keyword">optional</span> Baz foo_baz_ext = <span class="number">127</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>事实上，这种语法格式更能防止引起混淆。正如上面所提到的，嵌套的语法通常被错误地认为有子类化的关系——尤其是对那些还不熟悉扩展的用户来说。</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2015/10/11/protobuf/protobuf技巧/">
+                protobuf技巧
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2015-10-11
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/protobuf/">protobuf</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/11/protobuf/protobuf技巧/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/11/protobuf/protobuf技巧/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="本文描述了处理Protocol_Buffers的时候一些常用的设计模式">本文描述了处理Protocol Buffers的时候一些常用的设计模式</h2><h3 id="将多个消息转化为流">将多个消息转化为流</h3><p>如果你想将多个消息写入一个文件或流（<em>stream</em>）中，那么是由你来记录一个消息的终点以及另一个消息的起点的。Protocol Buffer数据传输格式不是自我限定的（<em>self-delimiting</em>），所以protocol buffer解析器无法自己决定一个消息结束于何处。解决这个问题的最简单的方法就是：在写入每一个消息之前，先写入消息的大小。当你读取消息的时候，先读取消息大小，然后将指定的字节数读入一个独立的缓冲区中，然后再解析缓冲区里的东西。如果你不想将数据拷贝到一个独立的缓冲区中，请查看<em>CodedInputStream</em>类（C++和Java都可用）的使用方法——你可以用它来限制只读取指定字节的数据</p>
+<h3 id="大数据集">大数据集</h3><ul>
+<li><p>Protocol Buffers不是设计来处理大消息的。根据一般经验，如果你要处理的单条消息大于1M，那就是采取其他策略的时候了。</p>
+</li>
+<li><p>也就是说，Protocol Buffers非常适合于处理一个大数据集内有多个单独的消息。通常，大数据集只是许多小块数据的集合，每一小块都是一块结构化的数据。即使是这样，Protocol Buffers也不能马上处理整个数据集，使用Protocol Buffers来编码每一块数据可以极大地简化你的问题：现在你所需要的只是处理一组字符串，而不是一组结构体了。</p>
+</li>
+<li><p>Protocol Buffers没有内置任何对大数据集的支持，因为不同的情况需要不同的解决方案。</p>
+</li>
+<li><p>有时，一个简单的记录列表就解决问题了，而在某些情况下，你可能更想要的是类似于数据库的东西。每个解决方案都应该作为一个独立的库来开发，所以只有需要它的人才需要付出代价</p>
+</li>
+</ul>
+<h3 id="联合类型">联合类型</h3><p>有时，你可能想发送一个消息，它的类型可以是几种不同的类型之一。然而，protocol buffer解析器无法仅凭消息内容来决定消息的类型。所以，你如何确保接收方应用程序能知道怎么解析消息呢？有一个解决方案是：创建一个封装的消息，其含有N个optional的字段，每一个字段对应一种可能的消息类型。</p>
+<p>例如，如果你有消息类型<code>Foo</code>，<code>Bar</code>和<code>Baz</code>，那么你可以将它们与类型结合起来，像这样：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">OneMessage</span> </span>&#123;</span><br><span class="line">  <span class="comment">// One of the following will be filled in.</span></span><br><span class="line">  <span class="keyword">optional</span> Foo foo = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">optional</span> Bar bar = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">optional</span> Baz baz = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>你也可能想这样做：添加一个枚举字段来标识是哪个消息被填充了，这样的话你就可以对它使用switch（来进行不同的处理）：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">OneMessage</span> </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">enum</span> <span class="title">Type</span> </span>&#123; FOO = <span class="number">1</span>; BAR = <span class="number">2</span>; BAZ = <span class="number">3</span>; &#125;</span><br><span class="line">  <span class="comment">// Identifies which field is filled in.</span></span><br><span class="line">  <span class="keyword">required</span> Type type = <span class="number">1</span>;</span><br><span class="line">  <span class="comment">// One of the following will be filled in.</span></span><br><span class="line">  <span class="keyword">optional</span> Foo foo = <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">optional</span> Bar bar = <span class="number">3</span>;</span><br><span class="line">  <span class="keyword">optional</span> Baz baz = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果你有大量“可能的类型”，那么在你的容器类型中将它们一一列举出来可能非常困难。在这种情况下，你应该考虑使用扩展（extensions）：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">OneMessage</span> </span>&#123;</span><br><span class="line">  extensions <span class="number">100</span> to max;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Elsewhere...</span></span><br><span class="line"></span><br><span class="line">extend OneMessage &#123;</span><br><span class="line">  <span class="keyword">optional</span> Foo foo_ext = <span class="number">100</span>;</span><br><span class="line">  <span class="keyword">optional</span> Bar bar_ext = <span class="number">101</span>;</span><br><span class="line">  <span class="keyword">optional</span> Baz baz_ext = <span class="number">102</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意：你可以使用反射函数<code>ListFields</code>（C++，Java和Python都可用）来获取一个消息中的所有字段的列表（包括扩展）。在实现一个为不同消息类型分别注册句柄的技术方案的时候，你可能用得上这个功能。</p>
+<h3 id="自描述的消息">自描述的消息</h3><p>Protocol Buffers不包含自我类型描述的信息。因此，如果只提供原始消息，而不提供对应的.proto文件，你将很难从中提取出任何有用的数据。</p>
+<p>然而，请注意：一个.proto文件的内容可以使用protocol buffers来描述。通过使用<code>--descriptor_set_out</code>选项，源代码包中的<code>src/google/protobuf/descriptor.proto</code>文件定义了相关的消息类型。protoc编译器可以输出一个<code>FileDescriptorSet</code>——这个集合表示一系列的.proto文件。利用它，你可以像这样定义一个自描述的协议消息：<br><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SelfDescribingMessage</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Set of .proto files which define the type.</span></span><br><span class="line">  <span class="keyword">required</span> FileDescriptorSet proto_files = <span class="number">1</span>;</span><br><span class="line">  <span class="comment">// Name of the message type.  Must be defined by one of the files in</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// proto_files.</span></span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">string</span> type_name = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// The message data.</span></span><br><span class="line">  <span class="keyword">required</span> <span class="built_in">bytes</span> message_data = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过使用像<code>DynamicMessage</code>这样的类（C++和Java都可用），你可以编写出操作<code>SelfDescribingMessage</code>的工具。</p>
+<blockquote>
+<p>总之，Protocol Buffer库之所以没有包含这个特性，是因为我们在Google还从没有需要用它的机会。</p>
+</blockquote>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2015/10/07/golang/etcd学习/">
                 etcd学习
               </a>
@@ -442,82 +1062,6 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/24/hadoop/storm常用配置详解/">
-                storm常用配置详解
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-08-24
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/hadoop/">hadoop</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/08/24/hadoop/storm常用配置详解/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/24/hadoop/storm常用配置详解/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="storm常见配置">storm常见配置</h1><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#zookeeper</span>服务器列表</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.server</span></span><br><span class="line"></span><br><span class="line"><span class="id">#zookeeper</span>端口</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#storm</span>使用的本地系统目录,存储少量状态信息</span><br><span class="line"><span class="tag">storm</span><span class="class">.local</span><span class="class">.dir</span></span><br><span class="line"></span><br><span class="line">#集群运行模式 <span class="attr_selector">[distributed|local]</span></span><br><span class="line"><span class="tag">storm</span><span class="class">.cluster</span><span class="class">.mode</span> </span><br><span class="line"></span><br><span class="line">#客户端连接<span class="tag">zookeeper</span>超时时间</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.session</span><span class="class">.timeout</span></span><br><span class="line"></span><br><span class="line"><span class="id">#nimbus</span>的服务器地址</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.host</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">task</span>存活的心跳超时时间</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.task</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">supervisor</span>是否存活的心跳超时,如果超时将转移到其它节点上运行</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.supervisor</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#启动时的一个特殊超时设置,由于第一次启动<span class="tag">task</span>需要较长时间,所以第一次会用这个超时时间</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.task</span><span class="class">.launch</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#监控<span class="tag">UI</span>的服务端口</span><br><span class="line"><span class="tag">ui</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#drpc</span>服务器列表,以便<span class="tag">drpcspout</span>知道和谁通讯</span><br><span class="line"><span class="tag">drpc</span><span class="class">.servers</span></span><br><span class="line"></span><br><span class="line"><span class="id">#drpc</span>的端口</span><br><span class="line"><span class="tag">drpc</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#supervisor</span>上能够运行的<span class="tag">workers</span>端口列表</span><br><span class="line"><span class="tag">supervisor</span><span class="class">.slots</span><span class="class">.ports</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">worker</span>是否存活的心跳超时时间,超时了就会重启这个<span class="tag">worker</span>的<span class="tag">jvm</span></span><br><span class="line"><span class="tag">supervisor</span><span class="class">.worker</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#也是第一次启动的心跳超时</span><br><span class="line"><span class="tag">supervisor</span><span class="class">.worker</span><span class="class">.start</span><span class="class">.timeout</span><span class="class">.secs</span></span><br></pre></td></tr></table></figure>
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
               <a class="post-title-link" href="/2015/08/24/hadoop/zookeeper配置/">
                 zookeeper配置详解
               </a>
@@ -594,8 +1138,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/21/java/java资料收集/">
-                java资料收集
+              <a class="post-title-link" href="/2015/08/24/hadoop/storm常用配置详解/">
+                storm常用配置详解
               </a>
             
           
@@ -604,248 +1148,7 @@
 
       <div class="post-meta">
         <span class="post-time">
-          發表於 2015-08-21
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/java/">java</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/08/21/java/java资料收集/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/21/java/java资料收集/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="java资料收集">java资料收集</h1><h2 id="构建工具">构建工具</h2><h3 id="Gradle">Gradle</h3><p><a href="http://benweizhu.github.io/blog/2015/01/31/deep-into-gradle-in-action-1/" target="_blank" rel="external">Gradle深入与实战</a></p>
-<h3 id="mvn仓库">mvn仓库</h3><p><a href="http://mvnrepository.com/" target="_blank" rel="external">http://mvnrepository.com/</a><br><a href="http://search.maven.org/" target="_blank" rel="external">http://search.maven.org/</a></p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/20/linux/linux常用命令/">
-                linux常用命令
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-08-20
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/linux/">linux</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/08/20/linux/linux常用命令/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/20/linux/linux常用命令/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="linux常用命令">linux常用命令</h1><h3 id="查看当前服务器开了哪些端口">查看当前服务器开了哪些端口</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[root@master web]# netstat -tunlp&#10;Active Internet connections (only servers)&#10;Proto Recv-Q Send-Q Local Address               Foreign Address             State       PID/Program name   &#10;tcp        0      0 127.0.0.1:9000              0.0.0.0:*                   LISTEN      1078/php-fpm        &#10;tcp        0      0 127.0.0.1:9001              0.0.0.0:*                   LISTEN      1082/php-fpm        &#10;tcp        0      0 0.0.0.0:80                  0.0.0.0:*                   LISTEN      1086/nginx          &#10;tcp        0      0 0.0.0.0:22                  0.0.0.0:*                   LISTEN      957/sshd            &#10;tcp        0      0 127.0.0.1:25                0.0.0.0:*                   LISTEN      1047/master         &#10;[root@master web]#</span><br></pre></td></tr></table></figure>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/19/linux/fastdfs配置/">
-                fastdfs配置及原理
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-08-19
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/linux/">linux</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2015/08/19/linux/fastdfs配置/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/19/linux/fastdfs配置/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="fastdfs配置及原理">fastdfs配置及原理</h1><p>fastdfs是由国人开发,地址: <code>https://github.com/happyfish100/fastdfs</code></p>
-<h2 id="安装及使用">安装及使用</h2><h3 id="2-x安装及使用">2.x安装及使用</h3><p><a href="http://soartju.iteye.com/blog/803477" target="_blank" rel="external">FastDFS安装使用实战一（安装篇）</a><br><a href="http://soartju.iteye.com/blog/803524" target="_blank" rel="external">FastDFS安装使用实战二（配置篇）</a><br><a href="http://soartju.iteye.com/blog/803548" target="_blank" rel="external">FastDFS安装使用实战三（使用篇）</a></p>
-<h3 id="5-x安装及使用">5.x安装及使用</h3><p><a href="http://joelhy.github.io/2015/01/27/FastDFS-v5-06-deploy/" target="_blank" rel="external">fastdfs部署</a></p>
-<h2 id="原理及使用经验">原理及使用经验</h2><p><a href="http://tech.uc.cn/?p=221" target="_blank" rel="external">分布式文件系统FastDFS原理介绍</a><br><a href="http://tech.uc.cn/?p=2579" target="_blank" rel="external">FastDFS使用经验分享</a><br><a href="http://bbs.chinaunix.net/thread-1941456-1-1.html" target="_blank" rel="external">配置文件详解</a><br><a href="http://blog.csdn.net/freewebsys/article/details/45150941" target="_blank" rel="external">安装BUG集合</a></p>
-<h2 id="实际安装中的几个坑">实际安装中的几个坑</h2><ul>
-<li><p>IP段只能用<code>192.168.x.x</code>或是<code>10.x.x.x</code>,不能用<code>172.16?.x.x</code>不然就是尼玛各种问题.</p>
-</li>
-<li><p>记得将源代码中的<code>conf/http.conf</code>和<code>conf/mime.types</code>拷到<code>/etc/fdfs</code>目录下,不然nginx各种假死</p>
-</li>
-</ul>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/18/hadoop/hadoop安装/">
-                hadoop安装
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2015-08-18
+          發表於 2015-08-24
         </span>
 
         
@@ -865,8 +1168,8 @@
           
             <span class="post-comments-count">
             &nbsp; | &nbsp;
-            <a href="/2015/08/18/hadoop/hadoop安装/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/18/hadoop/hadoop安装/"></span>
+            <a href="/2015/08/24/hadoop/storm常用配置详解/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/08/24/hadoop/storm常用配置详解/"></span>
             </a>
           </span>
           
@@ -881,16 +1184,7 @@
 
       
         
-          <h1 id="hadoop安装教程">hadoop安装教程</h1><p><a href="http://blog.csdn.net/andie_guo/article/details/44055613" title="hadoop服务器基础" target="_blank" rel="external">hadoop服务器基础</a></p>
-<p><a href="http://blog.csdn.net/andie_guo/article/details/44055701" title="hadoop单机模式" target="_blank" rel="external">Hadoop之单机模式搭建</a></p>
-<p><a href="http://blog.csdn.net/andie_guo/article/details/44055731" title="Hadoop之伪分布式环境搭建" target="_blank" rel="external">Hadoop之伪分布式环境搭建</a></p>
-<p><a href="http://blog.csdn.net/andie_guo/article/details/44055761" title="Hadoop之完全分布式环境搭建" target="_blank" rel="external">Hadoop之完全分布式环境搭建</a></p>
-<h2 id="hadoop安装的几个坑">hadoop安装的几个坑</h2><h3 id="FileUtil类修改(在windows下会有BUG)">FileUtil类修改(在windows下会有BUG)</h3><p>注释掉以下代码</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">checkReturnValue</span><span class="params">(<span class="keyword">boolean</span> rv, File p, </span><br><span class="line">                                     FsPermission permission</span><br><span class="line">                                     )</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line"> <span class="comment">/*</span><br><span class="line">  if (!rv) &#123;</span><br><span class="line">    throw new IOException("Failed to set permissions of path: " + p + </span><br><span class="line">                          " to " + </span><br><span class="line">                          String.format("%04o", permission.toShort()));</span><br><span class="line">  &#125;*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="关闭hdfs-site-xml里的dfs-permissions">关闭hdfs-site.xml里的dfs.permissions</h3><p>这里是权限检测,ecplise提交作业时会用不同的用户名提交.</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">property</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">name</span>&gt;</span>dfs.permissions<span class="tag">&lt;/<span class="title">name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">value</span>&gt;</span>false<span class="tag">&lt;/<span class="title">value</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="title">description</span>&gt;</span></span><br><span class="line">	If "true", enable permission checking in HDFS.</span><br><span class="line">	If "false", permission checking is turned off,</span><br><span class="line">	but all other behavior is unchanged.</span><br><span class="line">	Switching from one parameter value to the other does not change the mode,</span><br><span class="line">	owner or group of files or directories.</span><br><span class="line">	<span class="tag">&lt;/<span class="title">description</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">property</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<h3 id="复制配置文件至ecplise里的src下">复制配置文件至ecplise里的src下</h3><p>复制 <code>core-site.xml</code>,<code>hdfs-site.xml</code>,<code>log4j.properties</code></p>
-
+          <h1 id="storm常见配置">storm常见配置</h1><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="id">#zookeeper</span>服务器列表</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.server</span></span><br><span class="line"></span><br><span class="line"><span class="id">#zookeeper</span>端口</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#storm</span>使用的本地系统目录,存储少量状态信息</span><br><span class="line"><span class="tag">storm</span><span class="class">.local</span><span class="class">.dir</span></span><br><span class="line"></span><br><span class="line">#集群运行模式 <span class="attr_selector">[distributed|local]</span></span><br><span class="line"><span class="tag">storm</span><span class="class">.cluster</span><span class="class">.mode</span> </span><br><span class="line"></span><br><span class="line">#客户端连接<span class="tag">zookeeper</span>超时时间</span><br><span class="line"><span class="tag">storm</span><span class="class">.zookeeper</span><span class="class">.session</span><span class="class">.timeout</span></span><br><span class="line"></span><br><span class="line"><span class="id">#nimbus</span>的服务器地址</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.host</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">task</span>存活的心跳超时时间</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.task</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">supervisor</span>是否存活的心跳超时,如果超时将转移到其它节点上运行</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.supervisor</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#启动时的一个特殊超时设置,由于第一次启动<span class="tag">task</span>需要较长时间,所以第一次会用这个超时时间</span><br><span class="line"><span class="tag">nimbus</span><span class="class">.task</span><span class="class">.launch</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#监控<span class="tag">UI</span>的服务端口</span><br><span class="line"><span class="tag">ui</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#drpc</span>服务器列表,以便<span class="tag">drpcspout</span>知道和谁通讯</span><br><span class="line"><span class="tag">drpc</span><span class="class">.servers</span></span><br><span class="line"></span><br><span class="line"><span class="id">#drpc</span>的端口</span><br><span class="line"><span class="tag">drpc</span><span class="class">.port</span></span><br><span class="line"></span><br><span class="line"><span class="id">#supervisor</span>上能够运行的<span class="tag">workers</span>端口列表</span><br><span class="line"><span class="tag">supervisor</span><span class="class">.slots</span><span class="class">.ports</span></span><br><span class="line"></span><br><span class="line">#判断<span class="tag">worker</span>是否存活的心跳超时时间,超时了就会重启这个<span class="tag">worker</span>的<span class="tag">jvm</span></span><br><span class="line"><span class="tag">supervisor</span><span class="class">.worker</span><span class="class">.timeout</span><span class="class">.secs</span></span><br><span class="line"></span><br><span class="line">#也是第一次启动的心跳超时</span><br><span class="line"><span class="tag">supervisor</span><span class="class">.worker</span><span class="class">.start</span><span class="class">.timeout</span><span class="class">.secs</span></span><br></pre></td></tr></table></figure>
         
       
     </div>
@@ -913,7 +1207,7 @@
 
   
   <div class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/">&raquo;</a>
   </div>
 
 
@@ -947,21 +1241,21 @@
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">80</span>
+              <span class="site-state-item-count">84</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">56</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>

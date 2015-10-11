@@ -117,6 +117,406 @@
           
           
             
+              <a class="post-title-link" href="/2014/11/12/linux/centos7一些变更/">
+                centos7变更后的修改
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-12
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/linux/">linux</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/12/linux/centos7一些变更/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/12/linux/centos7一些变更/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="centos7_修改selinux_开机导致_faild_to_load_SELinux_policy_freezing_错误">centos7 修改selinux 开机导致 faild to load SELinux policy  freezing 错误</h2><p>之前把selinux关闭了，这次想打开selinux，于是修改了 /etc/selinux/config 文件，然后重启时，就开不了机了，</p>
+<p>出现错误：faild to load SELinux policy  freezing，查了一些资料，完善方案</p>
+<ol>
+<li><p>重启时在启动页面 按 E， 进入 grub 编辑页面；</p>
+</li>
+<li><p>找到 linux 那一行，在最后 language 后面，空格 加上 selinux=0</p>
+</li>
+<li><p>然后 ctrl + x 重新运行，即可了</p>
+</li>
+<li><p>重新启动之前，ls /etc/selinux 发现多了一个 config~的文件，，应该就是这个文件的问题了，把 config～文件删除；</p>
+</li>
+<li><p>reboot重新启动</p>
+</li>
+</ol>
+<h2 id="修改计算机名">修改计算机名</h2><p>hostnamectl</p>
+<h2 id="systemctl">systemctl</h2><p>运行一个服务：<br>systemctl start network.service 关闭网络服务：<br>systemctl stop network.service 重启网络服务：<br>systemctl restart network.service<br>显示一个服务（无论运行与否）的状态： systemctl status network.service<br>在开机时启用一个服务： systemctl enable network.service<br>在开机时禁用一个服务： systemctl disable network.service<br>查看服务开机是否启动：systemctl is-enabled network.service;echo $?  或者是chkconfig<br>使用systemctl命令，要记住start,stop,restart,status,enable,disable,is-enabled。就可以很好的使用！</p>
+<h2 id="其它项">其它项</h2><ul>
+<li>如果发现/etc/init.d/rc.local不能启动,请给予chmod +x 权限</li>
+</ul>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/11/05/golang/Go中error类型的nil值和nil/">
+                Go中error类型的nil值和nil
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-11-05
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/11/05/golang/Go中error类型的nil值和nil/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/11/05/golang/Go中error类型的nil值和nil/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="概念">概念</h2><p>先看C语言中的类似问题：空字符串。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* empty_str0 = <span class="string">""</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* empty_str1 = <span class="string">"\0empty"</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span>* empty_str2 = NULL;</span><br></pre></td></tr></table></figure>
+<p>以上3个字符串并不相等，但是从某种角度看，它们都是对应空的字符串。</p>
+<ul>
+<li>empty_str0 指向一个空的字符串，但是empty_str0本身的值是有效的。</li>
+<li>empty_str1 指向一个非空的字符串，但是字符串的第一个字符是’\0’。</li>
+<li>empty_str2 本身是一个空的指针。</li>
+</ul>
+<p>Go的error是一个interface类型，error的nil问题和C语言的字符串类似。</p>
+<p>在底层，interface作为两个成员实现：一个类型和一个值。该值被称为接口的动态值， 它是一个任意的具体值，而该接口的类型则为该值的类型。对于 int 值3， 一个接口值示意性地包含(int, 3)。</p>
+<p>只有在内部值和类型都未设置时(nil, nil)，一个接口的值才为 nil。特别是，一个 nil 接口将总是拥有一个 nil 类型。若我们在一个接口值中存储一个 int 类型的指针，则内部类型将为 int，无论该指针的值是什么：(*int, nil)。 因此，这样的接口值会是非 nil 的，即使在该指针的内部为 nil。</p>
+<p>下面是一个错误的错误返回方式：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> returnsError() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *MyError = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> bad() &#123;</span><br><span class="line">        p = ErrBad</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p <span class="comment">// Will always return a non-nil error.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 p 返回的是一个有效值（非nil），值为 nil。<br>类似上面的 empty_str0。</p>
+<p>因此，下面判断错误的代码会有问题：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">if</span> err := returnsError(); err != <span class="constant">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="constant">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>针对 returnsError 的问题，可以这样处理（不建议的方式）：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">if</span> err := returnsError(); err.(*MyError) != <span class="constant">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(<span class="constant">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在判断前先将err转型为*MyError，然后再判断err的值。<br>类似的C语言空字符串可以这样判断：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">IsEmptyStr</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* str)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> !(str &amp;&amp; str[<span class="number">0</span>] != <span class="string">'\0'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但是Go语言中标准的错误返回方式不是returnsError这样。<br>下面是改进的returnsError：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> returnsError() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *MyError = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> bad() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="constant">nil</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> p <span class="comment">// Will always return a non-nil error.</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="详解">详解</h2><p>我们来看一下如下例子:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> val <span class="keyword">interface</span>&#123;&#125; = <span class="typename">int64</span>(<span class="number">58</span>)</span><br><span class="line">    fmt.Println(reflect.TypeOf(val))</span><br><span class="line">    val = <span class="number">50</span></span><br><span class="line">    fmt.Println(reflect.TypeOf(val))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们已经知道接口类型的变量底层是作为两个成员来实现，一个是type，一个是data。type用于存储变量的动态类型，data用于存储变量的具体数据。在上面的例子中，第一条打印语句输出的是：int64。这是因为已经显示的将类型为int64的数据58赋值给了interface类型的变量val，所以val的底层结构应该是：(int64, 58)。我们暂且用这种二元组的方式来描述，二元组的第一个成员为type，第二个成员为data。第二条打印语句输出的是：int。这是因为字面量的整数在golang中默认的类型是int，所以这个时候val的底层结构就变成了：(int, 50)。</p>
+<h3 id="接下来说说interface类型的值和nil的比较问题。这是个比较经典的问题，也算是golang的一个坑。">接下来说说interface类型的值和nil的比较问题。这是个比较经典的问题，也算是golang的一个坑。</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> val <span class="keyword">interface</span>&#123;&#125; = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> val == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	val is <span class="constant">nil</span></span><br></pre></td></tr></table></figure>
+<p>变量val是interface类型，它的底层结构必然是(type, data)。由于nil是untyped(无类型)，而又将nil赋值给了变量val，所以val实际上存储的是(nil, nil)。因此很容易就知道val和nil的相等比较是为true的。</p>
+<p>对于将任何其它有意义的值类型赋值给val，都导致val持有一个有效的类型和数据。也就是说变量val的底层结构肯定不为(nil, nil)，因此它和nil的相等比较总是为false。</p>
+<p>上面的讨论都是在围绕值类型来进行的。在继续讨论之前，让我们来看一种特例：(*interface{})(nil)。将nil转成interface类型的指针，其实得到的结果仅仅是空接口类型指针并且它指向无效的地址。注意是空接口类型指针而不是空指针，这两者的区别蛮大的，学过C的童鞋都知道空指针是什么概念。</p>
+<p>关于(<em>interface{})(nil)还有一些要注意的地方。这里仅仅是拿(</em>interface{})(nil)来举例，对于(<em>int)(nil)、(</em>byte)(nil)等等来说是一样的。上面的代码定义了接口指针类型变量val，它指向无效的地址(0x0)，因此val持有无效的数据。但它是有类型的(<em>interface{})。所以val的底层结构应该是：(</em>interface{}, nil)。有时候您会看到(<em>interface{})(nil)的应用，比如var ptrIface = (</em>interface{})(nil)，如果您接下来将ptrIface指向其它类型的指针，将通不过编译。或者您这样赋值：*ptrIface = 123，那样的话编译是通过了，但在运行时还是会panic的，这是因为ptrIface指向的是无效的内存地址。其实声明类似ptrIface这样的变量，是因为使用者只是关心指针的类型，而忽略它存储的值是什么。还是以例子来说明：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> val <span class="keyword">interface</span>&#123;&#125; = (*<span class="keyword">interface</span>&#123;&#125;)(<span class="constant">nil</span>)</span><br><span class="line">    <span class="comment">// val = (*int)(nil)</span></span><br><span class="line">    <span class="keyword">if</span> val == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"val is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	val is not <span class="constant">nil</span></span><br></pre></td></tr></table></figure>
+<p> interface类型的变量和nil的相等比较出现最多的地方应该是error接口类型的值与nil的比较。有时候您想自定义一个返回错误的函数来做这个事，可能会写出以下代码：</p>
+ <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> data <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this *data) Error() <span class="typename">string</span> &#123; <span class="keyword">return</span> <span class="string">""</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> test() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *data = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> e error = test()</span><br><span class="line">    <span class="keyword">if</span> e == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	e is not <span class="constant">nil</span></span><br></pre></td></tr></table></figure>
+<p>我们可以来分析一下。error是一个接口类型，test方法中返回的指针p虽然数据是nil，但是由于它被返回成包装的error类型，也即它是有类型的。所以它的底层结构应该是(*data, nil)，很明显它是非nil的。</p>
+<p>可以打印观察下底层结构数据：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"unsafe"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> data <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this *data) Error() <span class="typename">string</span> &#123; <span class="keyword">return</span> <span class="string">""</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> test() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *data = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">return</span> p</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> e error = test()</span><br><span class="line"> </span><br><span class="line">    d := (*<span class="keyword">struct</span> &#123;</span><br><span class="line">        itab <span class="typename">uintptr</span></span><br><span class="line">        data <span class="typename">uintptr</span></span><br><span class="line">    &#125;)(unsafe.Pointer(&amp;e))</span><br><span class="line"> </span><br><span class="line">    fmt.Println(d)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:	&amp;&#123;<span class="number">3078907912</span> <span class="number">0</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>正确的做法应该是：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"> </span><br><span class="line"><span class="keyword">type</span> data <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> (this *data) Error() <span class="typename">string</span> &#123; <span class="keyword">return</span> <span class="string">""</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> bad() <span class="typename">bool</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="constant">true</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> test() error &#123;</span><br><span class="line">    <span class="keyword">var</span> p *data = <span class="constant">nil</span></span><br><span class="line">    <span class="keyword">if</span> bad() &#123;</span><br><span class="line">        <span class="keyword">return</span> p</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="constant">nil</span></span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    <span class="keyword">var</span> e error = test()</span><br><span class="line">    <span class="keyword">if</span> e == <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is nil"</span>)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"e is not nil"</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/10/31/golang/golang反射的坑/">
+                golang反射的坑
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-10-31
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/10/31/golang/golang反射的坑/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/31/golang/golang反射的坑/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="Type和Value">Type和Value</h2><p>首先，reflect包有两个数据类型我们必须知道，一个是Type，一个是Value。<br>Type就是定义的类型的一个数据类型，Value是值的类型<br>具体的Type和Value里面包含的方法就要看文档了.</p>
+<p>这里我写了个程序来理解Type和Value：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyStruct <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (this *MyStruct) GetName() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> this.name</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	s := <span class="string">"this is string"</span></span><br><span class="line">	fmt.Println(reflect.TypeOf(s))</span><br><span class="line">	fmt.Println(<span class="string">"-------------------"</span>)</span><br><span class="line">	fmt.Println(reflect.ValueOf(s))</span><br><span class="line">	<span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">	fmt.Println(reflect.ValueOf(x))</span><br><span class="line">	fmt.Println(<span class="string">"-------------------"</span>)</span><br><span class="line">	a := <span class="built_in">new</span>(MyStruct)</span><br><span class="line">	a.name = <span class="string">"yejianfeng"</span></span><br><span class="line">	typ := reflect.TypeOf(a)</span><br><span class="line">	fmt.Println(typ.NumMethod())</span><br><span class="line">	fmt.Println(<span class="string">"-------------------"</span>)</span><br><span class="line">	b := reflect.ValueOf(a).MethodByName(<span class="string">"GetName"</span>).Call([]reflect.Value&#123;&#125;)</span><br><span class="line">	fmt.Println(b[<span class="number">0</span>])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:		<span class="typename">string</span></span><br><span class="line">			-------------------</span><br><span class="line">			this is <span class="typename">string</span></span><br><span class="line">			&lt;<span class="typename">float64</span> Value&gt;</span><br><span class="line">			-------------------</span><br><span class="line">			<span class="number">1</span></span><br><span class="line">			-------------------</span><br><span class="line">			yejianfeng</span><br></pre></td></tr></table></figure></p>
+<p>这个程序看到几点：</p>
+<ol>
+<li>TypeOf和ValueOf是获取Type和Value的方法</li>
+<li>ValueOf返回的<float64 value="">是为了说明这里的value是float64</float64></li>
+<li>第三个b的定义实现了php中的string-&gt;method的方法，为什么返回的是reflect.Value[]数组呢？当然是因为Go的函数可以返回多个值的原因了。</li>
+</ol>
+<h2 id="Value的方法和属性">Value的方法和属性</h2><p>我们看到Value的Type定义了这么多Set方法：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> (v Value) SetBool(x <span class="typename">bool</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetInt(x <span class="typename">int64</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetUint(x <span class="typename">uint64</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetFloat(x <span class="typename">float64</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetComplex(x <span class="typename">complex128</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetBytes(x []<span class="typename">byte</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetString(x <span class="typename">string</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetPointer(x unsafe.Pointer)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetCap(n <span class="typename">int</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetLen(n <span class="typename">int</span>)</span><br><span class="line"><span class="keyword">func</span> (v Value) SetMapIndex(key, val Value)</span><br><span class="line"><span class="keyword">func</span> (v Value) Set(x Value)</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> MyStruct <span class="keyword">struct</span> &#123;</span><br><span class="line">	name <span class="typename">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (this *MyStruct) GetName() <span class="typename">string</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> this.name</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	<span class="keyword">var</span> a MyStruct</span><br><span class="line">	b := <span class="built_in">new</span>(MyStruct)</span><br><span class="line">	fmt.Println(reflect.ValueOf(a))</span><br><span class="line">	fmt.Println(reflect.ValueOf(b))</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	a.name = <span class="string">"yejianfeng"</span></span><br><span class="line">	b.name = <span class="string">"yejianfeng"</span></span><br><span class="line">	val := reflect.ValueOf(a).FieldByName(<span class="string">"name"</span>)</span><br><span class="line">	<span class="comment">//painc: val := reflect.ValueOf(b).FieldByName("name")</span></span><br><span class="line">	fmt.Println(val)</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	fmt.Println(reflect.ValueOf(a).FieldByName(<span class="string">"name"</span>).CanSet())</span><br><span class="line">	fmt.Println(reflect.ValueOf(&amp;(a.name)).Elem().CanSet())</span><br><span class="line">	fmt.Println(<span class="string">"--------------"</span>)</span><br><span class="line">	<span class="keyword">var</span> c <span class="typename">string</span> = <span class="string">"yejianfeng"</span></span><br><span class="line">	p := reflect.ValueOf(&amp;c)</span><br><span class="line">	fmt.Println(p.CanSet())        <span class="comment">//false</span></span><br><span class="line">	fmt.Println(p.Elem().CanSet()) <span class="comment">//true</span></span><br><span class="line">	p.Elem().SetString(<span class="string">"newName"</span>)</span><br><span class="line">	fmt.Println(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">output:		--------------</span><br><span class="line">			&lt;main.MyStruct Value&gt;</span><br><span class="line">			&lt;*main.MyStruct Value&gt;</span><br><span class="line">			--------------</span><br><span class="line">			yejianfeng</span><br><span class="line">			--------------</span><br><span class="line">			<span class="constant">false</span></span><br><span class="line">			<span class="constant">true</span></span><br><span class="line">			--------------</span><br><span class="line">			<span class="constant">false</span></span><br><span class="line">			<span class="constant">true</span></span><br><span class="line">			newName</span><br></pre></td></tr></table></figure>
+<p>这段代码能有一些事情值得琢磨：</p>
+<ol>
+<li>为什么a和b的ValueOf返回的是不一样的？<br>a是一个结构，b是一个指针。好吧，在Go中，指针的定义和C中是一样的。</li>
+<li>reflect.ValueOf(a).FieldByName(“name”)<br>这是一个绕路的写法，其实和a.name是一样的意思，主要是要说明一下Value.FieldByName的用法</li>
+<li>val := reflect.ValueOf(b).FieldByName(“name”) 是有error的，为什么？<br>b是一个指针，指针的ValueOf返回的是指针的Type，它是没有Field的，所以也就不能使用FieldByName</li>
+<li>fmt.Println(reflect.ValueOf(a).FieldByName(“name”).CanSet())为什么是false?<br>看文档中的解释：<br>  func (v Value) CanSet() bool<br>  如果v持有的值可以被修改，CanSet就会返回真。只有一个Value持有值可以被寻址同时又不是来自非导出字段时，它才可以被修改。如果CanSet返回假，调用Set或任何限定类型的设置函数（如SetBool、SetInt64）都会panic。</li>
+</ol>
+<p>好吧，什么是addressable，and was not obtained by the use of unexported struct fields?<br>CanSet当Value是可寻址的时候，返回true，否则返回false<br>看到第二个c和p的例子，我们可以这么理解：<br>当前面的CanSet是一个指针的时候（p）它是不可寻址的，但是当是p.Elem()(实际上就是*p)，它就是可以寻址的<br>这个确实有点绕。</p>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              <a class="post-title-link" href="/2014/10/30/golang/xml_json解析tag详解/">
+                xml,json解析tag详解
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於 2014-10-30
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分類於
+            
+              <a href="/categories/golang/">golang</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2014/10/30/golang/xml_json解析tag详解/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2014/10/30/golang/xml_json解析tag详解/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="xml">xml</h2><p>demo:<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"encoding/xml"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"io/ioutil"</span></span><br><span class="line">    <span class="string">"os"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Recurlyservers <span class="keyword">struct</span> &#123;</span><br><span class="line">    XMLName     xml.Name <span class="string">`xml:"servers"`</span></span><br><span class="line">    Version     <span class="typename">string</span>   <span class="string">`xml:"version,attr"`</span></span><br><span class="line">    Svs         []server <span class="string">`xml:"server"`</span></span><br><span class="line">    Description <span class="typename">string</span>   <span class="string">`xml:",innerxml"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> server <span class="keyword">struct</span> &#123;</span><br><span class="line">    XMLName    xml.Name <span class="string">`xml:"server"`</span></span><br><span class="line">    ServerName <span class="typename">string</span>   <span class="string">`xml:"serverName"`</span></span><br><span class="line">    ServerIP   <span class="typename">string</span>   <span class="string">`xml:"serverIP"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">    file, err := os.Open(<span class="string">"servers.xml"</span>) <span class="comment">// For read access.     </span></span><br><span class="line">    <span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"error: %v"</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">defer</span> file.Close()</span><br><span class="line">    data, err := ioutil.ReadAll(file)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"error: %v"</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line">    v := Recurlyservers&#123;&#125;</span><br><span class="line">    err = xml.Unmarshal(data, &amp;v)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="constant">nil</span> &#123;</span><br><span class="line">        fmt.Printf(<span class="string">"error: %v"</span>, err)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fmt.Println(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>解析XML到struct的时候遵循如下的规则：</p>
+<ol>
+<li>如果struct的一个字段是string或者[]byte类型且它的tag含有”,innerxml”，Unmarshal将会将此字段所对应的元素内所有内嵌的原始xml累加到此字段上.</li>
+<li>如果struct中有一个叫做XMLName，且类型为xml.Name字段，那么在解析的时候就会保存这个element的名字到该字段,如上面例子中的servers。</li>
+<li>如果某个struct字段的tag定义中含有XML结构中element的名称，那么解析的时候就会把相应的element值赋值给该字段，如上servername和serverip定义。</li>
+<li>如果某个struct字段的tag定义了中含有”,attr”，那么解析的时候就会将该结构所对应的element的与字段同名的属性的值赋值给该字段，如上version定义。</li>
+<li>如果某个struct字段的tag定义 型如”a&gt;b&gt;c”,则解析的时候，会将xml结构a下面的b下面的c元素的值赋值给该字段。</li>
+<li>如果某个struct字段的tag定义了”-“,那么不会为该字段解析匹配任何xml数据。</li>
+<li>如果struct字段后面的tag定义了”,any”，如果他的子元素在不满足其他的规则的时候就会匹配到这个字段。</li>
+<li>如果某个XML元素包含一条或者多条注释，那么这些注释将被累加到第一个tag含有”,comments”的字段上，这个字段的类型可能是[]byte或string,如果没有这样的字段存在，那么注释将会被抛弃。</li>
+</ol>
+<p>上面详细讲述了如何定义struct的tag。 只要设置对了tag，那么XML解析就如上面示例般简单，tag和XML的element是一一对应的关系，如上所示，我们还可以通过slice来表示多个同级元素。</p>
+<blockquote>
+<p>   注意： 为了正确解析，go语言的xml包要求struct定义中的所有字段必须是可导出的（即首字母大写）</p>
+</blockquote>
+<h2 id="json">json</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span> &#123;</span><br><span class="line">    <span class="comment">// ID 不会导出到JSON中</span></span><br><span class="line">    ID <span class="typename">int</span> <span class="string">`json:"-"`</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ServerName 的值会进行二次JSON编码</span></span><br><span class="line">    ServerName  <span class="typename">string</span> <span class="string">`json:"serverName"`</span></span><br><span class="line">    ServerName2 <span class="typename">string</span> <span class="string">`json:"serverName2,string"`</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果 ServerIP 为空，则不输出到JSON串中</span></span><br><span class="line">    ServerIP   <span class="typename">string</span> <span class="string">`json:"serverIP,omitempty"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">s := Server &#123;</span><br><span class="line">    ID:         <span class="number">3</span>,</span><br><span class="line">    ServerName:  <span class="string">`Go "1.0" `</span>,</span><br><span class="line">    ServerName2: <span class="string">`Go "1.0" `</span>,</span><br><span class="line">    ServerIP:   <span class="string">``</span>,</span><br><span class="line">&#125;</span><br><span class="line">b, _ := json.Marshal(s)</span><br><span class="line">os.Stdout.Write(b)</span><br></pre></td></tr></table></figure>
+<ol>
+<li>字段的tag是”-“，那么这个字段不会输出到JSON</li>
+<li>tag中带有自定义名称，那么这个自定义名称会出现在JSON的字段名中，例如上面例子中serverName</li>
+<li>tag中如果带有”omitempty”选项，那么如果该字段值为空，就不会输出到JSON串中</li>
+<li>如果字段类型是bool, string, int, int64等，而tag中带有”,string”选项，那么这个字段在输出到JSON的时候会把该字段对应的值转换成JSON字符串</li>
+</ol>
+
+        
+      
+    </div>
+
+    <div class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </div>
+  </div>
+
+
+    
+      
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
               <a class="post-title-link" href="/2014/10/25/golang/goroutine背后的系统知识/">
                 goroutine背后的系统知识
               </a>
@@ -427,7 +827,7 @@
 <p>可能这些看起来有些怪异（bizarre），但其实是很简单的。这其实是一种很常见的情况，只是有个不同的外在而已。想想当我们把x传递给一个函数的时候：<code>f(x)</code><br>因为我们传递给函数的是x的拷贝而不是x的本身，所以我们知道f不能修改x的值。如果我们想f能修改x的值，那么我们就必须给这个函数传递x的的地址了（也就是x的指针）: <code>f(&amp;x)</code></p>
 <p>这样看起来就显得很简单很熟悉了，反射也是同样的运作方式的。如果我们也想让反射修改x的话，我们也必须给反射库(reflection library)一个我们想修改的值得指针。</p>
 <p>让我们这操作一下试试。首先我们像往常一样初始化x，然后创建一个指向x的反射变量p：</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">p := reflect.ValueOf(&amp;x) <span class="comment">// <span class="doctag">Note</span>: take the address of x.</span></span><br><span class="line">fmt.Println(<span class="string">"type of p:"</span>, p.Type())</span><br><span class="line">fmt.Println(<span class="string">"settability of p:"</span>, p.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type of p: *float64</span></span><br><span class="line">			settability of p: <span class="constant">false</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="typename">float64</span> = <span class="number">3.4</span></span><br><span class="line">p := reflect.ValueOf(&amp;x) <span class="comment">// Note: take the address of x.</span></span><br><span class="line">fmt.Println(<span class="string">"type of p:"</span>, p.Type())</span><br><span class="line">fmt.Println(<span class="string">"settability of p:"</span>, p.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	type of p: *float64</span></span><br><span class="line">			settability of p: <span class="constant">false</span></span><br></pre></td></tr></table></figure>
 <p>p这个反射是不可设置的，但是p也也不是我想设置的数据，我们要设置的实际是*p。想要得到p所指向的数据，我们使用Value的Elem方法。这个方法可以通过指针间接访问数据，并且保存在反射Value的变量v中：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">v := p.Elem()</span><br><span class="line">fmt.Println(<span class="string">"settability of v:"</span>, v.CanSet())</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	settability of v: true</span></span><br></pre></td></tr></table></figure>
 <p>既然v代表的是x，我们终于可以使用v.SetFloat修改x的值了：<br><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">v.SetFloat(<span class="number">7.1</span>)</span><br><span class="line">fmt.Println(v.Interface())</span><br><span class="line">fmt.Println(x)</span><br><span class="line"></span><br><span class="line"><span class="comment">//output:	7.1</span></span><br><span class="line">			<span class="number">7.1</span></span><br></pre></td></tr></table></figure></p>
@@ -1656,505 +2056,11 @@ printf(<span class="string">"user type：%sn"</span>, <span class="variable">$us
 
 
     
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/09/16/apple/apple证书详解/">
-                apple证书详解
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-09-16
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/object-c/">object-c</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/09/16/apple/apple证书详解/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/16/apple/apple证书详解/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>刚接触iOS开发的人难免会对苹果的各种证书、配置文件等不甚了解，可能你按照网上的教程一步一步的成功申请了真机调试，但是还是对其中的缘由一知半解。这篇文章就对Certificate、Provisioning Profile等做个总结。</p>
-<h1 id="概念介绍">概念介绍</h1><p>如果你拥有一个开发者账户的话，在iOS Dev Center打开Certificates, Indentifiers &amp; Profiles，你就可以看到如下的列表：</p>
-<p><img src="/img/apple证书详解/1.png" alt="apple证书"></p>
-<p>Profile Portal改版有一段时间了，改版之后的结构比以前更清晰明了，易于理解和管理。</p>
-<p>上面的列表就包含了开发、调试和发布iOS应用程序所需的所有内容：Certificates、Identifiers、Devices、Provisioning Profiles。下面将一一解释这几个东东。</p>
-<h2 id="Certificate">Certificate</h2><p>证书是用来给应用程序签名的，只有经过签名的应用程序才能保证他的来源是可信任的，并且代码是完整的， 未经修改的。在Xcode Build Setting的Code Signing Identity中，你可以设置用于为代码签名的证书。 </p>
-<p>众所周知，我们申请一个Certificate之前，需要先申请一个Certificate Signing Request (CSR) 文件，而这个过程中实际上是生成了一对公钥和私钥，保存在你Mac的Keychain中。代码签名正是使用这种基于非对称秘钥的加密方式，用私钥进行签名，用公钥进行验证。如下图所示，在你Mac的keychain的login中存储着相关的公钥和私钥，而证书中包含了公钥。你只能用私钥来进行签名，所以如果没有了私钥，就意味着你不能进行签名了，所以就无法使用这个证书了，此时你只能revoke之前的证书再申请一个。因此在申请完证书时，最好导出并保存好你的私钥。当你想与其他人或其他设备共享证书时，把私钥传给它就可以了。私钥保存在你的Mac中，而苹果生成的Certificate中包含了公钥。当你用自己的私钥对代码签名后，苹果就可以用证书中的公钥来进行验证，确保是你对代码进行了签名，而不是别人冒充你，同时也确保代码的完整性等。 </p>
-<p><img src="/img/apple证书详解/2.png" alt="apple证书"></p>
-<p>证书主要分为两类：Development和Production，Development证书用来开发和调试应用程序，Production主要用来分发应用程序（根据证书种类有不同作用），下面是证书的分类信息：（括号内为证书有效期）</p>
-<blockquote>
-<p>（注：不同类型的开发者账户所能创建的证书种类不同，关于开发者账户的对比和InHouse证书相关的内容，请见我的另一篇文章）</p>
-</blockquote>
-<ul>
-<li>Development<ul>
-<li>App Development (1年)：用来开发和真机调试应用程序。</li>
-<li>Push Development (1年)：用来调试Apple Push Notification</li>
-</ul>
-</li>
-<li>Production<ul>
-<li>In-House and Ad Hoc (3年)：用来发布In-House和AdHoc的应用程序。</li>
-<li>App Store ：用来发布提交App Store的应用程序。</li>
-<li>MDM CSR</li>
-<li>Push Production (1年)：用来在发布版本中使用Apple Push Notification。</li>
-<li>Pass Type ID Certificate</li>
-<li>Website Push ID Certificate</li>
-</ul>
-</li>
-</ul>
-<p>有一些类型的证书我没有使用过，所以也不了解具体的作用。</p>
-<h3 id="App_ID">App ID</h3><p>App ID用于标识一个或者一组App，App ID应该是和Xcode中的Bundle ID是一致的或者匹配的。App ID主要有以下两种： </p>
-<ul>
-<li>Explicit App ID：唯一的App ID，这种App ID用于唯一标识一个应用程序，例如com.ABC.demo1，标识Bundle ID为com.ABC.demo1的程序。</li>
-<li>Wildcard App ID：通配符App ID，用于标识一组应用程序。例如*可以表示所有应用程序，而com.ABC.*可以表示以com.ABC开头的所有应用程序。</li>
-</ul>
-<p>每创建一个App ID，我们都可以设置该App ID所使用的APP Services，也就是其所使用的额外服务。每种额外服务都有着不同的要求，例如，如果要使用Apple Push Notification Services，则必须是一个explicit App ID，以便能唯一标识一个应用程序。下面是目前所有可选的服务和相应的配置要求。</p>
-<p><img src="/img/apple证书详解/3.png" alt="apple证书"></p>
-<p>如果你的App使用上述的任何一种service，就要按照要求去配置。</p>
-<h3 id="Device">Device</h3><p>Device最简单了，就是iOS设备。Devices中包含了该账户中所有可用于开发和测试的设备。 每台设备使用UDID来唯一标识。</p>
-<p>每个账户中的设备数量限制是100个。Disable 一台设备也不会增加名额，只能在membership year 开始的时候才能通过删除设备来增加名额。</p>
-<p><strong>举例</strong></p>
-<ol>
-<li><p>假如第一年，你增加了70个设备，同时删除了10个设备，这个时候，虽然你的设备数是60，但是可用的增加测试机的名额却只有30个了。</p>
-</li>
-<li><p>到了第二年，你续费了开发者身份，在你第一次登陆进去后，你可以看到你的可用设备恢复成 100 – 60 = 40个了。这个时候，你可以选择删除一些设备，例如你又删除了20个设备，这样你的名额数变成60个。之后你增加了一个设备，因为你选择了增加新设备，苹果认为你已经放弃删除设备以恢复设备数的机会，这样，你的名额就固定成59个。以后删除设备都不会增加新名额了，直到你的下一个membership year开始时才又会有这样的机会来删除设备释放名额。</p>
-</li>
-</ol>
-<p>那如果万一我的设备数达到上限，我又急需要增加新设备怎么办呢？</p>
-<p>具体做法是访问：<a href="https://developer.apple.com/contact/" target="_blank" rel="external">https://developer.apple.com/contact/</a>，点击 Program Benefits， 然后在新出来的提交界面中将需求填上。之后苹果会发邮件过来告诉你处理结果，可能需要打电话过去和他们沟通一些细节。在沟通完成后，苹果就可以立即帮助你状态修改到“可删除设备来增加测试设备名额”。这样，你就可以选择性的删除一些不需要的设备来释放一些名额了。</p>
-<h2 id="Provisioning_Profile">Provisioning Profile</h2><p>一个Provisioning Profile文件包含了上述的所有内容：证书、App ID、设备。</p>
-<p>试想一下，如果我们要打包或者在真机上运行一个应用程序，我们首先需要证书来进行签名，用来标识这个应用程序是合法的、安全的、完整的等等；然后需要指明它的App ID，并且验证Bundle ID是否与其一致；再次，如果是真机调试，需要确认这台设备能否用来运行程序。而Provisioning Profile就把这些信息全部打包在一起，方便我们在调试和发布程序打包时使用，这样我们只要在不同的情况下选择不同的profile文件就可以了。而且这个Provisioning Profile文件会在打包时嵌入.ipa的包里。</p>
-<p>例如，如下图所示，一个用于Development的Provisioning Profile中包含了该Provisioning Profile对应的App ID，可使用的证书和设备。这意味着使用这个Provisioning Profile打包程序必须拥有相应的证书，并且是将App ID对应的程序运行到Devices中包含的设备上去。</p>
-<p><img src="/img/apple证书详解/4.png" alt="apple证书"></p>
-<p>如上所述，在一台设备上运行应用程序的过程如下：</p>
-<p><img src="/img/apple证书详解/5.png" alt="apple证书"></p>
-<p>与证书一样，Provisioning Profile也分为Development和Distribution两种：</p>
-<blockquote>
-<p>（注：前面提到不同账户类型所能创建的证书种类不同，显然Profile文件的种类是和你所能创建的证书种类相关的）</p>
-</blockquote>
-<ul>
-<li>Development (1年)</li>
-<li>Distribution (1年)<ul>
-<li>In House</li>
-<li>Ad Hoc</li>
-<li>App Store</li>
-</ul>
-</li>
-</ul>
-<p>In House 与Ad Hoc的不同之处在于：In House没有设备数量限制，而Ad Hoc是用来测试用的，Ad Hoc的包只能运行在该账户内已登记的可用设备上，显然是有最多100个设备的数量限制。所以这两种Provisioning Profile文件的区别就在于其中的设备限制不一样而已，而他们所使用的Certificate是相同的。    </p>
-<h1 id="开发/发布流程">开发/发布流程</h1><p>了解了上面的概念，再来看开发及发布流程就非常简单了，而且相信你不用看教程也能一步步完成所有的操作了。</p>
-<h2 id="开发/真机调试流程">开发/真机调试流程</h2><p>根据上面的介绍，可以知道进行Development主要有以下几个步骤：</p>
-<ul>
-<li>申请证书</li>
-<li>加入设备</li>
-<li>生成Provisioning Profile</li>
-<li>设置Xcode Code Sign Identifer</li>
-</ul>
-<p>事实上第三步通常是不需要的，因为我们通常都是用Xcode生成和管理的iOS Team Provisioning Profile来进行开发，因为它非常方便，所以不需要自己手动生成Provisioning Profile。</p>
-<p>iOS Team Provisioning Profile是第一次使用Xcode添加设备时，Xcode自动生成的，它包含了Xcode生成的一个Wildcard App ID（*，匹配所有应用程序），账户里面所有的Devices和所有Development Certificates，如下图所示。因此，team中的所有成员都可以使用这个iOS Team Provisioning Profile在team中的所有设备上调试所有的应用程序。并且当有新设备添加进来时，Xcode会更新这个文件。</p>
-<p><img src="/img/apple证书详解/6.png" alt="apple证书"></p>
-<h2 id="发布流程">发布流程</h2><p>网上有很多关于发布App Store的流程，我就不缀述了，不过根据上面的概念介绍，不管是App Store、In-House还是Ad-Hoc，打包流程都是差不多的，都包括了以下几个关键步骤：</p>
-<ul>
-<li>创建发布证书</li>
-<li>创建App ID</li>
-<li>创建对应的Provisioning Profile文件</li>
-<li>设备Bundle ID和App ID一致</li>
-<li>设置Xcode Code Sign Identifer，选择合适的Profile和证书进行签名，打包</li>
-</ul>
-<p>以上就是对证书、Provisioning Profile、App ID等的介绍。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/09/15/object-c/触摸事件/">
-                触摸事件处理
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-09-15
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/ios/">ios</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/09/15/object-c/触摸事件/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/15/object-c/触摸事件/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <p>iphone/ipad无键盘的设计是为屏幕争取更多的显示空间，大屏幕在观看图片、文字、视频等方面为用户带来了更好的用户体验。而触摸屏幕是iOS设备接受用户输入的主要方式，包括单击、双击、拨动以及多点触摸等，这些操作都会产生触摸事件。</p>
-<p>在Cocoa中，代表触摸对象的类是<code>UITouch</code>。当用户触摸屏幕后，就会产生相应的事件，所有相关的UITouch对象都被包装在事件中，被程序交由特定的对象来处理。UITouch对象直接包括触摸的详细信息。</p>
-<h2 id="UITouch类中包含5个属性：">UITouch类中包含5个属性：</h2><ol>
-<li>window：触摸产生时所处的窗口。由于窗口可能发生变化，当前所在的窗口不一定是最开始的窗口。</li>
-<li>view:触摸产生时所处的视图。由于视图可能发生变化，当前视图也不一定时最初的视图。</li>
-<li>tapCount：轻击（Tap）操作和鼠标的单击操作类似，tapCount表示短时间内轻击屏幕的次数。因此可以根据tapCount判断单击、双击或更多的轻击。</li>
-<li>timestamp：时间戳记录了触摸事件产生或变化时的时间。单位是秒。</li>
-<li><p>phase：触摸事件在屏幕上有一个周期，即触摸开始、触摸点移动、触摸结束，还有中途取消。而通过phase可以查看当前触摸事件在一个周期中所处的状态。phase是<code>UITouchPhase</code>类型的，这是一个枚举配型，包含了:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UITouchPhaseBegan</span>（触摸开始）</span><br><span class="line"><span class="built_in">UITouchPhaseMoved</span>（接触点移动）</span><br><span class="line"><span class="built_in">UITouchPhaseStationary</span>（接触点无移动）</span><br><span class="line"><span class="built_in">UITouchPhaseEnded</span>（触摸结束）</span><br><span class="line"><span class="built_in">UITouchPhaseCancelled</span>（触摸取消）</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="UITouch类中包含如下成员函数：">UITouch类中包含如下成员函数：</h2><ul>
-<li><p><code>- (CGPoint)locationInView:(UIView *)view</code>：函数返回一个CGPoint类型的值，表示触摸在view这个视图上的位置，这里返回的位置是针对view的坐标系的。调用时传入的view参数为空的话，返回的时触摸点在整个窗口的位置。</p>
-</li>
-<li><p><code>- (CGPoint)previousLocationInView:(UIView *)view</code>：该方法记录了前一个坐标值，函数返回也是一个CGPoint类型的值， 表示触摸在view这个视图上的位置，这里返回的位置是针对view的坐标系的。调用时传入的view参数为空的话，返回的时触摸点在整个窗口的位置。</p>
-</li>
-</ul>
-<p>当手指接触到屏幕，不管是单点触摸还是多点触摸，事件都会开始，直到用户所有的手指都离开屏幕。期间所有的UITouch对象都被包含在UIEvent事件对象中，由程序分发给处理者。事件记录了这个周期中所有触摸对象状态的变化。</p>
-<p>只要屏幕被触摸，系统就会报若干个触摸的信息封装到UIEvent对象中发送给程序，由管理程序UIApplication对象将事件分发。一般来说，事件将被发给主窗口，然后传给第一响应者对象(<code>FirstResponder</code>)处理。</p>
-<p>关于响应者的概念，通过以下几点说明：</p>
-<ul>
-<li><p>响应者对象（Response object）</p>
-<p>响应者对象就是可以响应事件并对事件作出处理。在iOS中，存在UIResponder类，它定义了响应者对象的所有方法。UIApplication、UIView等类都继承了UIResponder类，UIWindow和UIKit中的控件因为继承了UIView，所以也间接继承了UIResponder类，这些类的实例都可以当作响应者。</p>
-</li>
-<li><p>第一响应者（First responder）</p>
-<p>当前接受触摸的响应者对象被称为第一响应者，即表示当前该对象正在与用户交互，它是响应者链的开端。</p>
-</li>
-<li><p>响应者链（Responder chain）</p>
-<p>响应者链表示一系列的响应者对象。事件被交由第一响应者对象处理，如果第一响应者不处理，事件被沿着响应者链向上传递，交给下一个响应者（next responder）。一般来说，第一响应者是个视图对象或者其子类对象，当其被触摸后事件被交由它处理，如果它不处理，事件就会被传递给它的视图控制器对象（如果存在），然后是它的父视图（superview）对象（如果存在），以此类推，直到顶层视图。接下来会沿着顶层视图（top view）到窗口（UIWindow对象）再到程序（UIApplication对象）。如果整个过程都没有响应这个事件，该事件就被丢弃。一般情况下，在响应者链中只要由对象处理事件，事件就停止传递。但有时候可以在视图的响应方法中根据一些条件判断来决定是否需要继续传递事件。</p>
-</li>
-<li><p>管理事件分发</p>
-<p>视图对触摸事件是否需要作处回应可以通过设置视图的<code>userInteractionEnabled</code>属性。默认状态为<code>YES</code>，如果设置为<code>NO</code>，可以阻止视图接收和分发触摸事件。除此之外，当视图被隐藏（<code>setHidden：YES</code>）或者透明（<code>alpha</code>值为0）也不会收事件。不过这个属性只对视图有效，如果想要整个程序都步响应事件，可以调用<code>UIApplication</code>的<code>beginIngnoringInteractionEvents</code>方法来完全停止事件接收和分发。通过<code>endIngnoringInteractionEvents</code>方法来恢复让程序接收和分发事件。</p>
-</li>
-</ul>
-<p>如果要让视图接收多点触摸，需要设置它的<code>multipleTouchEnabled</code>属性为<code>YES</code>，默认状态下这个属性值为<code>NO</code>，即视图默认不接收多点触摸。</p>
-<h2 id="如何处理用户的触摸事件">如何处理用户的触摸事件</h2><p>*首先触摸的对象是视图，而视图的类UIView继承了UIRespnder类，但是要对事件作出处理，还需要重写UIResponder类中定义的事件处理函数。根据不通的触摸状态，程序会调用相应的处理函数，这些函数包括以下几个：</p>
-<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//当手指接触屏幕时，就会调用touchesBegan:withEvent方法；</span></span><br><span class="line">-(<span class="typename">void</span>)<span class="string">touchesBegan:</span>(NSSet *)touches <span class="string">withEvent:</span>(UIEvent *)event;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当手指在屏幕上移时，动就会调用touchesMoved:withEvent方法；</span></span><br><span class="line">-(<span class="typename">void</span>)<span class="string">touchesMoved:</span>(NSSet *)touches <span class="string">withEvent:</span>(UIEvent *)event;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 当手指离开屏幕时，就会调用touchesEnded:withEvent方法；</span></span><br><span class="line">-(<span class="typename">void</span>)<span class="string">touchesEnded:</span>(NSSet *)touches <span class="string">withEvent:</span>(UIEvent *)event;</span><br><span class="line"></span><br><span class="line"><span class="comment">//当触摸被取消（比如触摸过程中被来电打断），就会调用touchesCancelled:withEvent方法。</span></span><br><span class="line">-(<span class="typename">void</span>)<span class="string">touchesCancelled:</span>(NSSet *)touches <span class="string">withEvent:</span>(UIEvent *)event;</span><br></pre></td></tr></table></figure>
-<p>而这几个方法被调用时，正好对应了<code>UITouch</code>类中<code>phase</code>属性的4个枚举值。</p>
-<p>上面的四个事件方法，在开发过程中并不要求全部实现，可以根据需要重写特定的方法。对于这4个方法，都有两个相同的参数：<code>NSSet</code>类型的<code>touches</code>和<code>UIEvent</code>类型的<code>event</code>。其中touches表示触摸产生的所有<code>UITouch</code>对象，而event表示特定的事件。因为<code>UIEvent</code>包含了整个触摸过程中所有的触摸对象，因此可以调用<code>allTouches</code>方法获取该事件内所有的触摸对象，也可以调用<code>touchesForVIew</code>：或者<code>touchesForWindows</code>：取出特定视图或者窗口上的触摸对象。在这几个事件中，都可以拿到触摸对象，然后根据其位置，状态，时间属性做逻辑处理。</p>
-<p>例如:<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">void</span>)touchesEnded:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UITouch</span> *touch =  [touches anyObject];</span><br><span class="line">    <span class="keyword">if</span>(touch<span class="variable">.tapCount</span> == <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">self</span><span class="variable">.view</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> redColor];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面的例子说明在触摸手指离开后，根据tapCount点击的次数来设置当前视图的背景色。不管时一个手指还是多个手指，轻击操作都会使每个触摸对象的tapCount加1，由于上面的例子不需要知道具体触摸对象的位置或时间等，因此可以直接调用touches的anyObject方法来获取任意一个触摸对象然后判断其tapCount的值即可。</p>
-<p>检测tapCount可以放在touchesBegan也可以touchesEnded，不过一般后者跟准确，因为touchesEnded可以保证所有的手指都已经离开屏幕，这样就不会把轻击动作和按下拖动等动作混淆。</p>
-<p>轻击操作很容易引起歧义，比如当用户点了一次之后，并不知道用户是想单击还是只是双击的一部分，或者点了两次之后并不知道用户是想双击还是继续点击。为了解决这个问题，一般可以使用“<strong>延迟调用</strong>”函数。</p>
-<p>例如：<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">void</span>)touchesEnded:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UITouch</span> *touch =  [touches anyObject];</span><br><span class="line">    <span class="keyword">if</span>(touch<span class="variable">.tapCount</span> == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(setBackground:) withObject:[<span class="built_in">UIColor</span> blueColor] afterDelay:<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">self</span><span class="variable">.view</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> redColor];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>上面代码表示在第一次轻击之后，没有直接更改视图的背景属性，而是通过<code>performSelector：withObject：afterDelay</code>：方法设置2秒中后更改。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-(<span class="keyword">void</span>)touchesEnded:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UITouch</span> *touch =  [touches anyObject];</span><br><span class="line">    <span class="keyword">if</span>(touch<span class="variable">.tapCount</span> == <span class="number">2</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        [<span class="built_in">NSObject</span> cancelPreviousPerformRequestsWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(setBackground:) object:[<span class="built_in">UIColor</span> redColor]];</span><br><span class="line">        <span class="keyword">self</span><span class="variable">.view</span><span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> redColor];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>双击就是两次单击的组合，因此在第一次点击的时候，设置背景色的方法已经启动，在检测到双击的时候先要把先前对应的方法取消掉，可以通过调用NSObject类的<code>cancelPreviousPerformRequestWithTarget:selector:object</code>方法取消指定对象的方法调用，然后调用双击对应的方法设置背景色为红色。</p>
-<p>下面举个例子创建可以拖动的视图，这个主要通过触摸对象的位置坐标来实现。因此调用触摸对象的locationInView：方法即可。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">CGPoint</span> originalLocation;</span><br><span class="line">-(<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UITouch</span> *touch = [touches anyObject];</span><br><span class="line">    originalLocation = [touch locationInView:<span class="keyword">self</span><span class="variable">.view</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="keyword">void</span>)touchesMoved:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UITouch</span> *touch = [touches anyObject];</span><br><span class="line">    <span class="built_in">CGPoint</span> currentLocation = [touch locationInView:<span class="keyword">self</span><span class="variable">.view</span>];</span><br><span class="line">    <span class="built_in">CGRect</span> frame = <span class="keyword">self</span><span class="variable">.view</span><span class="variable">.frame</span>;</span><br><span class="line">    frame<span class="variable">.origin</span><span class="variable">.x</span> += currentLocation<span class="variable">.x</span>-originalLocation<span class="variable">.x</span>;</span><br><span class="line">    frame<span class="variable">.origin</span><span class="variable">.y</span> += currentLocation<span class="variable">.y</span>-originalLocation<span class="variable">.y</span>;   </span><br><span class="line">    <span class="keyword">self</span><span class="variable">.view</span><span class="variable">.frame</span> = frame;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这里先在<code>touchesBegan</code>中通过<code>[touch locationInView:self.view]</code>获取手指触摸在当前视图上的位置，用<code>CGPoint</code>变量记录，然后在手指移动事件touchesMoved方法中获取触摸对象当前位置，并通过于与原始位置的差值计算出移动偏移量，再设置当前视图的位置。</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/09/10/cpp/stl_map与boost_unordered_map/">
-                STL map与Boost unordered_map
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-09-10
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/09/10/cpp/stl_map与boost_unordered_map/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/10/cpp/stl_map与boost_unordered_map/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="STL_map与Boost_unordered_map">STL map与Boost unordered_map</h1><p>今天看到 boost::unordered_map， 它与 stl::map的区别就是，stl::map是按照operator&lt;比较判断元素是否相同，以及比较元素的大小，然后选择合适的位置插入到树中。所以，如果对map进行遍历（中序遍历）的话，输出的结果是有序的。顺序就是按照operator&lt; 定义的大小排序。</p>
-<p>而boost::unordered_map是计算元素的Hash值，根据Hash值判断元素是否相同。所以，对unordered_map进行遍历，结果是无序的。</p>
-<p>用法的区别就是，stl::map 的key需要定义operator&lt; 。 而boost::unordered_map需要定义hash_value函数并且重载operator==。对于内置类型，如string，这些都不用操心。对于自定义的类型做key，就需要自己重载operator&lt; 或者hash_value()了。 </p>
-<p>最后，说，当不需要结果排好序时，最好用unordered_map。</p>
-<p>其实，stl::map对于与java中的TreeMap，而boost::unordered_map对应于java中的HashMap。 </p>
-<h2 id="stl::map">stl::map</h2><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;string&gt;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line">#include&lt;map&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">struct <span class="keyword">person</span></span><br><span class="line">&#123;</span><br><span class="line">	string name;</span><br><span class="line">	int age;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">person</span>(string name, int age)</span><br><span class="line">	&#123;</span><br><span class="line">		this-&gt;name =  name;</span><br><span class="line">		this-&gt;age = age;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	bool operator &lt; (const <span class="keyword">person</span>&amp; p) const</span><br><span class="line">	&#123;</span><br><span class="line">		return this-&gt;age &lt; p.age;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">map&lt;<span class="keyword">person</span>,int&gt; m;</span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">person</span> p1(<span class="string">"Tom1"</span>,20);</span><br><span class="line">	<span class="keyword">person</span> p2(<span class="string">"Tom2"</span>,22);</span><br><span class="line">	<span class="keyword">person</span> p3(<span class="string">"Tom3"</span>,22);</span><br><span class="line">	<span class="keyword">person</span> p4(<span class="string">"Tom4"</span>,23);</span><br><span class="line">	<span class="keyword">person</span> p5(<span class="string">"Tom5"</span>,24);</span><br><span class="line">	m.insert(make_pair(p3, 100));</span><br><span class="line">	m.insert(make_pair(p4, 100));</span><br><span class="line">	m.insert(make_pair(p5, 100));</span><br><span class="line">	m.insert(make_pair(p1, 100));</span><br><span class="line">	m.insert(make_pair(p2, 100));</span><br><span class="line">	</span><br><span class="line">	for(map&lt;<span class="keyword">person</span>, int&gt;::iterator iter = m.begin(); iter != m.end(); iter++)</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;iter-&gt;first.name&lt;&lt;<span class="string">"\t"</span>&lt;&lt;iter-&gt;first.age&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">output:</span><br><span class="line">Tom1    20</span><br><span class="line">Tom3    22</span><br><span class="line">Tom4    23</span><br><span class="line">Tom5    24</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>operator&lt;的重载一定要定义成const。因为map内部实现时调用operator&lt;的函数好像是const。</p>
-<p>由于operator&lt;比较的只是age,所以因为Tom2和Tom3的age相同，所以最终结果里面只有Tom3，没有Tom2</p>
-</blockquote>
-<h2 id="boost::unordered_map">boost::unordered_map</h2><figure class="highlight inform7"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;string&gt;</span><br><span class="line">#include&lt;iostream&gt;</span><br><span class="line"></span><br><span class="line">#include&lt;boost/unordered_map.hpp&gt;</span><br><span class="line"></span><br><span class="line">using namespace std;</span><br><span class="line"></span><br><span class="line">struct <span class="keyword">person</span></span><br><span class="line">&#123;</span><br><span class="line">	string name;</span><br><span class="line">	int age;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">person</span>(string name, int age)</span><br><span class="line">	&#123;</span><br><span class="line">		this-&gt;name =  name;</span><br><span class="line">		this-&gt;age = age;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	bool operator== (const <span class="keyword">person</span>&amp; p) const</span><br><span class="line">	&#123;</span><br><span class="line">		return name==p.name &amp;&amp; age==p.age;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">size_t hash_value(const <span class="keyword">person</span>&amp; p)</span><br><span class="line">&#123;</span><br><span class="line">	size_t seed = 0;</span><br><span class="line">	boost::hash_combine(seed, boost::hash_value(p.name));</span><br><span class="line">	boost::hash_combine(seed, boost::hash_value(p.age));</span><br><span class="line">	return seed;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	typedef boost::unordered_map&lt;<span class="keyword">person</span>,int&gt; umap;</span><br><span class="line">	umap m;</span><br><span class="line">	<span class="keyword">person</span> p1(<span class="string">"Tom1"</span>,20);</span><br><span class="line">	<span class="keyword">person</span> p2(<span class="string">"Tom2"</span>,22);</span><br><span class="line">	<span class="keyword">person</span> p3(<span class="string">"Tom3"</span>,22);</span><br><span class="line">	<span class="keyword">person</span> p4(<span class="string">"Tom4"</span>,23);</span><br><span class="line">	<span class="keyword">person</span> p5(<span class="string">"Tom5"</span>,24);</span><br><span class="line">	m.insert(umap::value_type(p3, 100));</span><br><span class="line">	m.insert(umap::value_type(p4, 100));</span><br><span class="line">	m.insert(umap::value_type(p5, 100));</span><br><span class="line">	m.insert(umap::value_type(p1, 100));</span><br><span class="line">	m.insert(umap::value_type(p2, 100));</span><br><span class="line">	</span><br><span class="line">	for(umap::iterator iter = m.begin(); iter != m.end(); iter++)</span><br><span class="line">	&#123;</span><br><span class="line">		cout&lt;&lt;iter-&gt;first.name&lt;&lt;<span class="string">"\t"</span>&lt;&lt;iter-&gt;first.age&lt;&lt;endl;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">输出</span><br><span class="line">Tom1    20</span><br><span class="line">Tom5    24</span><br><span class="line">Tom4    23</span><br><span class="line">Tom2    22</span><br><span class="line">Tom3    22</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>必须要自定义operator==和hash_value。 重载operator==是因为，如果两个元素的hash_value的值相同，并不能断定这两个元素就相同，必须再调用operator==。 当然，如果hash_value的值不同，就不需要调用operator==了。</p>
-</blockquote>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
-      
-
-  <div class="post post-type-normal ">
-    <div class="post-header">
-
-      
-      
-        <h1 class="post-title">
-          
-          
-            
-              <a class="post-title-link" href="/2014/09/08/cpp/std_function和std_bind/">
-                c++11中的bind和function
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於 2014-09-08
-        </span>
-
-        
-          <span class="post-category">
-            &nbsp; | &nbsp; 分類於
-            
-              <a href="/categories/cpp/">cpp</a>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-            <span class="post-comments-count">
-            &nbsp; | &nbsp;
-            <a href="/2014/09/08/cpp/std_function和std_bind/#comments" >
-              <span class="post-comments-count ds-thread-count" data-thread-key="2014/09/08/cpp/std_function和std_bind/"></span>
-            </a>
-          </span>
-          
-        
-      </div>
-    </div>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <h1 id="c++11中的bind和function">c++11中的bind和function</h1><h2 id="std::function">std::function</h2><p>它是函数、函数对象、函数指针、和成员函数的包装器，可以容纳任何类型的函数对象，函数指针，引用函数，成员函数的指针。<br>以统一的方式处理函数、函数对象、函数指针、和成员函数。</p>
-<p>允许保存和延迟执行函数。</p>
-<ul>
-<li>函数和成员函数作为function</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">G</span><span class="params">()</span></span>;</span><br><span class="line"><span class="keyword">struct</span> A</span><br><span class="line">&#123;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">H</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; f = G; <span class="comment">//全局函数</span></span><br><span class="line"></span><br><span class="line">A a;</span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; f <span class="number">1</span>= <span class="built_in">std</span>::bind(&amp;A::H, a); <span class="comment">//成员函数</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>可以用function取代函数指针。因为它可以保存函数延迟执行，所以比较适合作为回调函数，也可以把它看做类似于c#中特殊的委托，只有一个成员的委托。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> A</span><br><span class="line">&#123;</span><br><span class="line">A(<span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt;&amp; f):m_callback(f)</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Notify</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line">m_callback();<span class="comment">//回调到上层</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span>()&gt; m_callback;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>function还可以作为函数入参，这样可以在函数外部控制函数的内部行为了，让我们的函数变得更加灵活。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Foo</span><span class="params">(<span class="keyword">int</span> x, <span class="built_in">std</span>::function&lt;<span class="keyword">void</span>(<span class="keyword">int</span>)</span>&gt;&amp; f)</span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="keyword">if</span>(x%<span class="number">2</span>==<span class="number">0</span>)</span><br><span class="line">f(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">G</span><span class="params">(<span class="keyword">int</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;x&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">H</span><span class="params">(<span class="keyword">int</span> x)</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;x+<span class="number">2</span>&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">TestFoo</span><span class="params">()</span></span><br><span class="line"></span>&#123;</span><br><span class="line"><span class="keyword">auto</span> f = <span class="built_in">std</span>::bind(G, <span class="built_in">std</span>::placeholders::_1); </span><br><span class="line">Foo(<span class="number">4</span>, f);</span><br><span class="line"></span><br><span class="line"><span class="comment">//在Foo函数外面更改f的行为</span></span><br><span class="line">f = <span class="built_in">std</span>::bind(H, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line">Foo(<span class="number">4</span>, f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="std::bind绑定器">std::bind绑定器</h2><ul>
-<li>将函数、成员函数和闭包转成function函数对象</li>
-<li>将多元(n&gt;1)函数转成一元函数或者(n-1)元函数。</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">H</span><span class="params">(<span class="keyword">int</span> a)</span></span>;</span><br><span class="line"><span class="comment">//绑定全局函数</span></span><br><span class="line"><span class="keyword">auto</span> f11 = <span class="built_in">std</span>::bind(H, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line"><span class="keyword">auto</span>的类型实际上是<span class="built_in">std</span>::function&lt;<span class="keyword">void</span>(<span class="keyword">int</span>)&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">//绑定带参数的成员函数</span></span><br><span class="line"><span class="built_in">std</span>::function&lt;<span class="keyword">void</span> (<span class="keyword">char</span>*, <span class="keyword">int</span>)&gt; f = <span class="built_in">std</span>::bind(&amp;ReadHandler::ConnectPreProcess, <span class="keyword">this</span>, <span class="built_in">std</span>::placeholders::_1, <span class="built_in">std</span>::placeholders::_1);</span><br><span class="line"></span><br><span class="line"><span class="comment">//三元函数转换成一元函数</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">f</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">char</span>, <span class="keyword">double</span>)</span></span>;</span><br><span class="line"><span class="comment">// 绑定f()函数调用的第二个和第三个参数，</span></span><br><span class="line"><span class="comment">// 返回一个新的函数对象为ff，它只带有一个int类型的参数</span></span><br><span class="line"><span class="keyword">auto</span> ff = bind(f, _1, ‘c’, <span class="number">1.2</span>);    </span><br><span class="line"><span class="keyword">int</span> x = ff(<span class="number">7</span>);</span><br></pre></td></tr></table></figure>
-<ul>
-<li>bind简化和增强bind1st和bind2nd</li>
-</ul>
-<p>其实bind简化和增强了之前标准库中bind1st和bind2nd，它完全可以替代bind1s和bind2st，并且能组合函数。我们知道bind1st和bind2nd将一个二元算子转换成一个一元算子。</p>
-<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找元素值大于10的元素的个数</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, std::bind1st<span class="params">(less&lt;int&gt;<span class="params">()</span>, <span class="number">10</span>)</span>)</span>;</span><br><span class="line"><span class="comment">//查找元素之小于10的元素</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, std::bind2nd<span class="params">(less&lt;int&gt;<span class="params">()</span>, <span class="number">10</span>)</span>)</span>;</span><br></pre></td></tr></table></figure>
-<p>本质上是对一个二元函数less<int>的调用，但是它却要分别用bind1st和bind2nd，而且还要想想到底是用bind1st还是bind2nd，用起来感觉不方便。现在用bind，就可以以统一的方式去实现了。</int></p>
-<figure class="highlight openscad"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找元素值大于10的元素的个数</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, bind<span class="params">(less&lt;int&gt;<span class="params">()</span>, <span class="number">10</span>, _1)</span>)</span>;</span><br><span class="line"><span class="comment">//查找元素之小于10的元素</span></span><br><span class="line">int count = count_if<span class="params">(coll.begin<span class="params">()</span>, coll.end<span class="params">()</span>, bind<span class="params">(less&lt;int&gt;<span class="params">()</span>, _1, <span class="number">10</span>)</span>)</span>;</span><br><span class="line">这样我就不用关心到底是用bind1st还是bind2nd了，只要用bind就都搞定了。</span><br></pre></td></tr></table></figure>
-<ul>
-<li>bind函数组合</li>
-</ul>
-<p>bind的还有一个强大之处就是函数组合。假设我们要找出集合中大于5小于10的元素个数怎么做呢？我们需要一个逻辑与才能做到类似于： </p>
-<p><code>std::bind(std::logical_and&lt;bool&gt;(),_1,_2);</code></p>
-<p>然后，我们需要另一个谓词来回答 _1 是否大于5。</p>
-<p><code>std::bind(std::greater&lt;int&gt;(),_1,5);</code></p>
-<p>然后，我们还需要另一个谓词来回答 _1 是否小于等于10。</p>
-<p><code>std::bind(std::less_equal&lt;int&gt;(),_1,10);</code></p>
-<p>最后，我们需要把它们两个用逻辑与合起来，就象这样：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找集合中大于5小于10的元素个数</span></span><br><span class="line"><span class="keyword">auto</span> f = bind(<span class="built_in">std</span>::logical_and&lt;<span class="keyword">bool</span>&gt;(), bind(<span class="built_in">std</span>::greater&lt;<span class="keyword">int</span>&gt;(),_1,<span class="number">5</span>), bind(<span class="built_in">std</span>::less_equal&lt;<span class="keyword">int</span>&gt;(),_1,<span class="number">10</span>));</span><br><span class="line"><span class="keyword">int</span> count = count_if(coll.begin(), coll.end(), f);</span><br></pre></td></tr></table></figure>
-<p>c++11中推出function是为了泛化函数对象，函数指针，引用函数，成员函数的指针，让我们可以按更统一的方式写出更加泛化的代码；推出bind是为了替换和增强之前标准库的bind1st和bind2st，让我们的用起来更方便！</p>
-
-        
-      
-    </div>
-
-    <div class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </div>
-  </div>
-
-
-    
   </div>
 
   
   <div class="pagination">
-    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/5/">&laquo;</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><span class="page-number current">6</span><a class="page-number" href="/page/7/">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/7/">&raquo;</a>
   </div>
 
 
@@ -2188,21 +2094,21 @@ printf(<span class="string">"user type：%sn"</span>, <span class="variable">$us
         <div class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">80</span>
+              <span class="site-state-item-count">84</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">分類</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             
-              <span class="site-state-item-count">54</span>
+              <span class="site-state-item-count">56</span>
               <span class="site-state-item-name">標籤</span>
               
           </div>
